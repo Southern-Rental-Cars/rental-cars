@@ -87,7 +87,7 @@ export default function Contact() {
               >
                 +1 (832) 684-7072
               </a>{' '}
-              and we'll get back to you as soon as possible.
+              and we&apos;ll get back to you as soon as possible.
             </p>
           </div>
         </div>
