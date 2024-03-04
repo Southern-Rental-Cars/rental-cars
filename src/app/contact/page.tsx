@@ -100,13 +100,15 @@ export default function Contact() {
             >
               info@texasrentals.io
             </SocialLink>
-            <PhoneIcon className="h-6 w-6 flex-none fill-zinc-500" />
-            <a
-              href="tel:+1-832-684-7072"
-              className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
-            >
-              +1 (832) 684-7072
-            </a>
+            <div className="mt-8 flex space-x-4 border-t border-zinc-100 pt-8 dark:border-zinc-700/40">
+              <PhoneIcon className="h-6 w-6 flex-none fill-zinc-500" />
+              <a
+                href="tel:+1-832-684-7072"
+                className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
+              >
+                +1 (832) 684-7072
+              </a>
+            </div>
           </ul>
         </div>
       </div>
