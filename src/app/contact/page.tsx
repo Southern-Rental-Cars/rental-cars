@@ -5,6 +5,7 @@ import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
 import portraitImage from '@/images/portrait.jpg'
+import { PhoneIcon } from '@heroicons/react/24/solid'
 
 const SocialLink = ({
   className,
@@ -40,12 +41,12 @@ const MailIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => {
 }
 
 export const metadata: Metadata = {
-  title: 'About',
+  title: 'Contact',
   description:
     'Texas Rental Cars is a car rental company located in The Woodlands, Texas. We offer a wide range of vehicles for rent, including cars, trucks, and vans.',
 }
 
-export default function About() {
+export default function Contact() {
   return (
     <Container className="mt-16 sm:mt-32">
       <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
@@ -61,7 +62,7 @@ export default function About() {
         </div>
         <div className="lg:order-first lg:row-span-2">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            About Texas Rental Cars
+            Contact Us
           </h1>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
             <p>
@@ -70,37 +71,42 @@ export default function About() {
               including cars, trucks, and vans.
             </p>
             <p>
-              Our mission is to provide the best car rental experience in The
-              Woodlands and surrounding areas. We offer competitive rates and
-              exceptional customer service.
-            </p>
-            <p>
-              We are committed to providing our customers with the best possible
-              experience. We offer a wide range of vehicles for rent, including
-              cars, trucks, and vans. Our vehicles are well-maintained and
-              reliable, and our staff is friendly and knowledgeable.
+              If you have any questions or would like to make a reservation,
+              please contact us by email at{' '}
+              <a
+                href="mailto:info@texasrentals.io"
+                className="text-teal-500 dark:text-teal-400"
+              >
+                info@texasrentals.io{' '}
+              </a>
+              {/* space */}
+              or by phone at{' '}
+              <a
+                href="tel:+1-281-555-5555"
+                className="text-teal-500 dark:text-teal-400"
+              >
+                +1 (832) 684-7072
+              </a>{' '}
+              and we'll get back to you as soon as possible.
             </p>
           </div>
         </div>
         <div className="lg:pl-20">
           <ul role="list">
-            {/* <SocialLink href="#" icon={InstagramIcon} className="mt-4">
-              Follow on Instagram
-            </SocialLink> */}
-            {/* <SocialLink
-              href="https://www.facebook.com/texasrentalcars"
-              className="mt-8"
-              icon={FacebookIcon}
-            >
-              Follow on Facebook
-            </SocialLink> */}
             <SocialLink
-              href="mailto:info@hoggs.io"
+              href="mailto:info@texasrentals.io"
               icon={MailIcon}
               className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
             >
-              info@hoggs.io
+              info@texasrentals.io
             </SocialLink>
+            <PhoneIcon className="h-6 w-6 flex-none fill-zinc-500" />
+            <a
+              href="tel:+1-832-684-7072"
+              className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
+            >
+              +1 (832) 684-7072
+            </a>
           </ul>
         </div>
       </div>

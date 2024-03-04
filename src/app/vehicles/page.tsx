@@ -31,14 +31,15 @@ function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 
 export const metadata: Metadata = {
   title: 'Vehicles',
-  description: 'Things I’ve made trying to put my dent in the universe.',
+  description:
+    'We offer a wide range of vehicles for rent, including cars, trucks, and vans.',
 }
 
 export default function Vehicles() {
   return (
     <SimpleLayout
       title="Vehicles"
-      intro="We offer a wide range of vehicles for rent, including cars, trucks, and vans."
+      intro="All of our vehicles are listed and available only through Turo, a popular online car rental platform. Select a vehicle to go directly to the booking page for pricing and availability."
     >
       <ul
         role="list"
