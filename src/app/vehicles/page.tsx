@@ -4,18 +4,92 @@ import Image from 'next/image'
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import Benz from '@/images/vehicles/car3.jpg'
+import Atlas from '@/images/vehicles/atlas.jpg'
+import Cross from '@/images/vehicles/cross.jpg'
+import Whitetig from '@/images/vehicles/whitetig.jpg'
+import Blacktig from '@/images/vehicles/blacktig.jpg'
 
 const vehicles = [
   {
     name: '2023 Mercedes-Benz Metris',
     description:
-      'The 8-passenger 2023 Mercedes-Benz Metris is a mid-size van that is perfect for transporting small groups or large cargo. It is available in a variety of configurations, including passenger and cargo.',
+      'The 8-passenger 2023 Mercedes-Benz Metris is a mid-size van that is perfect for transporting small groups or large cargo.',
     image: Benz,
     link: {
       label: 'Check availability',
       href: 'https://turo.com/us/en/minivan-rental/united-states/conroe-tx/mercedes-benz/metris/2575678',
     },
   },
+  {
+    name: '2024 Volkswagen Atlas',
+    description:
+      'VW`s largest SUV, the 2024 Volkswagen Atlas, is a spacious and comfortable 7-passenger vehicle that is perfect for long road trips and family vacations.',
+    image: Atlas,
+    link: {
+      label: 'Check availability',
+      href: 'https://turo.com/us/en/suv-rental/united-states/conroe-tx/volkswagen/atlas/2196188',
+    },
+  },
+  {
+    name: '2024 Volkswagen Atlas Cross Sport',
+    description:
+      'The 2024 Volkswagen Atlas Cross Sport is a 5-passenger SUV that is perfect for small families and couples.',
+    image: Cross,
+    link: {
+      label: 'Check availability',
+      href: 'https://turo.com/us/en/suv-rental/united-states/conroe-tx/volkswagen/atlas-cross-sport/2215467',
+    },
+  },
+  {
+    name: '2023 Volkswagen Tiguan',
+    description:
+      'The 7-passenger 2023 Volkswagen Tiguan is a compact SUV that is perfect for families and small groups.',
+    image: Whitetig,
+    link: {
+      label: 'Check availability',
+      href: 'https://turo.com/us/en/suv-rental/united-states/conroe-tx/volkswagen/tiguan/2088838',
+    },
+  },
+  {
+    name: '2022 Volkswagen Tiguan',
+    description:
+      'The 7-passenger 2022 Volkswagen Tiguan in all black is an SUV that is perfect for families and small groups.',
+    image: Blacktig,
+    link: {
+      label: 'Check availability',
+      href: 'https://turo.com/us/en/suv-rental/united-states/conroe-tx/volkswagen/tiguan/2049576',
+    },
+  },
+  // {
+  //   name: '2023 Mercedes-Benz Metris',
+  //   description:
+  //     'The 8-passenger 2023 Mercedes-Benz Metris is a mid-size van that is perfect for transporting small groups or large cargo. It is available in a variety of configurations, including passenger and cargo.',
+  //   image: Benz,
+  //   link: {
+  //     label: 'Check availability',
+  //     href: 'https://turo.com/us/en/minivan-rental/united-states/conroe-tx/mercedes-benz/metris/2575678',
+  //   },
+  // },
+  // {
+  //   name: '2023 Mercedes-Benz Metris',
+  //   description:
+  //     'The 8-passenger 2023 Mercedes-Benz Metris is a mid-size van that is perfect for transporting small groups or large cargo. It is available in a variety of configurations, including passenger and cargo.',
+  //   image: Benz,
+  //   link: {
+  //     label: 'Check availability',
+  //     href: 'https://turo.com/us/en/minivan-rental/united-states/conroe-tx/mercedes-benz/metris/2575678',
+  //   },
+  // },
+  // {
+  //   name: '2023 Mercedes-Benz Metris',
+  //   description:
+  //     'The 8-passenger 2023 Mercedes-Benz Metris is a mid-size van that is perfect for transporting small groups or large cargo. It is available in a variety of configurations, including passenger and cargo.',
+  //   image: Benz,
+  //   link: {
+  //     label: 'Check availability',
+  //     href: 'https://turo.com/us/en/minivan-rental/united-states/conroe-tx/mercedes-benz/metris/2575678',
+  //   },
+  // },
 ]
 
 function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
