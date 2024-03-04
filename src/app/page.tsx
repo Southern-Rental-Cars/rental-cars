@@ -15,12 +15,11 @@ const Home = async () => {
       <Container className="mt-9">
         <div className="max-w-2xl">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            Welcome to Texas Rental Cars
+            Texas Rental Cars
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            Texas Rental Cars is a car rental company located in The Woodlands,
-            Texas. We offer a wide range of vehicles for rent, including cars,
-            trucks, and vans.
+            Texas Rental Cars LLC is located in The Woodlands, Texas. We offer a
+            wide range of vehicles for rent, including cars, trucks, and vans.
           </p>
         </div>
       </Container>
