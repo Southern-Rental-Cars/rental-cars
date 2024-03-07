@@ -1,4 +1,5 @@
 import { type Metadata } from 'next'
+import { GoogleTagManager } from '@next/third-parties/google'
 
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
@@ -29,6 +30,7 @@ export default function RootLayout({
           </div>
         </Providers>
       </body>
+      <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} />
     </html>
   )
 }
