@@ -10,7 +10,7 @@ const Home = async () => {
   return (
     <>
       <Container className="mt-9">
-        <div className="mb-6 mt-24 flex w-full justify-center">
+        <div className="mb-6 mt-24 flex w-full justify-center rounded-full bg-white p-2">
           <Image
             src={Logo}
             alt="Texas Rental Cars"

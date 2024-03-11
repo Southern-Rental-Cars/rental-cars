@@ -95,10 +95,10 @@ export const metadata: Metadata = {
 
 export default function Vehicles() {
   return (
-    <Container className="mb-12 mt-12">
+    <div className="mx-auto mb-12 mt-12 max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="mb-6 mt-12 flex w-full flex-col">
         <h1 className="text-center text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-          Vehicles
+          Our Vehicles
         </h1>
 
         <p className="text-center text-base text-zinc-600 dark:text-zinc-400">
@@ -112,7 +112,12 @@ export default function Vehicles() {
       >
         {vehicles.map((vehicle, i) => (
           <Card key={i}>
-            <div className="flex justify-center">
+            <a
+              className="flex justify-center overflow-hidden rounded-lg transition-transform duration-300 hover:scale-105 hover:transform hover:shadow-lg"
+              href={vehicle.link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {/* Handle potential image loading errors */}
               <Image
                 src={vehicle.image}
@@ -122,7 +127,7 @@ export default function Vehicles() {
                 unoptimized
                 className="rounded-lg"
               />
-            </div>
+            </a>
             <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
               <Card.Link href={vehicle.link.href}>{vehicle.name}</Card.Link>
             </h2>
@@ -134,7 +139,8 @@ export default function Vehicles() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-md border border-transparent bg-[#00205A]
-                 px-5 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                 px-5 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 hover:ring-1
+                  hover:ring-white focus:outline-none focus:ring-offset-2"
               >
                 Check availability
                 <svg
@@ -156,6 +162,6 @@ export default function Vehicles() {
           </Card>
         ))}
       </ul>
-    </Container>
+    </div>
   )
 }

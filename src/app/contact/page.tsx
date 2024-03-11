@@ -74,10 +74,10 @@ export default function Contact() {
               If you have any questions or would like to make a reservation,
               please contact us by email at{' '}
               <a
-                href="mailto:info@texasrentals.io"
+                href="mailto:info@texasrentalcars.com"
                 className="text-[#00205A] dark:text-blue-700"
               >
-                info@texasrentals.io{' '}
+                info@texasrentalcars.com{' '}
               </a>
               {/* space */}
               or by phone at{' '}
