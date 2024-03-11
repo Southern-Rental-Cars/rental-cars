@@ -4,7 +4,7 @@ import Link from 'next/link'
 import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
-import portraitImage from '@/images/logio.png'
+import portraitImage from '@/images/logo.png'
 import { PhoneIcon } from '@heroicons/react/24/solid'
 
 const SocialLink = ({
