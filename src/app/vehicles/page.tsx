@@ -95,7 +95,7 @@ export const metadata: Metadata = {
 
 export default function Vehicles() {
   return (
-    <div className="mx-auto mb-12 mt-12 max-w-7xl px-4 sm:px-6 lg:px-8">
+    <Container className="mb-12 mt-12">
       <div className="mb-6 mt-12 flex w-full flex-col">
         <h1 className="text-center text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
           Our Vehicles
@@ -162,6 +162,6 @@ export default function Vehicles() {
           </Card>
         ))}
       </ul>
-    </div>
+    </Container>
   )
 }

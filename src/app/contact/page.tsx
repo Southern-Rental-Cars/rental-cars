@@ -103,10 +103,10 @@ export default function Contact() {
             <div className="mt-8 flex space-x-4 border-t border-zinc-100 pt-8 dark:border-zinc-700/40">
               <PhoneIcon className="h-6 w-6 flex-none fill-zinc-500" />
               <a
-                href="tel:+1-832-684-7072"
+                href="tel:+1-832-334-3802"
                 className="group flex text-sm font-medium text-zinc-800 transition hover:text-[#00205A] dark:text-zinc-200 dark:hover:text-[#00205A]"
               >
-                +1 (832) 684-7072
+                +1 (832) 334-3802
               </a>
             </div>
           </ul>
