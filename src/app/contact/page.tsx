@@ -21,9 +21,9 @@ const SocialLink = ({
   <li className={clsx(className, 'flex')}>
     <Link
       href={href}
-      className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
+      className="group flex text-sm font-medium text-zinc-800 transition hover:text-[#00205A] dark:text-zinc-200 dark:hover:text-[#00205A]"
     >
-      <Icon className="h-6 w-6 flex-none fill-zinc-500 transition group-hover:fill-teal-500" />
+      <Icon className="h-6 w-6 flex-none fill-zinc-500 transition group-hover:fill-[#00205A]" />
       <span className="ml-4">{children}</span>
     </Link>
   </li>
@@ -75,7 +75,7 @@ export default function Contact() {
               please contact us by email at{' '}
               <a
                 href="mailto:info@texasrentals.io"
-                className="text-teal-500 dark:text-teal-400"
+                className="text-[#00205A] dark:text-blue-700"
               >
                 info@texasrentals.io{' '}
               </a>
@@ -83,9 +83,9 @@ export default function Contact() {
               or by phone at{' '}
               <a
                 href="tel:+1-281-555-5555"
-                className="text-teal-500 dark:text-teal-400"
+                className="text-[#00205A] dark:text-blue-700"
               >
-                +1 (832) 684-7072
+                +1 (832) 334-3802
               </a>{' '}
               and we&apos;ll get back to you as soon as possible.
             </p>
@@ -98,13 +98,13 @@ export default function Contact() {
               icon={MailIcon}
               className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
             >
-              info@texasrentals.io
+              info@texasrentalcars.com
             </SocialLink>
             <div className="mt-8 flex space-x-4 border-t border-zinc-100 pt-8 dark:border-zinc-700/40">
               <PhoneIcon className="h-6 w-6 flex-none fill-zinc-500" />
               <a
                 href="tel:+1-832-684-7072"
-                className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
+                className="group flex text-sm font-medium text-zinc-800 transition hover:text-[#00205A] dark:text-zinc-200 dark:hover:text-[#00205A]"
               >
                 +1 (832) 684-7072
               </a>

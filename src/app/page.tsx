@@ -4,26 +4,31 @@ import clsx from 'clsx'
 import { Container } from '@/components/Container'
 import Vehicles from './vehicles/page'
 import Link from 'next/link'
+import Logo from '@/images/trclogo2.png'
 
 const Home = async () => {
   return (
     <>
       <Container className="mt-9">
-        <div className="max-w-2xl">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            Texas Rental Cars
-          </h1>
-          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            Texas Rental Cars LLC is located in The Woodlands, Texas. We offer a
-            wide range of vehicles for rent, including cars, trucks, and vans.
-          </p>
+        <div className="mb-6 mt-24 flex w-full justify-center">
+          <Image
+            src={Logo}
+            alt="Texas Rental Cars"
+            width={600}
+            height={600}
+            unoptimized
+          />
         </div>
+        <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+          Texas Rental Cars LLC is located in The Woodlands, Texas. We offer a
+          wide range of vehicles for rent, including cars, trucks, and vans.
+        </p>
         <div className="mt-12">
           <button
             type="button"
             className={clsx(
-              'inline-flex items-center justify-center rounded-md border border-transparent bg-teal-500 px-5 py-3 text-base font-medium text-white shadow-sm hover:bg-teal-600',
-              'focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2',
+              'inline-flex items-center justify-center rounded-md border border-transparent bg-[#00205A] px-5 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700',
+              'focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2',
             )}
           >
             <Link href="/vehicles">Check availability</Link>
@@ -42,9 +47,10 @@ const Home = async () => {
               />
             </svg>
           </button>
-
-          <Vehicles />
         </div>
+      </Container>
+      <Container className="mb-12 mt-12">
+        <Vehicles />
       </Container>
     </>
   )

@@ -2,7 +2,6 @@ import { type Metadata } from 'next'
 import Image from 'next/image'
 
 import { Card } from '@/components/Card'
-import { SimpleLayout } from '@/components/SimpleLayout'
 import Benz from '@/images/vehicles/benz.jpg'
 import Atlas from '@/images/vehicles/atlas.jpg'
 import Cross from '@/images/vehicles/cross.jpg'
@@ -11,7 +10,7 @@ import Blacktig from '@/images/vehicles/blacktig.jpg'
 import Taos from '@/images/vehicles/taos.jpg'
 import Camry from '@/images/vehicles/camry.jpg'
 import Bronco from '@/images/vehicles/bronco.jpg'
-import Link from 'next/link'
+import { Container } from '@/components/Container'
 
 const vehicles = [
   {
@@ -96,24 +95,32 @@ export const metadata: Metadata = {
 
 export default function Vehicles() {
   return (
-    <SimpleLayout
-      title="Vehicles"
-      intro="All of our vehicles are listed and available only through Turo, a popular online car rental platform. Select a vehicle to go directly to the booking page for pricing and availability."
-    >
+    <Container className="mb-12 mt-12">
+      <div className="mb-6 mt-12 flex w-full flex-col">
+        <h1 className="text-center text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+          Vehicles
+        </h1>
+
+        <p className="text-center text-base text-zinc-600 dark:text-zinc-400">
+          We offer a wide range of vehicles for rent, including cars, trucks,
+          and vans.
+        </p>
+      </div>
       <ul
         role="list"
         className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
       >
-        {vehicles.map((vehicle, index) => (
-          <Card as="li" key={vehicle.name}>
+        {vehicles.map((vehicle, i) => (
+          <Card key={i}>
             <div className="flex justify-center">
               {/* Handle potential image loading errors */}
               <Image
                 src={vehicle.image}
                 alt={vehicle.name}
-                width={192}
-                height={192}
+                width={400}
+                height={400}
                 unoptimized
+                className="rounded-lg"
               />
             </div>
             <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
@@ -121,60 +128,34 @@ export default function Vehicles() {
             </h2>
             <Card.Description>{vehicle.description}</Card.Description>
 
-            <div className="mt-6 space-x-4">
-              <button
-                type="button"
-                className={
-                  'inline-flex items-center justify-center rounded-md border border-transparent bg-white px-5 py-3 text-base font-medium text-black shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2'
-                }
+            <div className="mt-6">
+              <a
+                href={vehicle.link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-md border border-transparent bg-[#00205A]
+                 px-5 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
-                <Link href="/vehicles">
-                  Check availability
-                  <svg
-                    className="-mr-1 ml-2 h-4 w-4 flex-none"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </Link>
-              </button>
-
-              <button
-                type="button"
-                className={
-                  'inline-flex items-center justify-center rounded-md border border-transparent bg-teal-500 px-5 py-3 text-base font-medium text-white shadow-sm hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2'
-                }
-              >
-                <Link href={vehicle.link.href}>
-                  Book now
-                  <svg
-                    className="-mr-1 ml-2 h-4 w-4 flex-none"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </Link>
-              </button>
+                Check availability
+                <svg
+                  className="-mr-1 ml-2 h-6 w-6 flex-none"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
             </div>
           </Card>
         ))}
       </ul>
-    </SimpleLayout>
+    </Container>
   )
 }
