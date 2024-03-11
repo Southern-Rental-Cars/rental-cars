@@ -30,7 +30,7 @@ export default function RootLayout({
           </div>
         </Providers>
       </body>
-      <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} />
+      <GoogleTagManager gtmId="G-6TRZ4CZ0BR" />
     </html>
   )
 }
