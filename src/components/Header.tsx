@@ -244,7 +244,7 @@ function Avatar({
         src={avatarImage}
         alt=""
         sizes={large ? '4rem' : '2.25rem'}
-        className="h-full w-full rounded-full object-cover ring-blue-500 transition hover:scale-105 hover:ring-2 dark:ring-blue-400"
+        className="h-full w-full rounded-full object-cover ring-blue-800 transition hover:scale-105 hover:ring-2"
         priority
       />
     </Link>

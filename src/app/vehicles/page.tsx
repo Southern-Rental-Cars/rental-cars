@@ -88,9 +88,9 @@ const vehicles = [
 ]
 
 export const metadata: Metadata = {
-  title: 'Vehicles',
+  title: 'Our Vehicles',
   description:
-    'We offer a wide range of vehicles for rent, including cars, trucks, and vans.',
+    'Browse our selection of vehicles for rent, including cars, trucks, and vans available for rent in The Woodlands, Texas and the greater Houston area.',
 }
 
 export default function Vehicles() {
@@ -102,8 +102,8 @@ export default function Vehicles() {
         </h1>
 
         <p className="text-center text-base text-zinc-600 dark:text-zinc-400">
-          We offer a wide range of vehicles for rent, including cars, trucks,
-          and vans.
+          Browse our selection of cars, trucks, and vans available for rent in
+          The Woodlands, Texas and the greater Houston area.
         </p>
       </div>
       <ul

@@ -49,9 +49,6 @@ const Home = async () => {
           </button>
         </div>
       </Container>
-      <Container className="mb-12 mt-12">
-        <Vehicles />
-      </Container>
     </>
   )
 }
