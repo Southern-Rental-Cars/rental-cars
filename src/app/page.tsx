@@ -2,7 +2,6 @@ import Image, { type ImageProps } from 'next/image'
 import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
-import Vehicles from './vehicles/page'
 import Link from 'next/link'
 import Logo from '@/images/trclogo2.png'
 
