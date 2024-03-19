@@ -94,7 +94,7 @@ export default function Contact() {
         <div className="lg:pl-20">
           <ul role="list">
             <SocialLink
-              href="mailto:info@texasrentals.io"
+              href="mailto:info@texasrentalcars.com"
               icon={MailIcon}
               className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
             >
