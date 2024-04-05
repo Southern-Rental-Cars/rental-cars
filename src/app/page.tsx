@@ -11,7 +11,7 @@ const Home = async () => {
         <div className="mb-6 mt-24 flex w-full justify-center overflow-hidden rounded-lg">
           <Image src={Logo} alt="Texas Rental Cars" width={600} height={600} />
         </div>
-        <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+        <p className="mb-6 mt-9  text-center text-base text-zinc-600 dark:text-zinc-400">
           Texas Rental Cars LLC is based in The Woodlands, Texas. We offer a
           wide range of vehicles for rent, delivery, and pick-up in the greater
           Houston area. We are a family-owned and operated business that

@@ -93,15 +93,15 @@ export const metadata: Metadata = {
     'Browse our selection of vehicles for rent, including cars, trucks, and vans available for rent in The Woodlands, Texas and the greater Houston area.',
 }
 
-export default function Vehicles() {
+export default function VehicleList() {
   return (
     <Container className="mb-12 mt-12">
       <div className="mb-6 mt-12 flex w-full flex-col">
-        <h1 className="text-center text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+        <h1 className="mb-6 text-center text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
           Our Vehicles
         </h1>
 
-        <p className="text-center text-base text-zinc-600 dark:text-zinc-400">
+        <p className="mb-6 text-center text-base text-zinc-600 dark:text-zinc-400">
           Browse our selection of cars, trucks, and vans available for rent in
           The Woodlands, Texas and the greater Houston area.
         </p>
@@ -122,8 +122,8 @@ export default function Vehicles() {
               <Image
                 src={vehicle.image}
                 alt={vehicle.name}
-                width={400}
-                height={400}
+                width={500}
+                height={500}
                 unoptimized
                 className="rounded-lg"
               />

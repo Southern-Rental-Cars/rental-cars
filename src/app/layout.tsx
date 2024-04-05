@@ -9,12 +9,11 @@ import '@/styles/tailwind.css'
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Texas Rental Cars',
-    default:
-      'Texas Rental Cars is a car rental company located in The Woodlands, Texas. We offer a wide range of vehicles for rent, including cars, trucks, and vans.',
+    template: 'Texas Rental Cars',
+    default: 'Texas Rental Cars',
   },
   description:
-    'Texas Rental Cars is a car rental company located in The Woodlands, Texas. We offer a wide range of vehicles for rent, including cars, trucks, and vans.',
+    'Welcome to Texas Rental Cars based in The Woodlands, Texas. We offer a wide range of vehicles for rent, delivery, and pick-up in the greater Houston area. We are a family-owned and operated business that provides exceptional customer service and competitive pricing. Our goal is to make your rental experience as easy and convenient as possible. We look forward to serving you!',
 }
 
 export default function RootLayout({
