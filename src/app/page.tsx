@@ -3,6 +3,7 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import Logo from '@/images/trclogo2.png'
 import Link from 'next/link'
+import Cross from '@/images/vehicles/cross.jpg'
 
 const HomePage = () => {
   return (
@@ -16,7 +17,6 @@ const HomePage = () => {
             width={600}
             height={600}
             layout="responsive" // Ensure image scales well
-            priority // Prioritize loading for good user experience
           />
         </div>
       </section>
@@ -30,6 +30,21 @@ const HomePage = () => {
           We strive to provide exceptional customer service and competitive
           pricing to make your rental experience easy and convenient.
         </p>
+      </section>
+
+      {/* Hero Image Section */}
+      <section className="mb-12">
+        <div className="relative w-full">
+          <Image
+            src={Cross}
+            alt="Car on a scenic road"
+            width={1920}
+            height={1080}
+            layout="responsive"
+            priority
+            className="rounded-xl"
+          />
+        </div>
       </section>
 
       {/* Call to Action */}

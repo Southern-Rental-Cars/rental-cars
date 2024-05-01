@@ -124,7 +124,6 @@ export default function VehicleList() {
                 alt={vehicle.name}
                 width={500}
                 height={500}
-                unoptimized
                 className="rounded-lg"
               />
             </a>

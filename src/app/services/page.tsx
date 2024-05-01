@@ -1,4 +1,5 @@
 import { Container } from '@/components/Container' // Assuming you have this component
+import Link from 'next/link'
 
 const ServicesPage = () => {
   return (
@@ -42,13 +43,16 @@ const ServicesPage = () => {
 
       {/* Call to Action */}
       <div className="mt-12">
-        <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">
+        <h2 className="mb-4 text-center text-2xl font-semibold text-zinc-800 dark:text-zinc-200">
           Ready to Book?
         </h2>
-        <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-          Contact us today to discuss your transportation needs.
-          {/* Add a button or link here to lead to your contact page or form */}
-        </p>
+        <div className="text-center">
+          <Link href="/contact">
+            <button className="inline-block rounded-lg bg-[#00205A] px-6 py-3 font-medium text-white hover:bg-[#0050ba]">
+              Contact Us
+            </button>
+          </Link>
+        </div>
       </div>
     </Container>
   )

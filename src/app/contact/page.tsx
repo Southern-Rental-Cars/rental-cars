@@ -44,7 +44,7 @@ const MailIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => {
   )
 }
 
-const ContactPage = () => {
+const ContactPage = async () => {
   return (
     <Container className="mt-16 sm:mt-32">
       <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
