@@ -5,6 +5,12 @@ import clsx from 'clsx'
 import { Container } from '@/components/Container'
 import { PhoneIcon } from '@heroicons/react/24/solid'
 
+export const metadata: Metadata = {
+  title: 'Contact | Texas Rental Cars',
+  description:
+    'Contact Texas Rental Cars in The Woodlands, Texas for car, truck, and van rentals. Get in touch by email or phone.',
+}
+
 const SocialLink = ({
   className,
   href,
@@ -38,13 +44,7 @@ const MailIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => {
   )
 }
 
-export const metadata: Metadata = {
-  title: 'Contact | Texas Rental Cars',
-  description:
-    'Contact Texas Rental Cars in The Woodlands, Texas for car, truck, and van rentals. Get in touch by email or phone.',
-}
-
-export default function Contact() {
+const ContactPage = () => {
   return (
     <Container className="mt-16 sm:mt-32">
       <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
@@ -114,3 +114,5 @@ export default function Contact() {
     </Container>
   )
 }
+
+export default ContactPage
