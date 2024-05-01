@@ -1,10 +1,8 @@
 import { type Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
-import portraitImage from '@/images/logo.png'
 import { PhoneIcon } from '@heroicons/react/24/solid'
 
 const SocialLink = ({
@@ -41,29 +39,21 @@ const MailIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => {
 }
 
 export const metadata: Metadata = {
-  title: 'Contact',
+  title: 'Contact | Texas Rental Cars',
   description:
-    'Texas Rental Cars is a car rental company located in The Woodlands, Texas. We offer a wide range of vehicles for rent, including cars, trucks, and vans.',
+    'Contact Texas Rental Cars in The Woodlands, Texas for car, truck, and van rentals. Get in touch by email or phone.',
 }
 
 export default function Contact() {
   return (
     <Container className="mt-16 sm:mt-32">
       <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
+        {/* Column 1: Contact Details */}
         <div className="lg:pl-20">
-          <div className="max-w-xs px-2.5 lg:max-w-none">
-            <Image
-              src={portraitImage}
-              alt=""
-              sizes="(min-width: 1024px) 32rem, 20rem"
-              className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
-            />
-          </div>
-        </div>
-        <div className="lg:order-first lg:row-span-2">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
             Contact Us
           </h1>
+
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
             <p>
               Texas Rental Cars is a car rental company located in The
@@ -90,26 +80,35 @@ export default function Contact() {
               and we&apos;ll get back to you as soon as possible.
             </p>
           </div>
-        </div>
-        <div className="lg:pl-20">
-          <ul role="list">
+
+          <ul role="list" className="mt-8">
             <SocialLink
               href="mailto:info@texasrentalcars.com"
               icon={MailIcon}
-              className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
+              className="border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
             >
               info@texasrentalcars.com
             </SocialLink>
-            <div className="mt-8 flex space-x-4 border-t border-zinc-100 pt-8 dark:border-zinc-700/40">
-              <PhoneIcon className="h-6 w-6 flex-none fill-zinc-500" />
-              <a
-                href="tel:+1-832-334-3802"
-                className="group flex text-sm font-medium text-zinc-800 transition hover:text-[#00205A] dark:text-zinc-200 dark:hover:text-[#00205A]"
-              >
-                +1 (832) 334-3802
-              </a>
-            </div>
+            <SocialLink
+              href="tel:+1-832-334-3802"
+              icon={PhoneIcon}
+              className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
+            >
+              +1 (832) 334-3802
+            </SocialLink>
           </ul>
+        </div>
+
+        {/* Column 2: Map */}
+        <div className="h-96 overflow-hidden rounded-lg lg:order-first lg:h-auto">
+          {' '}
+          <iframe
+            src="https://storage.googleapis.com/maps-solutions-994uusg9w0/locator-plus/ikr6/locator-plus.html"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            loading="lazy"
+          ></iframe>
         </div>
       </div>
     </Container>
