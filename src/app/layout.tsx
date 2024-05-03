@@ -6,6 +6,7 @@ import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
 
 import '@/styles/tailwind.css'
+import Script from 'next/script'
 
 export const metadata: Metadata = {
   title: {
@@ -30,6 +31,10 @@ export default function RootLayout({
               {children}
               <Analytics />
               <GoogleTagManager gtmId={process.env.GTAG_ID || ''} />
+              <Script
+                async
+                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6338076895094129"
+              />
             </Layout>
           </div>
         </Providers>
