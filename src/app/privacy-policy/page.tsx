@@ -31,7 +31,7 @@ const PrivacyPolicy = () => {
         <h2 className="mb-3 text-xl font-semibold">Third-Party Sharing</h2>
         <p>
           Specify if you share any data with third parties (advertising
-          partners, analytics providers, etc.). If you don't, state that
+          partners, analytics providers, etc.). If you do not, state that
           clearly.
         </p>
       </section>
