@@ -27,8 +27,8 @@ const HomePage = () => {
       <section className="mb-12">
         <p className="text-center text-base text-zinc-600 dark:text-zinc-400">
           At Southern Rental Cars, we believe that renting a car should be more than just a transaction – it should be an extension of your journey.
-          That&apos;'s why we offer a handpicked selection of quality vehicles, convenient delivery and pickup options throughout the Houston area, and personalized service that goes above and beyond.
-          We&apos;'re your trusted travel partner, dedicated to making your rental experience easy, convenient, and tailored to your individual needs.
+          That&apos;s why we offer a handpicked selection of quality vehicles, convenient delivery and pickup options throughout the Houston area, and personalized service that goes above and beyond.
+          We&apos;re your trusted travel partner, dedicated to making your rental experience easy, convenient, and tailored to your individual needs.
         </p>
       </section>
 
