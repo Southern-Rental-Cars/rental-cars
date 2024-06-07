@@ -9,7 +9,9 @@ const HomePage = () => {
   return (
     <Container className="mt-9">
       {/* Hero Section */}
-      <section className="mb-12 flex flex-col items-center">
+
+      {/* Old logo */}
+      {/* <section className="mb-12 flex flex-col items-center">
         <div className="relative mb-6 w-full md:w-1/2">
           <Image
             src={Logo}
@@ -19,16 +21,14 @@ const HomePage = () => {
             layout="responsive" // Ensure image scales well
           />
         </div>
-      </section>
+      </section> */}
 
       {/* About Section */}
       <section className="mb-12">
         <p className="text-center text-base text-zinc-600 dark:text-zinc-400">
-          Southern Rental Cars LLC is a family-owned and operated car rental
-          company based in The Woodlands, Texas. We offer a wide range of
-          vehicles for rent, delivery, and pick-up in the greater Houston area.
-          We strive to provide exceptional customer service and competitive
-          pricing to make your rental experience easy and convenient.
+          At Southern Rental Cars, we believe that renting a car should be more than just a transaction – it should be an extension of your journey.
+          That's why we offer a handpicked selection of quality vehicles, convenient delivery and pickup options throughout the Houston area, and personalized service that goes above and beyond.
+          We're your trusted travel partner, dedicated to making your rental experience easy, convenient, and tailored to your individual needs.
         </p>
       </section>
 
