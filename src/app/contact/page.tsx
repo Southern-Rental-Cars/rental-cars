@@ -6,9 +6,9 @@ import { Container } from '@/components/Container'
 import { PhoneIcon } from '@heroicons/react/24/solid'
 
 export const metadata: Metadata = {
-  title: 'Contact | Texas Rental Cars',
+  title: 'Contact | Southern Rental Cars',
   description:
-    'Contact Texas Rental Cars in The Woodlands, Texas for car, truck, and van rentals. Get in touch by email or phone.',
+    'Contact Southern Rental Cars in The Woodlands, Texas for car, truck, and van rentals. Get in touch by email or phone.',
 }
 
 const SocialLink = ({
@@ -56,7 +56,7 @@ const ContactPage = async () => {
 
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
             <p>
-              Texas Rental Cars is a car rental company located in The
+              Southern Rental Cars is a car rental company located in The
               Woodlands, Texas. We offer a wide range of vehicles for rent,
               including cars, trucks, and vans.
             </p>
@@ -64,10 +64,10 @@ const ContactPage = async () => {
               If you have any questions or would like to make a reservation,
               please contact us by email at{' '}
               <a
-                href="mailto:info@texasrentalcars.com"
+                href="mailto:info@southernrentalcars.com"
                 className="text-[#00205A] dark:text-blue-700"
               >
-                info@texasrentalcars.com{' '}
+                info@southernrentalcars.com{' '}
               </a>
               {/* space */}
               or by phone at{' '}
@@ -83,11 +83,11 @@ const ContactPage = async () => {
 
           <ul role="list" className="mt-8">
             <SocialLink
-              href="mailto:info@texasrentalcars.com"
+              href="mailto:info@southernrentalcars.com"
               icon={MailIcon}
               className="border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
             >
-              info@texasrentalcars.com
+              info@southernrentalcars.com
             </SocialLink>
             <SocialLink
               href="tel:+1-832-334-3802"

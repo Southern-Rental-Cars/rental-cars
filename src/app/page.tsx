@@ -24,7 +24,7 @@ const HomePage = () => {
       {/* About Section */}
       <section className="mb-12">
         <p className="text-center text-base text-zinc-600 dark:text-zinc-400">
-          Texas Rental Cars LLC is a family-owned and operated car rental
+          Southern Rental Cars LLC is a family-owned and operated car rental
           company based in The Woodlands, Texas. We offer a wide range of
           vehicles for rent, delivery, and pick-up in the greater Houston area.
           We strive to provide exceptional customer service and competitive
