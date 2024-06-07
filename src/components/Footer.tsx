@@ -32,7 +32,7 @@ export function Footer() {
                 <NavLink href="/contact">Contact Us</NavLink>
               </div>
               <p className="text-sm text-zinc-400 dark:text-zinc-500">
-                &copy; {new Date().getFullYear()} Texas Rental Cars LLC. All
+                &copy; {new Date().getFullYear()} Southern Rental Cars LLC. All
                 rights reserved.
               </p>
             </div>
