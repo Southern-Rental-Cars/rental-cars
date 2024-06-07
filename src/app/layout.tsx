@@ -10,11 +10,11 @@ import Script from 'next/script'
 
 export const metadata: Metadata = {
   title: {
-    template: 'Texas Rental Cars',
-    default: 'Texas Rental Cars',
+    template: 'Southern Rental Cars',
+    default: 'Southern Rental Cars',
   },
   description:
-    'Welcome to Texas Rental Cars based in The Woodlands, Texas. We offer a wide range of vehicles for rent, delivery, and pick-up in the greater Houston area. We are a family-owned and operated business that provides exceptional customer service and competitive pricing. Our goal is to make your rental experience as easy and convenient as possible. We look forward to serving you!',
+    'Welcome to Southern Rental Cars based in The Woodlands, Texas. We offer a wide range of vehicles for rent, delivery, and pick-up in the greater Houston area. We are a family-owned and operated business that provides exceptional customer service and competitive pricing. Our goal is to make your rental experience as easy and convenient as possible. We look forward to serving you!',
 }
 
 export default function RootLayout({

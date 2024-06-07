@@ -13,7 +13,7 @@ const HomePage = () => {
         <div className="relative mb-6 w-full md:w-1/2">
           <Image
             src={Logo}
-            alt="Texas Rental Cars Logo"
+            alt="Southern Rental Cars Logo"
             width={600}
             height={600}
             layout="responsive" // Ensure image scales well
