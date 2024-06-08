@@ -18,7 +18,6 @@ const HomePage = () => {
             alt="Southern Rental Cars Logo"
             width={600}
             height={600}
-            layout="responsive" // Ensure image scales well
           />
         </div>
       </section> */}

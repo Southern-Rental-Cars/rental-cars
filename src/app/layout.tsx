@@ -1,6 +1,7 @@
 import { type Metadata } from 'next'
 import { GoogleTagManager } from '@next/third-parties/google'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
     default: 'Southern Rental Cars',
   },
   description:
-    'Welcome to Southern Rental Cars based in The Woodlands, Texas. We offer a wide range of vehicles for rent, delivery, and pick-up in the greater Houston area. We are a family-owned and operated business that provides exceptional customer service and competitive pricing. Our goal is to make your rental experience as easy and convenient as possible. We look forward to serving you!',
+    'Welcome to Southern Rental Cars based in The Woodlands, Texas. We offer delivery, and pick-up in the greater Houston area.',
 }
 
 export default function RootLayout({
