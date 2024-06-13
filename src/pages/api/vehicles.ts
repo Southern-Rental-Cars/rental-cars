@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
            of cars and the car_id field of car_images   
         */
         const result = await client.query(`
-        SELECT c.car_name, c.short_description, ci.image_url 
+        SELECT c.car_name, c.short_description, ci.image_url, c.turo_url
         FROM cars c
         INNER JOIN car_images ci ON c.id = ci.car_id
       `);

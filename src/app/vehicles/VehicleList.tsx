@@ -10,6 +10,7 @@ interface Vehicle {
   car_name: string
   short_description: string
   image_url: string
+  turo_url: string
 }
 
 export const metadata: Metadata = {
@@ -55,7 +56,7 @@ export default function VehicleList() {
           <Card key={i}>
             <a
               className="flex justify-center overflow-hidden rounded-lg transition-transform duration-300 hover:scale-105 hover:transform hover:shadow-lg"
-              href="#"
+              href={vehicle.turo_url}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -75,7 +76,7 @@ export default function VehicleList() {
             </p>
             <div className="mt-6">
               <a
-                href="#"
+                href={vehicle.turo_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-md border border-transparent bg-[#00205A] px-5 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 hover:ring-1 hover:ring-white focus:outline-none focus:ring-offset-2"
