@@ -31,6 +31,7 @@ export default function RootLayout({
             <Layout>
               {children}
               <Analytics />
+              <SpeedInsights />
               <GoogleTagManager gtmId={process.env.GTAG_ID || ''} />
               <Script
                 async
