@@ -20,7 +20,7 @@ const HomePage = () => {
             Start Your Adventure <ChevronRightIcon className="ml-2 h-5 w-5" />
           </Link>
         </div>
-        <div className="md:w-1/2 mt-8 md:mt-0">
+        <div className="md:w-1/2 m-8 md:mt-0">
           <Image
             src={Taos}
             alt="Car on a scenic road"
