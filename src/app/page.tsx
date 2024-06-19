@@ -34,7 +34,7 @@ const HomePage = () => {
       </section>
 
       {/* About Section */}
-      <section className="mb-12 text-center">
+      <section className="m-8 text-center">
         <h2 className="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-4">
           Why Choose Southern Rental Cars?
         </h2>
