@@ -11,6 +11,9 @@ const pool = new Pool({
 
 // Asynchronous function which handles HTTP requests 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    
+    const { id } = req.query;
+    
     try {
 
         // Retrives a client from connection pool to interact with database
@@ -21,10 +24,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
            of cars and the car_id field of car_images   
         */
         const result = await client.query(`
-        SELECT c.car_name, c.make, c.model, c.year, c.type, c.short_description, ci.image_url, c.turo_url
+        SELECT c.car_name, c.make, c.model, c.year, c.type, c.mpg, c.gas_type, c.num_doors, c.num_seats, c.long_description, ci.image_url
         FROM cars c
         INNER JOIN car_images ci ON c.id = ci.car_id
-      `);
+        WHERE c.id = $1
+      `, [id]);
 
      client.release();
 

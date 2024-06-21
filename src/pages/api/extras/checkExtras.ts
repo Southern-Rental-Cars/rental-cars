@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import pg from 'pg';
 
+// This page checks for the available extras in the database
+
 // Creating Pool to manage multiple database connections
 const { Pool } = pg;
 
@@ -16,15 +18,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Retrives a client from connection pool to interact with database
         const client = await pool.connect();
 
-        /* Helping to execute a SQL query. Query selects three fields car_name, short_description from the cars table
-           and image_url from the car_images table. INNER JOIN joins the cars and car_images tables on the id field 
-           of cars and the car_id field of car_images   
-        */
+        // Helping to execute a SQL query.  
         const result = await client.query(`
-        SELECT c.car_name, c.make, c.model, c.year, c.type, c.short_description, ci.image_url, c.turo_url
-        FROM cars c
-        INNER JOIN car_images ci ON c.id = ci.car_id
-      `);
+        SELECT id, name, description, available_quantity, price_type, price_amount
+        FROM extras
+        WHERE available = true OR available_quantity IS NULL;
+    `);
 
      client.release();
 

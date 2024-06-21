@@ -10,6 +10,10 @@ interface Vehicle {
   short_description: string
   image_url: string
   turo_url: string
+  make: string
+  model: string
+  year: BigInteger
+  type: string
 }
 
 export default function VehicleList({ searchQuery }: { searchQuery: string }) {
@@ -33,7 +37,9 @@ export default function VehicleList({ searchQuery }: { searchQuery: string }) {
   useEffect(() => {
     // Filter vehicles based on search query
     const filtered = vehicles.filter((vehicle) =>
-      vehicle.car_name.toLowerCase().includes(searchQuery.toLowerCase()),
+      `${vehicle.make} ${vehicle.model} ${vehicle.year} ${vehicle.type}`
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()),
     )
     setFilteredVehicles(filtered)
   }, [searchQuery, vehicles])
@@ -56,7 +62,9 @@ export default function VehicleList({ searchQuery }: { searchQuery: string }) {
               />
             </div>
             <div className="flex flex-1 flex-col justify-between p-6">
-              <h2 className="mb-2 text-lg font-semibold">{vehicle.car_name}</h2>
+              <h2 className="mb-2 text-lg font-semibold">
+                {`${vehicle.make} ${vehicle.model} ${vehicle.year}`}
+              </h2>
               <p className="mb-4 text-gray-600">{vehicle.short_description}</p>
               <a
                 href={vehicle.turo_url}
