@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Popover, Transition } from '@headlessui/react';
 import clsx from 'clsx';
+import Logo from '@/images/logo.png';
 
 import { Container } from '@/components/Container';
 
@@ -225,7 +226,7 @@ function Avatar({ large = false, className, ...props }: { large?: boolean } & Re
   return (
     <Link aria-label="Home" className={clsx(className, 'pointer-events-auto')} {...props}>
       <Image
-        src="/images/logo.png" // Make sure to replace with your actual logo path
+        src={Logo} // Make sure to replace with your actual logo path
         alt="Southern Rental Cars Logo"
         width={large ? 56 : 40} // Adjusted sizes
         height={large ? 56 : 40}
