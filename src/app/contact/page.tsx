@@ -87,7 +87,7 @@ const ContactPage = async () => {
               icon={MailIcon}
               className="border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
             >
-              info@southernrentalcars.com
+              sales@southernrentalcars.com
             </SocialLink>
             <SocialLink
               href="tel:+1-832-334-3802"

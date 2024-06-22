@@ -1,15 +1,14 @@
 'use client'
 
-import { Fragment, useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useTheme } from 'next-themes'
-import { Popover, Transition } from '@headlessui/react'
-import clsx from 'clsx'
+import { Fragment, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useTheme } from 'next-themes';
+import { Popover, Transition } from '@headlessui/react';
+import clsx from 'clsx';
 
-import { Container } from '@/components/Container'
-import avatarImage from '@/images/logo.png'
+import { Container } from '@/components/Container';
 
 function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -133,7 +132,7 @@ function MobileNavigation(
             <nav className="mt-6">
               <ul className="-my-2 divide-y divide-zinc-100 text-base text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300">
                 <MobileNavItem href="/vehicles">Vehicles</MobileNavItem>
-                <MobileNavItem href="/services">Services</MobileNavItem>
+                <MobileNavItem href="/business-solutions">Business Solutions</MobileNavItem>
                 <MobileNavItem href="/contact">Contact Us</MobileNavItem>
               </ul>
             </nav>
@@ -178,7 +177,7 @@ function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
     <nav {...props}>
       <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
         <NavItem href="/vehicles">Vehicles</NavItem>
-        <NavItem href="/services">Services</NavItem>
+        <NavItem href="/business-solutions">Business Solutions</NavItem>
         <NavItem href="/contact">Contact Us</NavItem>
       </ul>
     </nav>
@@ -213,44 +212,27 @@ function clamp(number: number, a: number, b: number) {
   return Math.min(Math.max(number, min), max)
 }
 
-function AvatarContainer({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<'div'>) {
+function AvatarContainer({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   return (
-    <div
-      className={clsx(
-        className,
-        'h-16 w-16 rounded-full bg-white/90 p-0.5 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:ring-white/10',
-      )}
-      {...props}
-    />
-  )
+    <div className={clsx(
+      className,
+      'h-12 w-12 md:h-14 md:w-14 rounded-full bg-white p-1 shadow-md ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-white/10', // Adjusted styling
+    )} {...props} />
+  );
 }
 
-function Avatar({
-  large = false,
-  className,
-  ...props
-}: Omit<React.ComponentPropsWithoutRef<typeof Link>, 'href'> & {
-  large?: boolean
-}) {
+function Avatar({ large = false, className, ...props }: { large?: boolean } & React.ComponentPropsWithoutRef<typeof Link>) {
   return (
-    <Link
-      href="/"
-      aria-label="Home"
-      className={clsx(className, 'pointer-events-auto')}
-      {...props}
-    >
+    <Link aria-label="Home" className={clsx(className, 'pointer-events-auto')} {...props}>
       <Image
-        src={avatarImage}
-        alt=""
-        sizes="6rem"
-        className="h-full w-full rounded-full object-cover ring-blue-800 transition hover:scale-105 hover:ring-2"
-        priority
+        src="/logo.png" // Make sure to replace with your actual logo path
+        alt="Southern Rental Cars Logo"
+        width={large ? 56 : 40} // Adjusted sizes
+        height={large ? 56 : 40}
+        className="h-full w-full rounded-full object-cover"
       />
     </Link>
-  )
+  );
 }
 
 export function Header() {
@@ -363,7 +345,7 @@ export function Header() {
                       transform: 'var(--avatar-border-transform)',
                     }}
                   />
-                  <Avatar large className="absolute left-0 top-0 h-16 w-16" />
+                  <Avatar href="/" large className="absolute left-0 top-0 h-16 w-16" />
                 </div>
               </div>
             </Container>
@@ -388,14 +370,14 @@ export function Header() {
               <div className="flex flex-1">
                 {!isHomePage && (
                   <AvatarContainer>
-                    <Avatar />
+                    <Avatar href="/" />
                   </AvatarContainer>
                 )}
               </div>
-              <div className="flex flex-1 justify-end md:justify-center">
+              <ul className="flex rounded-full bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-md ring-1 ring-gray-900/5 dark:bg-gray-800 dark:text-white dark:ring-white/10">
                 <MobileNavigation className="pointer-events-auto md:hidden" />
                 <DesktopNavigation className="pointer-events-auto hidden md:block" />
-              </div>
+              </ul>
               <div className="flex justify-end md:flex-1">
                 <div className="pointer-events-auto">
                   <ThemeToggle />
