@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import pg from 'pg';
 
+// This page is for fetching the data for the calendar feature 
+
 // Creating Pool to manage multiple database connections
 const { Pool } = pg;
 
@@ -11,20 +13,21 @@ const pool = new Pool({
 
 // Asynchronous function which handles HTTP requests 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    
+    // Extracts the id parameter from the query string 
+    const { id } = req.query;
+    
     try {
 
         // Retrives a client from connection pool to interact with database
         const client = await pool.connect();
 
-        /* Helping to execute a SQL query. Query selects three fields car_name, short_description from the cars table
-           and image_url from the car_images table. INNER JOIN joins the cars and car_images tables on the id field 
-           of cars and the car_id field of car_images   
-        */
+        // Performing a SQL query to fetch bookings by car_id 
         const result = await client.query(`
-        SELECT c.car_name, c.make, c.model, c.year, c.type, c.short_description, ci.image_url, c.turo_url
-        FROM cars c
-        INNER JOIN car_images ci ON c.id = ci.car_id
-      `);
+        SELECT id, start_date, end_date, status 
+        FROM bookings
+        WHERE car_id = $1
+      `, [id]); // Using parameterized query to prevent SQL injection 
 
      client.release();
 
