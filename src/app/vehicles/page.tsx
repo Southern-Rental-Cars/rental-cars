@@ -28,8 +28,8 @@ const VehiclePage = () => {
   );
 
   return (
-    <Container className="mt-9">
-      <section className="mb-8">
+    <Container className="m-9">
+      <section className="m-8">
         <div className="relative"> 
           <input 
             type="text"
