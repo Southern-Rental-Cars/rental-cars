@@ -312,7 +312,7 @@ export function Header() {
   return (
     <>
       <header
-        className="pointer-events-none relative z-50 flex flex-none flex-col"
+        className="pointer-events-none relative z-50 flex flex-none flex-col pt-6"
         style={{
           height: 'var(--header-height)',
           marginBottom: 'var(--header-mb)',
@@ -325,7 +325,7 @@ export function Header() {
               className="order-last mt-[calc(theme(spacing.16)-theme(spacing.3))]"
             />
             <Container
-              className="top-0 order-last -mb-3 pt-3"
+              className="top-0 order-last"
               style={{
                 position:
                   'var(--header-position)' as React.CSSProperties['position'],
