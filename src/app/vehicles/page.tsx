@@ -1,11 +1,31 @@
 'use client'
-import { useState } from 'react';
-import VehicleList from '@/app/vehicles/VehicleList';
+
+import { useEffect, useState } from 'react';
 import { Container } from '@/components/Container';
-import Image from 'next/image';
+import Link from 'next/link';
+import { Card } from '@/components/Card';
+import Vehicle from '@/lib/vehicle'
 
 const VehiclePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+
+  useEffect(() => {
+    async function fetchVehicles() {
+      try {
+        const response = await fetch('/api/vehicles');
+        const data: Vehicle[] = await response.json();
+        setVehicles(data);
+      } catch (error) {
+        console.error('Error fetching vehicles:', error);
+      }
+    }
+    fetchVehicles();
+  }, []); // Empty dependency array ensures this runs only once on component mount
+
+  const filteredVehicles = vehicles.filter((vehicle) =>
+    vehicle.car_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Container className="mt-9">
@@ -27,9 +47,24 @@ const VehiclePage = () => {
         </div>
       </section>
 
-      <VehicleList searchQuery={searchQuery} />
+      <ul
+        role="list"
+        className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {filteredVehicles.map((vehicle) => (
+          <Link 
+            href={`/vehicles/${vehicle.car_name}`} // Assuming you have an 'car_name' property for each vehicle
+            key={vehicle.car_name}
+            className="block" // Makes the entire card clickable
+          > 
+            <Card className="rounded-xl overflow-hidden shadow-md"> 
+              {/* ... (Rest of the card content from VehicleList remains the same) */}
+            </Card>
+          </Link>
+        ))}
+      </ul>
     </Container>
   );
 }
 
-export default VehiclePage
+export default VehiclePage;

@@ -1,20 +1,10 @@
 'use client'
+
 import { useState } from 'react'
-import Image from 'next/image'
 import { useEffect } from 'react'
 import { Card } from '@/components/Card'
 import { Container } from '@/components/Container'
-
-interface Vehicle {
-  car_name: string
-  short_description: string
-  image_url: string
-  turo_url: string
-  make: string
-  model: string
-  year: BigInteger
-  type: string
-}
+import Vehicle from '@/lib/vehicle'
 
 export default function VehicleList({ searchQuery }: { searchQuery: string }) {
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
