@@ -75,7 +75,7 @@ const ContactPage = async () => {
                 href="tel:+1-281-555-5555"
                 className="text-[#00205A] dark:text-blue-700"
               >
-                +1 (832) 334-3802
+                +1 (832) 684-7072
               </a>{' '}
               and we&apos;ll get back to you as soon as possible.
             </p>
@@ -90,11 +90,11 @@ const ContactPage = async () => {
               sales@southernrentalcars.com
             </SocialLink>
             <SocialLink
-              href="tel:+1-832-334-3802"
+              href="tel:+1-832-684-7072"
               icon={PhoneIcon}
               className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
             >
-              +1 (832) 334-3802
+              +1 (832) 684-7072
             </SocialLink>
           </ul>
         </div>
