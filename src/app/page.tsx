@@ -9,7 +9,7 @@ const HomePage = () => {
   return (
     <Container>
       {/* Hero Section with Banner */}
-      <section className="relative">
+      <section>
         <Image
           src={BannerImage}
           alt="Hero Banner"
@@ -19,18 +19,19 @@ const HomePage = () => {
           priority
           className="rounded-xl shadow-md"
         />
-        {/* Overlay for Readability */}
-        <div className="absolute top-0 left-0 w-full h-full bg-black/40 flex flex-col items-center justify-center text-center md:text-left px-8 md:px-16"> 
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
-            Rent Your Ride with Confidence
-          </h1>
-          <p className="text-lg md:text-xl text-white mb-8">
-            Explore The Woodlands and Houston with our handpicked vehicles.
-          </p>
-          <Link href="/vehicles" className="bg-sky-500 text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-sky-600 transition duration-300 ease-in-out inline-flex items-center">
-            Start Your Adventure <ChevronRightIcon className="ml-2 h-5 w-5" />
-          </Link>
-        </div>
+      </section>
+
+      {/* Overlay Content Section */}
+      <section className="bg-black/40 py-12 text-center md:text-left px-8 md:px-16">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+          Rent Your Ride with Confidence
+        </h1>
+        <p className="text-lg md:text-xl text-white mb-8">
+          Explore The Woodlands and Houston with our handpicked vehicles.
+        </p>
+        <Link href="/vehicles" className="bg-sky-500 text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-sky-600 transition duration-300 ease-in-out inline-flex items-center">
+          Start Your Adventure <ChevronRightIcon className="ml-2 h-5 w-5" />
+        </Link>
       </section>
 
       {/* About Section */}
