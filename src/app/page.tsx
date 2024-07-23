@@ -17,7 +17,7 @@ const HomePage = () => {
           width={1920}
           height={1080}
           priority
-          className="rounded-xl shadow-md mt-2"
+          className="rounded-xl shadow-md my-4"
         />
       </section>
 
