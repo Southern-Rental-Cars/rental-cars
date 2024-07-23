@@ -21,8 +21,8 @@ const HomePage = () => {
         />
       </section>
 
-           {/* Hero Section */}
-           <section className="mb-12 flex flex-col items-center md:flex-row">
+      {/* Hero Section */}
+      <section className="my-12 flex flex-col items-center md:flex-row p-4">
         <div className="md:w-1/2 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-800 dark:text-zinc-100 mb-4">
             Rent Your Ride with Confidence
@@ -42,13 +42,13 @@ const HomePage = () => {
             height={600}
             layout="responsive"
             priority
-            className="rounded-xl shadow-md" 
+            className="rounded-xl shadow-md"
           />
         </div>
       </section>
 
       {/* About Section */}
-      <section className="my-12 text-center"> 
+      <section className="my-12 text-center">
         <h2 className="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-4">
           Why Choose Southern Rental Cars?
         </h2>
@@ -60,7 +60,7 @@ const HomePage = () => {
 
       {/* Featured Vehicles Section */}
 
-    </Container>
+    </Container >
   );
 }
 
