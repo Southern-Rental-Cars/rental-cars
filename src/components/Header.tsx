@@ -240,11 +240,8 @@ export function Header() {
   let isHomePage = usePathname() === '/'
 
   let headerRef = useRef<React.ElementRef<'div'>>(null)
-  let avatarRef = useRef<React.ElementRef<'div'>>(null)
-  let isInitial = useRef(true)
 
   useEffect(() => {
-    // ... (same header styling logic as before)
   }, [isHomePage])
 
   return (
@@ -256,19 +253,16 @@ export function Header() {
           marginBottom: 'var(--header-mb)',
         }}
       >
-        {/* Avatar Section (always rendered) */}
         <Container
           className="top-0"
           style={{
-            position:
-              'var(--header-position)' as React.CSSProperties['position'],
+            position: 'var(--header-position)' as React.CSSProperties['position'],
           }}
         >
           <div
             className="top-[var(--avatar-top,theme(spacing.3))] w-full"
             style={{
-              position:
-                'var(--header-inner-position)' as React.CSSProperties['position'],
+              position: 'var(--header-inner-position)' as React.CSSProperties['position'],
             }}
           >
             <div className="relative">
@@ -279,35 +273,27 @@ export function Header() {
                   transform: 'var(--avatar-border-transform)',
                 }}
               />
-              <Avatar href="/" large className="absolute left-0 top-0 h-16 w-16" />
+              {/* Avatar (Always rendered once) */}
+              <Avatar href="/" large className="absolute left-0 top-0 h-16 w-16" /> 
             </div>
           </div>
         </Container>
 
-        {/* Rest of Header (same as before) */}
         <div
           ref={headerRef}
           className="top-0 z-10 h-16 pt-6"
           style={{
-            position:
-              'var(--header-position)' as React.CSSProperties['position'],
+            position: 'var(--header-position)' as React.CSSProperties['position'],
           }}
         >
           <Container
             className="top-[var(--header-top,theme(spacing.6))] w-full"
             style={{
-              position:
-                'var(--header-inner-position)' as React.CSSProperties['position'],
+              position: 'var(--header-inner-position)' as React.CSSProperties['position'],
             }}
           >
             <div className="relative flex gap-4">
-              <div className="flex flex-1">
-                {!isHomePage && (
-                  <AvatarContainer>
-                    <Avatar href="/" />
-                  </AvatarContainer>
-                )}
-              </div>
+              {/* Removed AvatarContainer and Avatar from here */} 
               <ul className="flex rounded-full bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-md ring-1 ring-gray-900/5 dark:bg-gray-800 dark:text-white dark:ring-white/10">
                 <MobileNavigation className="pointer-events-auto md:hidden" />
                 <DesktopNavigation className="pointer-events-auto hidden md:block" />
@@ -322,10 +308,7 @@ export function Header() {
         </div>
       </header>
       {isHomePage && (
-        <div
-          className="flex-none"
-          style={{ height: 'var(--content-offset)' }}
-        />
+        <div className="flex-none" style={{ height: 'var(--content-offset)' }} />
       )}
     </>
   );
