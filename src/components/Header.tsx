@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Popover, Transition } from '@headlessui/react';
 import clsx from 'clsx';
-import Logo from '@/images/logo.png';
+import Logo from '@/images/logo.jpg';
 
 import { Container } from '@/components/Container';
 
