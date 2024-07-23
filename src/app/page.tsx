@@ -9,7 +9,7 @@ const HomePage = () => {
   return (
     <Container>
       {/* Banner */}
-      <section>
+      <section className="py-4">
         <Image
           src={BannerImage}
           alt="Hero Banner"
