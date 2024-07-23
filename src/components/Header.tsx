@@ -240,6 +240,7 @@ export function Header() {
   let isHomePage = usePathname() === '/'
 
   let headerRef = useRef<React.ElementRef<'div'>>(null)
+  let isInitial = useRef(true)
 
   useEffect(() => {
   }, [isHomePage])
@@ -253,6 +254,7 @@ export function Header() {
           marginBottom: 'var(--header-mb)',
         }}
       >
+        {/* Avatar Section (always rendered) */}
         <Container
           className="top-0"
           style={{
@@ -274,11 +276,12 @@ export function Header() {
                 }}
               />
               {/* Avatar (Always rendered once) */}
-              <Avatar href="/" large className="absolute left-0 top-0 h-16 w-16" /> 
+              <Avatar href="/" large className="absolute left-0 top-0 h-16 w-16" />
             </div>
           </div>
         </Container>
 
+        {/* Navigation Bar (with adjusted styling) */}
         <div
           ref={headerRef}
           className="top-0 z-10 h-16 pt-6"
@@ -292,16 +295,14 @@ export function Header() {
               position: 'var(--header-inner-position)' as React.CSSProperties['position'],
             }}
           >
-            <div className="relative flex gap-4">
-              {/* Removed AvatarContainer and Avatar from here */} 
-              <ul className="flex rounded-full bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-md ring-1 ring-gray-900/5 dark:bg-gray-800 dark:text-white dark:ring-white/10">
+            <div className="relative flex justify-center gap-4"> {/* Added justify-center */}
+              <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
                 <MobileNavigation className="pointer-events-auto md:hidden" />
                 <DesktopNavigation className="pointer-events-auto hidden md:block" />
               </ul>
-              <div className="flex justify-end md:flex-1">
-                <div className="pointer-events-auto">
-                  <ThemeToggle />
-                </div>
+              {/* Theme Toggle (moved to right of nav) */}
+              <div className="ml-auto pointer-events-auto">
+                <ThemeToggle />
               </div>
             </div>
           </Container>
