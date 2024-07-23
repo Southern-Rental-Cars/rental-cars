@@ -217,7 +217,7 @@ function AvatarContainer({ className, ...props }: React.ComponentPropsWithoutRef
   return (
     <div className={clsx(
       className,
-      'h-12 w-12 md:h-14 md:w-14 rounded-full bg-white p-1 shadow-md ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-white/10', // Adjusted styling
+      'h-12 w-12 md:h-14 md:w-14 rounded-full bg-white p-1 shadow-md ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-white/10',
     )} {...props} />
   );
 }
@@ -226,9 +226,9 @@ function Avatar({ large = false, className, ...props }: { large?: boolean } & Re
   return (
     <Link aria-label="Home" className={clsx(className, 'pointer-events-auto')} {...props}>
       <Image
-        src={Logo} // Make sure to replace with your actual logo path
+        src={Logo}
         alt="Southern Rental Cars Logo"
-        width={large ? 56 : 40} // Adjusted sizes
+        width={large ? 56 : 40}
         height={large ? 56 : 40}
         className="h-full w-full rounded-full object-cover"
       />
@@ -240,12 +240,11 @@ export function Header() {
   let isHomePage = usePathname() === '/'
 
   let headerRef = useRef<React.ElementRef<'div'>>(null)
-  let avatarRef = useRef<React.ElementRef<'div'>>(null)
   let isInitial = useRef(true)
 
   useEffect(() => {
-    let downDelay = avatarRef.current?.offsetTop ?? 0
-    let upDelay = 64
+    let downDelay = 0; 
+    let upDelay = 64;
 
     function setProperty(property: string, value: string) {
       document.documentElement.style.setProperty(property, value)
@@ -318,82 +317,58 @@ export function Header() {
           marginBottom: 'var(--header-mb)',
         }}
       >
-        {isHomePage && (
-          <>
-            <div
-              ref={avatarRef}
-              className="order-last mt-[calc(theme(spacing.16)-theme(spacing.3))]"
-            />
-            <Container
-              className="top-0 order-last -mb-3 pt-3"
-              style={{
-                position:
-                  'var(--header-position)' as React.CSSProperties['position'],
-              }}
-            >
-              <div
-                className="top-[var(--avatar-top,theme(spacing.3))] w-full"
+        <Container
+          className="top-0"
+          style={{
+            position: 'var(--header-position)' as React.CSSProperties['position'],
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="relative">
+              <AvatarContainer
+                className="absolute left-0 top-0 h-16 w-16 origin-left"
                 style={{
-                  position:
-                    'var(--header-inner-position)' as React.CSSProperties['position'],
+                  opacity: 'var(--avatar-border-opacity, 0)',
+                  transform: 'var(--avatar-border-transform)',
                 }}
-              >
-                <div className="relative">
-                  <AvatarContainer
-                    className="absolute left-0 top-0 h-16 w-16 origin-left"
-                    style={{
-                      opacity: 'var(--avatar-border-opacity, 0)',
-                      transform: 'var(--avatar-border-transform)',
-                    }}
-                  />
-                  <Avatar href="/" large className="absolute left-0 top-0 h-16 w-16" />
-                </div>
-              </div>
-            </Container>
-          </>
-        )}
+              />
+              <Avatar href="/" large className="absolute left-0 top-0 h-16 w-16" />
+            </div>
+
+            <div className="hidden md:block"> 
+              <DesktopNavigation className="pointer-events-auto" />
+            </div>
+            <div className="pointer-events-auto">
+              <ThemeToggle />
+            </div>
+          </div>
+        </Container>
+
+        {/* Mobile navigation */}
         <div
           ref={headerRef}
           className="top-0 z-10 h-16 pt-6"
           style={{
-            position:
-              'var(--header-position)' as React.CSSProperties['position'],
+            position: 'var(--header-position)' as React.CSSProperties['position'],
           }}
         >
           <Container
             className="top-[var(--header-top,theme(spacing.6))] w-full"
             style={{
-              position:
-                'var(--header-inner-position)' as React.CSSProperties['position'],
+              position: 'var(--header-inner-position)' as React.CSSProperties['position'],
             }}
           >
-            <div className="relative flex gap-4">
-              <div className="flex flex-1">
-                {!isHomePage && (
-                  <AvatarContainer>
-                    <Avatar href="/" />
-                  </AvatarContainer>
-                )}
-              </div>
-              <ul className="flex rounded-full bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-md ring-1 ring-gray-900/5 dark:bg-gray-800 dark:text-white dark:ring-white/10">
+            <div className="relative flex justify-center gap-4">
+              <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
                 <MobileNavigation className="pointer-events-auto md:hidden" />
-                <DesktopNavigation className="pointer-events-auto hidden md:block" />
               </ul>
-              <div className="flex justify-end md:flex-1">
-                <div className="pointer-events-auto">
-                  <ThemeToggle />
-                </div>
-              </div>
             </div>
           </Container>
         </div>
       </header>
       {isHomePage && (
-        <div
-          className="flex-none"
-          style={{ height: 'var(--content-offset)' }}
-        />
+        <div className="flex-none" style={{ height: 'var(--content-offset)' }} />
       )}
     </>
-  )
+  );
 }
