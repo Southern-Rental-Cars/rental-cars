@@ -3,23 +3,24 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { Container } from '@/components/Container';
 import Link from 'next/link';
 import Taos from '@/images/vehicles/taos.jpg';
-import BannerImage from '@/images/banner.png'; // Import your banner image
+import BannerImage from '@/images/banner.png';
 
 const HomePage = () => {
   return (
     <Container>
       {/* Hero Section with Banner */}
-      <section className="relative"> 
+      <section className="relative">
         <Image
           src={BannerImage}
           alt="Hero Banner"
           layout="responsive"
-          width={1920} 
-          height={1080} 
+          width={1920}
+          height={1080}
           priority
-          className="rounded-xl shadow-md" 
+          className="rounded-xl shadow-md"
         />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center md:text-left">
+        {/* Overlay for Readability */}
+        <div className="absolute top-0 left-0 w-full h-full bg-black/40 flex flex-col items-center justify-center text-center md:text-left px-8 md:px-16"> 
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
             Rent Your Ride with Confidence
           </h1>
