@@ -243,6 +243,69 @@ export function Header() {
   let isInitial = useRef(true)
 
   useEffect(() => {
+    let downDelay = 0; 
+    let upDelay = 64;
+
+    function setProperty(property: string, value: string) {
+      document.documentElement.style.setProperty(property, value)
+    }
+
+    function removeProperty(property: string) {
+      document.documentElement.style.removeProperty(property)
+    }
+
+    function updateHeaderStyles() {
+      if (!headerRef.current) {
+        return
+      }
+
+      let { top, height } = headerRef.current.getBoundingClientRect()
+      let scrollY = clamp(
+        window.scrollY,
+        0,
+        document.body.scrollHeight - window.innerHeight,
+      )
+
+      if (isInitial.current) {
+        setProperty('--header-position', 'sticky')
+      }
+
+      setProperty('--content-offset', `${downDelay}px`)
+
+      if (isInitial.current || scrollY < downDelay) {
+        setProperty('--header-height', `${downDelay + height}px`)
+        setProperty('--header-mb', `${-downDelay}px`)
+      } else if (top + height < -upDelay) {
+        let offset = Math.max(height, scrollY - upDelay)
+        setProperty('--header-height', `${offset}px`)
+        setProperty('--header-mb', `${height - offset}px`)
+      } else if (top === 0) {
+        setProperty('--header-height', `${scrollY + height}px`)
+        setProperty('--header-mb', `${-scrollY}px`)
+      }
+
+      if (top === 0 && scrollY > 0 && scrollY >= downDelay) {
+        setProperty('--header-inner-position', 'fixed')
+        removeProperty('--header-top')
+      } else {
+        removeProperty('--header-inner-position')
+        setProperty('--header-top', '0px')
+      }
+    }
+
+    function updateStyles() {
+      updateHeaderStyles()
+      isInitial.current = false
+    }
+
+    updateStyles()
+    window.addEventListener('scroll', updateStyles, { passive: true })
+    window.addEventListener('resize', updateStyles)
+
+    return () => {
+      window.removeEventListener('scroll', updateStyles)
+      window.removeEventListener('resize', updateStyles)
+    }
   }, [isHomePage])
 
   return (
@@ -254,19 +317,14 @@ export function Header() {
           marginBottom: 'var(--header-mb)',
         }}
       >
-        {/* Avatar Section (always rendered) */}
+        {/* Avatar and Navigation Section (always rendered) */}
         <Container
           className="top-0"
           style={{
             position: 'var(--header-position)' as React.CSSProperties['position'],
           }}
         >
-          <div
-            className="top-[var(--avatar-top,theme(spacing.3))] w-full"
-            style={{
-              position: 'var(--header-inner-position)' as React.CSSProperties['position'],
-            }}
-          >
+          <div className="flex items-center justify-between">
             <div className="relative">
               <AvatarContainer
                 className="absolute left-0 top-0 h-16 w-16 origin-left"
@@ -275,13 +333,19 @@ export function Header() {
                   transform: 'var(--avatar-border-transform)',
                 }}
               />
-              {/* Avatar (Always rendered once) */}
               <Avatar href="/" large className="absolute left-0 top-0 h-16 w-16" />
+            </div>
+
+            <div className="hidden md:block"> 
+              <DesktopNavigation className="pointer-events-auto" />
+            </div>
+            <div className="pointer-events-auto">
+              <ThemeToggle />
             </div>
           </div>
         </Container>
 
-        {/* Navigation Bar (with adjusted styling) */}
+        {/* Mobile navigation */}
         <div
           ref={headerRef}
           className="top-0 z-10 h-16 pt-6"
@@ -295,15 +359,10 @@ export function Header() {
               position: 'var(--header-inner-position)' as React.CSSProperties['position'],
             }}
           >
-            <div className="relative flex justify-center gap-4"> {/* Added justify-center */}
+            <div className="relative flex justify-center gap-4">
               <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
                 <MobileNavigation className="pointer-events-auto md:hidden" />
-                <DesktopNavigation className="pointer-events-auto hidden md:block" />
               </ul>
-              {/* Theme Toggle (moved to right of nav) */}
-              <div className="ml-auto pointer-events-auto">
-                <ThemeToggle />
-              </div>
             </div>
           </Container>
         </div>
