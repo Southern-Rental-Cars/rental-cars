@@ -311,13 +311,12 @@ export function Header() {
   return (
     <>
       <header
-        className="pointer-events-none relative z-50 flex flex-none flex-col pt-6"
+        className="pointer-events-none relative z-50 flex flex-none flex-col"
         style={{
           height: 'var(--header-height)',
           marginBottom: 'var(--header-mb)',
         }}
       >
-        {/* Avatar and Navigation Section (always rendered) */}
         <Container
           className="top-0"
           style={{
