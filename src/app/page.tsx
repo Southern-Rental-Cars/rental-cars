@@ -8,7 +8,7 @@ import BannerImage from '@/images/banner.png';
 const HomePage = () => {
   return (
     <Container>
-      {/* Hero Section with Banner */}
+      {/* Banner */}
       <section>
         <Image
           src={BannerImage}
@@ -17,21 +17,34 @@ const HomePage = () => {
           width={1920}
           height={1080}
           priority
-          className="rounded-xl shadow-md"
+          className="rounded-xl shadow-md mt-2"
         />
       </section>
 
-      {/* Overlay Content Section */}
-      <section className="bg-black/40 py-12 text-center md:text-left px-8 md:px-16">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
-          Rent Your Ride with Confidence
-        </h1>
-        <p className="text-lg md:text-xl text-white mb-8">
-          Explore The Woodlands and Houston with our handpicked vehicles.
-        </p>
-        <Link href="/vehicles" className="bg-sky-500 text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-sky-600 transition duration-300 ease-in-out inline-flex items-center">
-          Start Your Adventure <ChevronRightIcon className="ml-2 h-5 w-5" />
-        </Link>
+           {/* Hero Section */}
+           <section className="mb-12 flex flex-col items-center md:flex-row">
+        <div className="md:w-1/2 text-center md:text-left">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-800 dark:text-zinc-100 mb-4">
+            Rent Your Ride with Confidence
+          </h1>
+          <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-8">
+            Explore The Woodlands and Houston with our handpicked vehicles.
+          </p>
+          <Link href="/vehicles" className="bg-sky-500 text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-sky-600 transition duration-300 ease-in-out inline-flex items-center">
+            Start Your Adventure <ChevronRightIcon className="ml-2 h-5 w-5" />
+          </Link>
+        </div>
+        <div className="md:w-1/2 m-8 md:mt-0">
+          <Image
+            src={Taos}
+            alt="Car on a scenic road"
+            width={800}
+            height={600}
+            layout="responsive"
+            priority
+            className="rounded-xl shadow-md" 
+          />
+        </div>
       </section>
 
       {/* About Section */}
