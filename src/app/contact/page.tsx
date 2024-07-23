@@ -64,10 +64,10 @@ const ContactPage = async () => {
               If you have any questions or would like to make a reservation,
               please contact us by email at{' '}
               <a
-                href="mailto:info@southernrentalcars.com"
+                href="mailto:sales@southernrentalcars.com"
                 className="text-[#00205A] dark:text-blue-700"
               >
-                info@southernrentalcars.com{' '}
+                sales@southernrentalcars.com{' '}
               </a>
               {/* space */}
               or by phone at{' '}
@@ -83,7 +83,7 @@ const ContactPage = async () => {
 
           <ul role="list" className="mt-8">
             <SocialLink
-              href="mailto:info@southernrentalcars.com"
+              href="mailto:sales@southernrentalcars.com"
               icon={MailIcon}
               className="border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
             >

@@ -3,38 +3,37 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { Container } from '@/components/Container';
 import Link from 'next/link';
 import Taos from '@/images/vehicles/taos.jpg';
+import BannerImage from '@/images/banner.png'; // Import your banner image
 
 const HomePage = () => {
   return (
-    <Container className="mt-9">
-      {/* Hero Section */}
-      <section className="mb-12 flex flex-col items-center md:flex-row">
-        <div className="md:w-1/2 text-center md:text-left">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-800 dark:text-zinc-100 mb-4">
+    <Container>
+      {/* Hero Section with Banner */}
+      <section className="relative"> 
+        <Image
+          src={BannerImage}
+          alt="Hero Banner"
+          layout="responsive"
+          width={1920} 
+          height={1080} 
+          priority
+          className="rounded-xl shadow-md" 
+        />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center md:text-left">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
             Rent Your Ride with Confidence
           </h1>
-          <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-8">
+          <p className="text-lg md:text-xl text-white mb-8">
             Explore The Woodlands and Houston with our handpicked vehicles.
           </p>
           <Link href="/vehicles" className="bg-sky-500 text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-sky-600 transition duration-300 ease-in-out inline-flex items-center">
             Start Your Adventure <ChevronRightIcon className="ml-2 h-5 w-5" />
           </Link>
         </div>
-        <div className="md:w-1/2 m-8 md:mt-0">
-          <Image
-            src={Taos}
-            alt="Car on a scenic road"
-            width={800}
-            height={600}
-            layout="responsive"
-            priority
-            className="rounded-xl shadow-md" 
-          />
-        </div>
       </section>
 
       {/* About Section */}
-      <section className="m-8 text-center">
+      <section className="my-12 text-center"> 
         <h2 className="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-4">
           Why Choose Southern Rental Cars?
         </h2>
@@ -50,4 +49,4 @@ const HomePage = () => {
   );
 }
 
-export default HomePage
+export default HomePage;
