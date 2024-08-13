@@ -1,10 +1,11 @@
 'use client'
+
 import { useState } from 'react';
-import VehicleList from '@/app/vehicles/VehicleList';
+import CarList from '@/app/cars/CarList';
 import { Container } from '@/components/Container';
 import Image from 'next/image';
 
-const VehiclePage = () => {
+const CarPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
@@ -27,9 +28,9 @@ const VehiclePage = () => {
         </div>
       </section>
 
-      <VehicleList searchQuery={searchQuery} />
+      <CarList searchQuery={searchQuery} />
     </Container>
   );
 }
 
-export default VehiclePage
+export default CarPage

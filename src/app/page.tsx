@@ -28,9 +28,9 @@ const HomePage = () => {
             Rent Your Ride with Confidence
           </h1>
           <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-8">
-            Explore The Woodlands and Houston with our handpicked vehicles.
+            Explore The Woodlands and Houston with our handpicked cars.
           </p>
-          <Link href="/vehicles" className="bg-sky-500 text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-sky-600 transition duration-300 ease-in-out inline-flex items-center">
+          <Link href="/cars" className="bg-sky-500 text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-sky-600 transition duration-300 ease-in-out inline-flex items-center">
             Start Your Adventure <ChevronRightIcon className="ml-2 h-5 w-5" />
           </Link>
         </div>
@@ -54,11 +54,11 @@ const HomePage = () => {
         </h2>
         <p className="text-lg text-zinc-600 dark:text-zinc-400">
           At Southern Rental Cars, we believe that renting a car should be more than just a transaction – it should be an extension of your journey.
-          We offer a handpicked selection of quality vehicles, convenient delivery and pickup options throughout the Houston area, and personalized service that goes above and beyond.
+          We offer a handpicked selection of quality cars, convenient delivery and pickup options throughout the Houston area, and personalized service that goes above and beyond.
         </p>
       </section>
 
-      {/* Featured Vehicles Section */}
+      {/* Featured Cars Section */}
 
     </Container >
   );

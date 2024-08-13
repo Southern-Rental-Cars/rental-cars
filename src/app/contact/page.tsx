@@ -57,7 +57,7 @@ const ContactPage = async () => {
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
             <p>
               Southern Rental Cars is a car rental company located in The
-              Woodlands, Texas. We offer a wide range of vehicles for rent,
+              Woodlands, Texas. We offer a wide range of cars for rent,
               including cars, trucks, and vans.
             </p>
             <p>
