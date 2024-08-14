@@ -1,10 +1,8 @@
 import { Container } from '@/components/Container';
 import Link from 'next/link';
-import Image from 'next/image'; // Assuming you'll use images
+import Image from 'next/image';
 import Benz from '@/images/vehicles/benz.jpg';
 import Tig from '@/images/vehicles/blacktig.jpg';
-
-"/images/vehicles/benz.jpg"
 
 const BusinessSolutionsPage = () => {
   return (
@@ -27,6 +25,7 @@ const BusinessSolutionsPage = () => {
             width={400} 
             height={250} 
             className="rounded-lg shadow-md"
+            priority // Ensure this image loads as soon as possible
           />
           <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200 mt-4 text-center">
             Corporate Travel
@@ -44,6 +43,7 @@ const BusinessSolutionsPage = () => {
             width={400} 
             height={250} 
             className="rounded-lg shadow-md"
+            loading="lazy" // Lazily load this image as it is not the LCP element
           />
           <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200 mt-4 text-center">
             Event Transportation
@@ -53,8 +53,6 @@ const BusinessSolutionsPage = () => {
           </p>
         </div>
       </section>
-
-      {/* (Optional) Additional Services Section: You can add more services here. */}
 
       {/* Call to Action */}
       <section className="text-center">
@@ -71,4 +69,4 @@ const BusinessSolutionsPage = () => {
   );
 }
 
-export default BusinessSolutionsPage
+export default BusinessSolutionsPage;
