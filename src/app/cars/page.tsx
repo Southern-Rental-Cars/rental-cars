@@ -1,36 +1,39 @@
-'use client'
-
-import { useState } from 'react';
-import CarList from '@/app/cars/CarList';
+import CarList from './CarList';
 import { Container } from '@/components/Container';
-import Image from 'next/image';
 
-const CarPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+interface Car {
+  car_name: string;
+  short_description: string;
+  image_url: string;
+  turo_url: string;
+  make: string;
+  model: string;
+  year: BigInteger;
+  type: string;
+}
+
+async function fetchCars() {
+  const baseURL = process.env.API_BASE_URL;
+  const res = await fetch(`${baseURL}/api/cars`, {
+    cache: 'no-store',
+  });    
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch cars');
+  }
+
+  return res.json();
+}
+
+export default async function CarPage() {
+  const cars: Car[] = await fetchCars();
 
   return (
     <Container className="mt-9">
       <section className="mb-8">
-        <div className="relative"> 
-          <input 
-            type="text"
-            placeholder="Search for a make/model or year"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full py-3 px-4 pr-12 rounded-full border-gray-300 focus:outline-none focus:border-sky-500"
-          />
-          <button className="absolute inset-y-0 right-0 flex items-center px-4 rounded-r-full bg-sky-500 text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-</svg>
-
-          </button>
-        </div>
+        {/* Passing cars as props to the Client Component */}
+        <CarList cars={cars} />
       </section>
-
-      <CarList searchQuery={searchQuery} />
     </Container>
   );
 }
-
-export default CarPage

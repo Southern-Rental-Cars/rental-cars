@@ -1,65 +1,78 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Image from 'next/image'
-import { useEffect } from 'react'
-import { Card } from '@/components/Card'
-import { Container } from '@/components/Container'
+import { useState, useMemo } from 'react';
+import { Card } from '@/components/Card';
+import { Container } from '@/components/Container';
+import Image from 'next/image';
 
 interface Car {
-  car_name: string
-  short_description: string
-  image_url: string
-  turo_url: string
-  make: string
-  model: string
-  year: BigInteger
-  type: string
+  car_name: string;
+  short_description: string;
+  image_url: string;
+  turo_url: string;
+  make: string;
+  model: string;
+  year: BigInteger;
+  type: string;
 }
 
-export default function CarList({ searchQuery }: { searchQuery: string }) {
-  const [cars, setCars] = useState<Car[]>([])
-  const [filteredCars, setFilteredCars] = useState<Car[]>([])
+interface CarListProps {
+  cars: Car[];
+}
 
-  useEffect(() => {
-    async function fetchCars() {
-      try {
-        const response = await fetch('/api/cars')
-        const data: Car[] = await response.json()
-        setCars(data)
-        setFilteredCars(data) // Initialize filteredCars with all data
-      } catch (error) {
-        console.error('Error fetching cars:', error)
-      }
-    }
-    fetchCars()
-  }, [])
+export default function CarList({ cars }: CarListProps) {
+  const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    // Filter cars based on search query
-    const filtered = cars.filter((car) =>
+  const filteredCars = useMemo(() => {
+    return cars.filter((car) =>
       `${car.make} ${car.model} ${car.year} ${car.type}`
         .toLowerCase()
-        .includes(searchQuery.toLowerCase()),
-    )
-    setFilteredCars(filtered)
-  }, [searchQuery, cars])
+        .includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, cars]);
 
   return (
-    <Container className="mb-12 mt-12">
-      <ul
-        role="list"
-        className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {filteredCars.map((car, i) => (
+    <>
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search for a make/model or year"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full py-3 px-4 pr-12 rounded-full border-gray-300 focus:outline-none focus:border-sky-500"
+        />
+        <button className="absolute inset-y-0 right-0 flex items-center px-4 rounded-r-full bg-sky-500 text-white">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <Container className="mb-12 mt-12">
+        <ul
+          role="list"
+          className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {filteredCars.map((car, i) => (
           <Card key={i} className="overflow-hidden rounded-xl shadow-md">
             <div className="relative h-48 w-full">
-              {' '}
-              {/* Aspect ratio for images */}
-              <img
+              <Image
                 src={car.image_url}
-                alt={car.car_name}
-                className="h-full w-full rounded-t-xl object-cover"
+                alt={`${car.make} ${car.model}`}
+                layout="fill" // This makes the image fill the parent container
+                objectFit="cover" // This ensures the image covers the container without distortion
+                className="rounded-t-xl"
               />
             </div>
             <div className="flex flex-1 flex-col justify-between p-6">
@@ -78,7 +91,8 @@ export default function CarList({ searchQuery }: { searchQuery: string }) {
             </div>
           </Card>
         ))}
-      </ul>
-    </Container>
-  )
+        </ul>
+      </Container>
+    </>
+  );
 }

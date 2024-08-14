@@ -69,7 +69,6 @@ const ContactPage = async () => {
               >
                 sales@southernrentalcars.com{' '}
               </a>
-              {/* space */}
               or by phone at{' '}
               <a
                 href="tel:+1-281-555-5555"
@@ -101,13 +100,12 @@ const ContactPage = async () => {
 
         {/* Column 2: Map */}
         <div className="h-96 overflow-hidden rounded-lg lg:order-first lg:h-auto">
-          {' '}
           <iframe
             src="https://storage.googleapis.com/maps-solutions-994uusg9w0/locator-plus/ikr6/locator-plus.html"
             width="100%"
             height="100%"
             style={{ border: 0 }}
-            loading="lazy"
+            loading="eager" // Remove lazy loading if the map is critical to the page
           ></iframe>
         </div>
       </div>
