@@ -1,4 +1,4 @@
-import CarList from './CarList';
+import FilterableCarList from './FilterableCarList'; // Client Component
 import { Container } from '@/components/Container';
 
 interface Car {
@@ -10,19 +10,25 @@ interface Car {
   model: string;
   year: BigInteger;
   type: string;
+  price: number;
 }
 
-async function fetchCars() {
-  const baseURL = process.env.API_BASE_URL;
+async function fetchCars(): Promise<Car[]> {
+  const baseURL = process.env.API_BASE_URL || 'http://localhost:3000';
   const res = await fetch(`${baseURL}/api/cars`, {
     cache: 'no-store',
-  });    
+  });
 
   if (!res.ok) {
     throw new Error('Failed to fetch cars');
   }
 
-  return res.json();
+  const data = await res.json();
+
+  return data.map((car: any) => ({
+    ...car,
+    price: Number(car.price),
+  }));
 }
 
 export default async function CarPage() {
@@ -30,10 +36,7 @@ export default async function CarPage() {
 
   return (
     <Container className="mt-9">
-      <section className="mb-8">
-        {/* Passing cars as props to the Client Component */}
-        <CarList cars={cars} />
-      </section>
+      <FilterableCarList cars={cars} /> {/* Only pass the data */}
     </Container>
   );
 }

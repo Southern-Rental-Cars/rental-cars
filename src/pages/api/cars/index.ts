@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           extras,
           guidelines,
           faqs,
-          price,
+          price: parseInt(price, 10), // Ensure price is stored as an integer
           turo_url,
           gas_type,
           num_doors,
@@ -72,6 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           model: true,
           year: true,
           type: true,
+          price: true, // Fetch price as an integer
           short_description: true,
           turo_url: true,
           car_images: {
@@ -84,6 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const formattedCars = cars.map((car) => ({
         ...car,
+        price: parseInt(car.price.toString(), 10), // Ensure price is returned as an integer
         image_url: car.car_images[0]?.image_url || '',
       }));
 
