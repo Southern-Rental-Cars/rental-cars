@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import CarList from './CarList';
-import Filter from '@/components/Filter';
+import Filter from '@/components/Filter/Filter';
 import Modal from 'react-modal';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
@@ -23,9 +23,10 @@ interface FilterableCarListProps {
 }
 
 export default function FilterableCarList({ cars }: FilterableCarListProps) {
-  // Initially set the range to undefined, will hold user's selected values
   const [priceRange, setPriceRange] = useState<[number, number]>([22, 95]);
-  const [filterValues, setFilterValues] = useState<[number, number]>(priceRange);
+  const [make, setMake] = useState('');
+  const [model, setModel] = useState('');
+  const [type, setType] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const modalRef = useRef<HTMLDivElement>(null);
@@ -48,27 +49,34 @@ export default function FilterableCarList({ cars }: FilterableCarListProps) {
     };
   }, [isFilterOpen]);
 
-  // Function to update the price range after filters are applied
-  const handleFilterChange = (minPrice: number, maxPrice: number) => {
+  // Function to update the filters when the user clicks "Apply"
+  const handleFilterChange = (minPrice: number, maxPrice: number, selectedMake: string, selectedModel: string, selectedType: string) => {
     setPriceRange([minPrice, maxPrice]);
+    setMake(selectedMake);
+    setModel(selectedModel);
+    setType(selectedType);
     setIsFilterOpen(false);
   };
 
-  // On modal open, preload the filter values from the last applied values
-  const handleOpenFilterModal = () => {
-    setFilterValues(priceRange); // Preload last applied price range
-    setIsFilterOpen(true);
-  };
+  const filteredCars = cars.filter((car) => {
+    const priceMatches = car.price >= priceRange[0] && car.price <= priceRange[1];
+    const makeMatches = make === '' || car.make === make;
+    const modelMatches = model === '' || car.model === model;
+    const typeMatches = type === '' || car.type === type;
 
-  // Filter cars by price range
-  const filteredCars = cars.filter((car) => car.price >= priceRange[0] && car.price <= priceRange[1]);
+    return priceMatches && makeMatches && modelMatches && typeMatches;
+  });
 
   return (
     <div className="flex flex-col lg:flex-row">
       {/* Sidebar Filter for Desktop */}
       {!isMobile && (
         <aside className="w-1/4 p-4">
-          <Filter onFilterChange={handleFilterChange} initialPriceRange={priceRange} />
+          <Filter
+            onFilterChange={handleFilterChange}
+            initialPriceRange={priceRange}
+            cars={cars}
+          />
         </aside>
       )}
 
@@ -77,7 +85,7 @@ export default function FilterableCarList({ cars }: FilterableCarListProps) {
         {filteredCars.length > 0 ? (
           <CarList cars={filteredCars} />
         ) : (
-          <p>No cars available in this price range.</p>
+          <p>No cars available with the selected filters.</p>
         )}
       </main>
 
@@ -86,7 +94,7 @@ export default function FilterableCarList({ cars }: FilterableCarListProps) {
         <>
           <button
             className="fixed bottom-4 right-4 bg-blue-600 text-white py-2 px-4 rounded-full"
-            onClick={handleOpenFilterModal}
+            onClick={() => setIsFilterOpen(true)}
           >
             Filter
           </button>
@@ -95,13 +103,18 @@ export default function FilterableCarList({ cars }: FilterableCarListProps) {
             onRequestClose={() => setIsFilterOpen(false)}
             className="fixed inset-0 flex items-center justify-center lg:hidden"
             overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+            ariaHideApp={false}
           >
             <div
               ref={modalRef}
-              className="bg-white rounded-lg p-6 w-full max-w-lg mx-auto"
+              className="bg-white rounded-lg p-6 w-fit max-w-lg mx-auto"
               style={{ maxHeight: '80vh', overflow: 'hidden' }}
             >
-              <Filter onFilterChange={handleFilterChange} initialPriceRange={filterValues} />
+              <Filter
+                onFilterChange={handleFilterChange}
+                initialPriceRange={priceRange}
+                cars={cars}
+              />
             </div>
           </Modal>
         </>

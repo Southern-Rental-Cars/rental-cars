@@ -1,41 +1,38 @@
 import { useState, useEffect } from 'react';
-import './Filter.css';
+import './PriceRangeSlider.css'; // Slider-specific CSS
 
-interface FilterProps {
-  onFilterChange: (minPrice: number, maxPrice: number) => void;
-  initialPriceRange: [number, number]; // Preload filter values
+interface PriceRangeSliderProps {
+  minPrice: number;
+  maxPrice: number;
+  onMinPriceChange: (value: number) => void;
+  onMaxPriceChange: (value: number) => void;
 }
 
-export default function Filter({ onFilterChange, initialPriceRange }: FilterProps) {
-  const [minPrice, setMinPrice] = useState(initialPriceRange[0]);
-  const [maxPrice, setMaxPrice] = useState(initialPriceRange[1]);
-
-  // Whenever the initialPriceRange prop changes, update the state
-  useEffect(() => {
-    setMinPrice(initialPriceRange[0]);
-    setMaxPrice(initialPriceRange[1]);
-  }, [initialPriceRange]);
+export default function PriceRangeSlider({
+  minPrice,
+  maxPrice,
+  onMinPriceChange,
+  onMaxPriceChange,
+}: PriceRangeSliderProps) {
 
   // Ensure minPrice doesn't go below the minimum or exceed maxPrice
   const handleMinPriceChange = (value: number) => {
-    const parsedValue = Math.min(Math.max(value, 22), maxPrice - 1);
-    setMinPrice(parsedValue);
+    if (value >= 22 && value < maxPrice) {
+      onMinPriceChange(value);
+    }
   };
 
   // Ensure maxPrice doesn't go above the maximum or fall below minPrice
   const handleMaxPriceChange = (value: number) => {
-    const parsedValue = Math.max(Math.min(value, 95), minPrice + 1);
-    setMaxPrice(parsedValue);
-  };
-
-  const handleFilterChange = () => {
-    onFilterChange(minPrice, maxPrice);
+    if (value <= 95 && value > minPrice) {
+      onMaxPriceChange(value);
+    }
   };
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-xl font-semibold mb-4">Price Range</h2>
-      <div className="slider-container mb-4">
+    <div className="price-range-slider">
+      <h2 className="text-sm text-gray-600">Price Range</h2>
+      <div className="slider-container">
         {/* Range input sliders */}
         <input
           type="range"
@@ -74,37 +71,32 @@ export default function Filter({ onFilterChange, initialPriceRange }: FilterProp
       {/* Number input boxes with up/down arrows */}
       <div className="flex justify-between mb-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Minimum Price</label>
           <input
             type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min={22}
             max={maxPrice - 1}
             value={minPrice}
             onChange={(e) => handleMinPriceChange(Number(e.target.value))}
-            className="block w-full p-2 border rounded-md text-center"
+            className="block w-24 p-2 border rounded-md"
             step="1"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Maximum Price</label>
           <input
             type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min={minPrice + 1}
             max={95}
             value={maxPrice}
             onChange={(e) => handleMaxPriceChange(Number(e.target.value))}
-            className="block w-full p-2 border rounded-md text-center"
+            className="block w-24 p-2 border rounded-md"
             step="1"
           />
         </div>
       </div>
-
-      <button
-        onClick={handleFilterChange}
-        className="block w-full bg-blue-600 text-white py-2 rounded-md"
-      >
-        Apply Filters
-      </button>
     </div>
   );
 }

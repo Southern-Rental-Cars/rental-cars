@@ -2,6 +2,7 @@
 
 import { Card } from '@/components/Card';
 import Image from 'next/image';
+import React from 'react';
 
 interface Car {
   car_name: string;
@@ -19,18 +20,20 @@ interface CarListProps {
   cars: Car[];
 }
 
-export default function CarList({ cars }: CarListProps) {
+const CarList = React.memo(function CarList({ cars }: CarListProps) {
   return (
     <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
       {cars.map((car, i) => (
         <Card key={i} className="overflow-hidden rounded-xl shadow-md">
           <div className="relative h-48 w-full">
+            {/* Add lazy loading */}
             <Image
               src={car.image_url}
               alt={`${car.make} ${car.model}`}
               layout="fill" // This makes the image fill the parent container
-              objectFit="cover" // This ensures the image covers the container without distortion
+              objectFit="cover" // Ensures the image covers the container without distortion
               className="rounded-t-xl"
+              loading="lazy" // Add lazy loading
             />
           </div>
           <div className="flex flex-1 flex-col justify-between p-6">
@@ -52,4 +55,6 @@ export default function CarList({ cars }: CarListProps) {
       ))}
     </div>
   );
-}
+});
+
+export default CarList;
