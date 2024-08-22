@@ -34,21 +34,21 @@ export default function CarPageLayout({ cars }: CarPageLayoutProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery('(max-width: 767px)');
 
-  // Filter logic
+  // Filtered cars based on price range and types
   let filteredCars = cars.filter((car) => {
     const priceMatches = car.price >= priceRange[0] && car.price <= priceRange[1];
     const typeMatches = types.length === 0 || types.includes(car.type);
     return priceMatches && typeMatches;
   });
 
-  // Sort logic
+  // Sorting logic for filtered cars
   if (sort === 'lowToHigh') {
     filteredCars = filteredCars.sort((a, b) => a.price - b.price);
   } else if (sort === 'highToLow') {
     filteredCars = filteredCars.sort((a, b) => b.price - a.price);
   }
 
-  // Toggle filter modal and manage scroll lock
+  // Toggle filter modal and handle scroll lock
   useEffect(() => {
     if (isFilterOpen) {
       document.body.classList.add('no-scroll');
@@ -70,6 +70,7 @@ export default function CarPageLayout({ cars }: CarPageLayoutProps) {
     }
   };
 
+  // Handle filter changes from the Filter component
   const handleFilterChange = (
     minPrice: number,
     maxPrice: number,
@@ -81,6 +82,14 @@ export default function CarPageLayout({ cars }: CarPageLayoutProps) {
     setSort(sortBy);
   };
 
+  // Handle filter reset
+  const resetFilters = () => {
+    setPriceRange([22, 95]);
+    setTypes([]);
+    setSort('default');
+  };
+
+  // Toggle filter modal
   const toggleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
   };
@@ -88,6 +97,7 @@ export default function CarPageLayout({ cars }: CarPageLayoutProps) {
   return (
     <>
       <div className="flex flex-col w-full">
+        {/* Show Filter Button for Mobile */}
         {isMobile && (
           <div className="px-3">
             <div className="mb-4 flex items-center gap-2">
@@ -123,6 +133,9 @@ export default function CarPageLayout({ cars }: CarPageLayoutProps) {
                 onFilterChange={handleFilterChange}
                 initialPriceRange={priceRange}
                 cars={cars}
+                selectedTypes={types}
+                selectedSort={sort}
+                resetFilters={resetFilters}
               />
             </aside>
           )}
@@ -171,6 +184,9 @@ export default function CarPageLayout({ cars }: CarPageLayoutProps) {
                       onFilterChange={handleFilterChange}
                       initialPriceRange={priceRange}
                       cars={cars}
+                      selectedTypes={types}
+                      selectedSort={sort}
+                      resetFilters={resetFilters}
                     />
                   </div>
                 </motion.div>
