@@ -17,11 +17,16 @@ interface Car {
 
 async function fetchCars(): Promise<Car[]> {
   const baseURL = process.env.API_BASE_URL;
+  if (!baseURL) {
+    console.error('API_BASE_URL is not set');
+    throw new Error('API_BASE_URL is not set');
+  }
   const res = await fetch(`${baseURL}/api/cars`, {
     cache: 'no-store',
   });
 
   if (!res.ok) {
+    console.error(res.statusText);
     throw new Error('Failed to fetch cars');
   }
 
