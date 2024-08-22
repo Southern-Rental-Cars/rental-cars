@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Container } from '@/components/Container';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import logo3 from '@/images/TRANSPARENT_SOUTHERN_logo_3.png';
+import logo from '@/images/transparent_southern_logo_3.png';
 
 function NavItem({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
   let isActive = usePathname() === href;
@@ -99,7 +99,7 @@ export function Header() {
           <Link href="/" passHref>
             <div className="relative w-32 h-32 cursor-pointer"> {/* Added cursor-pointer for better UX */}
               <Image
-                src={logo3} // Adjusted the path based on your directory structure
+                src={logo} // Adjusted the path based on your directory structure
                 alt="Southern Rental Cars Logo"
                 layout="fill"
                 objectFit="contain"
