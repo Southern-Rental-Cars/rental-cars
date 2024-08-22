@@ -1,4 +1,4 @@
-import FilterableCarList from './FilterableCarList'; // Client Component
+import CarsPageLayout from './CarPage'; // Client Component
 import { Container } from '@/components/Container';
 
 interface Car {
@@ -11,10 +11,12 @@ interface Car {
   year: BigInteger;
   type: string;
   price: number;
+  num_seats: number;
+  num_doors: number;
 }
 
 async function fetchCars(): Promise<Car[]> {
-  const baseURL = process.env.API_BASE_URL || 'http://localhost:3000';
+  const baseURL = process.env.API_BASE_URL;
   const res = await fetch(`${baseURL}/api/cars`, {
     cache: 'no-store',
   });
@@ -36,7 +38,7 @@ export default async function CarPage() {
 
   return (
     <Container className="mt-9">
-      <FilterableCarList cars={cars} /> {/* Only pass the data */}
+      <CarsPageLayout cars={cars} /> {/* Only pass the data */}
     </Container>
   );
 }

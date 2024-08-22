@@ -75,6 +75,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           price: true, // Fetch price as an integer
           short_description: true,
           turo_url: true,
+          num_doors: true,
+          num_seats: true,
           car_images: {
             select: {
               image_url: true,

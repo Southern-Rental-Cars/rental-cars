@@ -51,7 +51,7 @@
     background-color: #ddd;
     height: 6px;
     width: 100%;
-    top: 18px; /* Adjust to position the track relative to the thumb */
+    top: 20px; /* Adjust to position the track relative to the thumb */
     z-index: 1;
     border-radius: 3px;
   }
