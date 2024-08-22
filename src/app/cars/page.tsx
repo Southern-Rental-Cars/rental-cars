@@ -17,6 +17,7 @@ interface Car {
 
 async function fetchCars(): Promise<Car[]> {
   const baseURL = process.env.API_BASE_URL;
+  console.log('API_BASE_URL:', baseURL);
   if (!baseURL) {
     console.error('API_BASE_URL is not set');
     throw new Error('API_BASE_URL is not set');
