@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { Container } from '@/components/Container';
 import Link from 'next/link';
-import Taos from '@/images/vehicles/taos.jpg';
+import Benz from '@/images/vehicles/benz_c_class.png';
 import BannerImage from '@/images/banner.png';
 
 const HomePage = () => {
@@ -36,7 +36,7 @@ const HomePage = () => {
         </div>
         <div className="md:w-1/2 m-8 md:mt-0">
           <Image
-            src={Taos}
+            src={Benz}
             alt="Car on a scenic road"
             width={800}
             height={600}

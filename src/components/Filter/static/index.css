@@ -1,0 +1,75 @@
+.slider-container {
+    position: relative;
+    width: 100%;
+    padding: 20px 0; /* Add some padding to space out the elements */
+  }
+  
+  .range-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    background: transparent;
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+  }
+  
+  .left-thumb {
+    z-index: 3;
+  }
+  
+  .right-thumb {
+    z-index: 4;
+  }
+  
+  .range-thumb::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+    position: relative;
+    top: 10px; /* Center the thumb on the track */
+  }
+  
+  .range-thumb::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+    position: relative;
+    top: 10px; /* Center the thumb on the track */
+  }
+  
+  .slider-track {
+    position: absolute;
+    background-color: #ddd;
+    height: 6px;
+    width: 100%;
+    top: 20px; /* Adjust to position the track relative to the thumb */
+    z-index: 1;
+    border-radius: 3px;
+  }
+  
+  .slider-range {
+    position: absolute;
+    background-color: #3b82f6;
+    height: 6px;
+    z-index: 2;
+    border-radius: 3px;
+    top: 18px; /* Adjust to position the range relative to the thumb */
+  }
+  
+  .price-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px; /* Increased space to move price labels below the slider */
+    font-size: 14px;
+    color: #000;
+  }
+  
