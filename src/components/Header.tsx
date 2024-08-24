@@ -7,7 +7,8 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Container } from '@/components/Container';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import logo from '@/images/transparent_southern_logo_3.png';
+import logo from '@/images/transparent_southern_logo_7.png';
+import icon from '@/images/transparent_southern_logo_5.png';
 
 function NavItem({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
   let isActive = usePathname() === href;
@@ -97,7 +98,7 @@ export function Header() {
         <div className="flex items-center space-x-4 md:space-x-12">
           {/* Clickable Logo Image */}
           <Link href="/" passHref>
-            <div className="relative w-32 h-32 cursor-pointer"> {/* Added cursor-pointer for better UX */}
+            <div className="relative w-44 h-16 cursor-pointer"> {/* Added cursor-pointer for better UX */}
               <Image
                 src={logo} // Adjusted the path based on your directory structure
                 alt="Southern Rental Cars Logo"
@@ -114,7 +115,7 @@ export function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={toggleMobileMenu}
-          className="md:hidden ml-auto text-white absolute top-10 right-4"
+          className="md:hidden ml-auto text-white absolute top-10 top-4 right-4"
         >
           <Bars3Icon className="h-8 w-8" />
         </button>
