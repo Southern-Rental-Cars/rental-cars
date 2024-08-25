@@ -11,67 +11,78 @@ interface FilterProps {
   onFilterChange: (minPrice: number, maxPrice: number, types: string[], sortBy: string) => void;
   initialPriceRange: [number, number];
   cars: Car[];
+  sort: string;
+  types: string[];
 }
 
-export default function Filter({ onFilterChange, initialPriceRange, cars }: FilterProps) {
-  const [minPrice, setMinPrice] = useState(initialPriceRange[0]);
-  const [maxPrice, setMaxPrice] = useState(initialPriceRange[1]);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  const [sortOption, setSortOption] = useState<string>('default');
+export default function Filter({ onFilterChange, initialPriceRange, cars, sort, types }: FilterProps) {
+  const [selectedMinPrice, setSelectedMinPrice] = useState(initialPriceRange[0]);
+  const [selectedMaxPrice, setSelectedMaxPrice] = useState(initialPriceRange[1]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(types);
+  const [selectedSort, setSelectedSort] = useState<string>(sort);
   const [resetFilter, setResetFilter] = useState(false);
 
   // Function to reset all filters to default values
   const resetFilters = () => {
-    setMinPrice(22);
-    setMaxPrice(95);
+    setSelectedMinPrice(22);
+    setSelectedMaxPrice(95);
     setSelectedTypes([]);
-    setSortOption('default');
-    setResetFilter(true);
-
-    // Call onFilterChange immediately when resetting
-    onFilterChange(22, 95, [], 'default');
+    setSelectedSort('default');
+    setResetFilter(true); // Trigger to reset filters
   };
+
+  // Sync state changes with parent through onFilterChange
+  useEffect(() => {
+    if (!resetFilter) {
+      onFilterChange(selectedMinPrice, selectedMaxPrice, selectedTypes, selectedSort);
+    }
+  }, [selectedMinPrice, selectedMaxPrice, selectedTypes, selectedSort]);
 
   useEffect(() => {
     if (resetFilter) {
-      setResetFilter(false); // Reset the trigger after CarClass is reset
+      setResetFilter(false); // Reset the trigger after the effect runs
+      onFilterChange(22, 95, [], 'default'); // Reset to default values
     }
   }, [resetFilter]);
 
-  // Avoid infinite loop by controlling when onFilterChange is called
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      onFilterChange(minPrice, maxPrice, selectedTypes, sortOption);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [minPrice, maxPrice, selectedTypes, sortOption, onFilterChange]);
+  // Handle changes to the price range slider
+  const handlePriceChange = (newMinPrice: number, newMaxPrice: number) => {
+    setSelectedMinPrice(newMinPrice);
+    setSelectedMaxPrice(newMaxPrice);
+  };
 
   const handleTypeChange = (types: string[]) => {
     setSelectedTypes(types);
   };
 
   const handleSortChange = (option: string) => {
-    setSortOption(option);
+    setSelectedSort(option);
   };
 
   return (
     <div className="mt-5">
-      {/* Class (Type) */}
-      <Type cars={cars} onCarClassChange={handleTypeChange} resetFilter={resetFilter} />
+      <Type 
+        cars={cars} 
+        onCarClassChange={handleTypeChange} 
+        selectedTypes={selectedTypes} 
+      />
 
-      {/* Price Range Slider */}
-      <Slider minPrice={minPrice} maxPrice={maxPrice} onMinPriceChange={setMinPrice} onMaxPriceChange={setMaxPrice} />
+      <Slider 
+        minPrice={selectedMinPrice} 
+        maxPrice={selectedMaxPrice} 
+        onPriceChange={handlePriceChange}
+      />
 
-      {/* Sort By Component */}
-      <SortBy onSortChange={handleSortChange} selectedSort={sortOption} />
+      <SortBy 
+        onSortChange={handleSortChange} 
+        selectedSort={selectedSort} 
+      />
 
-      {/* Clear Filters Button */}
       <div className="mt-4">
         <button
           className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-sm font-semibold rounded"
           onClick={resetFilters}
-        >
+        > 
           Reset
         </button>
       </div>

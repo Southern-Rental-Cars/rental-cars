@@ -4,75 +4,64 @@ interface Car {
   type: string;
 }
 
-interface CarClassProps {
+interface TypeProps {
   cars: Car[];
+  selectedTypes: string[];
   onCarClassChange: (selectedTypes: string[]) => void;
-  resetFilter: boolean; // New prop to reset filters
 }
 
-export default function CarType({ cars, onCarClassChange, resetFilter }: CarClassProps) {
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+export default function CarType({ cars, selectedTypes, onCarClassChange }: TypeProps) {
+  const [types, setTypes] = useState<string[]>(selectedTypes);
 
   // Get unique types from the car list
-  const uniqueTypes = [...new Set(cars.map((car) => car.type))];
+  const existingTypes = [...new Set(cars.map((car) => car.type))];
 
   // Handle type change
   const handleTypeChange = (type: string) => {
     if (type === 'All Types') {
-      setSelectedTypes([]); // Clear all selections for "All Types"
+      setTypes([]); // Clear all selections for "All Types"
+      onCarClassChange([]); // Propagate changes to the parent
     } else {
-      setSelectedTypes((prevSelectedTypes) =>
-        prevSelectedTypes.includes(type)
-          ? prevSelectedTypes.filter((selectedType) => selectedType !== type) // Deselect
-          : [...prevSelectedTypes, type] // Select
-      );
+      const updatedTypes = types.includes(type)
+        ? types.filter((selectedType) => selectedType !== type) // Deselect
+        : [...types, type]; // Select
+      setTypes(updatedTypes);
+      onCarClassChange(updatedTypes); // Propagate changes to the parent
     }
   };
 
-  // Reset filters when `resetFilter` changes to true
+  // Sync local types state with parent selectedTypes state
   useEffect(() => {
-    if (resetFilter) {
-      setSelectedTypes([]); // Resets to "All Types"
-    }
-  }, [resetFilter]);
-
-  // Synchronize state with parent component
-  useEffect(() => {
-    onCarClassChange(selectedTypes);
+    setTypes(selectedTypes);
   }, [selectedTypes]);
 
   return (
     <div className="mb-4">
-      {/* Type Filter */}
-      <div className="mb-4">
-        <label className="block text-md font-medium text-gray-700">Type</label>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {/* "All Types" Checkbox */}
-          <label className="inline-flex items-center space-x-2">
+      <label className="block text-md font-medium text-gray-700">Type</label>
+      <div className="flex flex-wrap gap-2 mt-2">
+        <label className="inline-flex items-center space-x-2">
+          <input
+            type="checkbox"
+            value="All Types"
+            checked={types.length === 0} // Checked if no types are selected
+            onChange={() => handleTypeChange('All Types')}
+            className="form-checkbox"
+          />
+          <span>All Types</span>
+        </label>
+
+        {existingTypes.map((type) => (
+          <label key={type} className="inline-flex items-center space-x-2">
             <input
               type="checkbox"
-              value="All Types"
-              checked={selectedTypes.length === 0} // Checked if no types are selected
-              onChange={() => handleTypeChange('All Types')}
+              value={type}
+              checked={types.includes(type)}
+              onChange={() => handleTypeChange(type)}
               className="form-checkbox"
             />
-            <span>All Types</span>
+            <span>{type}</span>
           </label>
-
-          {/* Dynamic Type Checkboxes */}
-          {uniqueTypes.map((type) => (
-            <label key={type} className="inline-flex items-center space-x-2">
-              <input
-                type="checkbox"
-                value={type}
-                checked={selectedTypes.includes(type)}
-                onChange={() => handleTypeChange(type)}
-                className="form-checkbox"
-              />
-              <span>{type}</span>
-            </label>
-          ))}
-        </div>
+        ))}
       </div>
     </div>
   );

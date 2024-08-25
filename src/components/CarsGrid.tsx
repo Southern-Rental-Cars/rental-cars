@@ -18,14 +18,36 @@ interface Car {
 
 interface CarListProps {
   cars: Car[];
+  types: string[];
+  priceRange: [number, number];
+  sort: string;
 }
 
-const CarsGrid = React.memo(function CarsGrid({ cars }: CarListProps) {
+const CarsGrid = React.memo(function CarsGrid({
+  cars,
+  types,
+  priceRange,
+  sort,
+}: CarListProps) {
+  // Filtering Logic
+  let filteredCars = cars.filter((car) => {
+    const priceMatches = car.price >= priceRange[0] && car.price <= priceRange[1];
+    const typeMatches = types.length === 0 || types.includes(car.type);
+    return priceMatches && typeMatches;
+  });
+
+  // Sorting Logic
+  if (sort === 'lowToHigh') {
+    filteredCars = filteredCars.sort((a, b) => a.price - b.price);
+  } else if (sort === 'highToLow') {
+    filteredCars = filteredCars.sort((a, b) => b.price - a.price);
+  }
+
   return (
     <div>
       {/* Responsive Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-y-6 gap-x-6">
-        {cars.map((car, i) => (
+        {filteredCars.map((car, i) => (
           <Card key={i} className="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
             <div className="relative h-48 w-full">
               <Image

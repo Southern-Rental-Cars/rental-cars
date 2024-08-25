@@ -1,4 +1,4 @@
-import CarsPageLayout from './CarPage'; // Client Component
+import CarsPage from '@/components/CarPage'; // Client Component
 import { Container } from '@/components/Container';
 
 interface Car {
@@ -44,7 +44,7 @@ export default async function CarPage() {
 
   return (
     <Container className="mt-9">
-      <CarsPageLayout cars={cars} /> {/* Only pass the data */}
+      <CarsPage cars={cars} /> {/* Only pass the data */}
     </Container>
   );
 }
