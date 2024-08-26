@@ -1,0 +1,40 @@
+.multi-range-slider .thumb {
+  background-color: white;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  box-shadow: none;  /* Remove shadow */
+  border: none;  /* Remove border */
+}
+
+.multi-range-slider .thumb::before {
+  content: '';
+  background-color: inherit;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: none;  /* Remove border */
+  box-shadow: none;  /* Remove shadow */
+  border-radius: 50%;
+  z-index: 1;
+  margin: -8px -12px;
+  cursor: pointer;
+}
+
+.multi-range-slider .caption {
+  display: none !important; /* Forcefully hide caption */
+}
+
+.multi-range-slider .thumb .caption {
+  display: none !important; /* Ensure caption is hidden when thumbs are active */
+}
+
+.multi-range-slider .thumb:active .caption {
+  display: none !important; /* Ensure caption is hidden when thumbs are clicked */
+}
+
+.multi-range-slider .input-type-range:focus + .thumb .caption {
+  display: none !important; /* Ensure caption is hidden when thumbs are focused */
+}
+
+

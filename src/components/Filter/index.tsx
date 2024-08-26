@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Slider from './Slider';
+import PriceRangeSlider from './PriceRange';
 import Type from './Type';
 import SortBy from './Sort';
 
@@ -34,6 +34,7 @@ export default function Filter({ onFilterChange, initialPriceRange, cars, sort, 
   // Sync state changes with parent through onFilterChange
   useEffect(() => {
     if (!resetFilter) {
+      console.log('Filter changed: '+ selectedMinPrice + ' ' + selectedMaxPrice + ' ' + selectedTypes + ' ' + selectedSort);
       onFilterChange(selectedMinPrice, selectedMaxPrice, selectedTypes, selectedSort);
     }
   }, [selectedMinPrice, selectedMaxPrice, selectedTypes, selectedSort]);
@@ -67,7 +68,7 @@ export default function Filter({ onFilterChange, initialPriceRange, cars, sort, 
         selectedTypes={selectedTypes} 
       />
 
-      <Slider 
+      <PriceRangeSlider 
         minPrice={selectedMinPrice} 
         maxPrice={selectedMaxPrice} 
         onPriceChange={handlePriceChange}
