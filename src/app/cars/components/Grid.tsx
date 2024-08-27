@@ -32,7 +32,7 @@ console.log(filteredCars);
             }}
             key={i}
           >
-            <Card className="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+            <Card className="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 h-full">
               <div className="relative h-48 w-full">
                 <Image
                   src={car.image_url}
