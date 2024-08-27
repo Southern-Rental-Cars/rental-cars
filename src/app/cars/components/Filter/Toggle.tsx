@@ -1,9 +1,5 @@
 import { FC } from 'react';
-
-interface ToggleProps {
-  isFilterOpen: boolean;
-  toggleFilter: () => void;
-}
+import { ToggleProps } from '@/app/cars/types';
 
 const Toggle: FC<ToggleProps> = ({ isFilterOpen, toggleFilter }) => {
   return (

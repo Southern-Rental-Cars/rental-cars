@@ -1,31 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import CarsGrid from '@/components/CarsGrid';
-import Filter from '@/components/Filter';
+import CarsGrid from '@/app/cars/components/Grid';
+import CarsFilter from '@/app/cars/components/Filter';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import Modal from '@/components/Filter/Modal';
+import Modal from '@/app/cars/components/Filter/Modal';
 import Toggle from './Filter/Toggle';
+import { CarViewProps } from '@/app/cars/types';
 
-interface Car {
-  car_name: string;
-  short_description: string;
-  image_url: string;
-  turo_url: string;
-  make: string;
-  model: string;
-  year: BigInteger;
-  type: string;
-  price: number;
-  num_seats: number;
-  num_doors: number;
-}
-
-interface CarPageProps {
-  cars: Car[];
-}
-
-export default function CarPage({ cars }: CarPageProps) {
+export default function CarView({ cars }: CarViewProps) {
+  
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([22, 95]);
   const [types, setTypes] = useState<string[]>([]);
@@ -44,11 +28,7 @@ export default function CarPage({ cars }: CarPageProps) {
     };
   }, [isFilterOpen]);
 
-  const handleFilterChange = (
-    minPrice: number,
-    maxPrice: number,
-    selectedTypes: string[],
-    sortBy: string
+  const handleFilterChange = (minPrice: number, maxPrice: number, selectedTypes: string[], sortBy: string
   ) => {
     setPriceRange([minPrice, maxPrice]);
     setTypes(selectedTypes);
@@ -70,7 +50,7 @@ export default function CarPage({ cars }: CarPageProps) {
           {/* Sidebar Filter for Desktop */}
           {!isMobile && (
             <aside className="w-64 self-start">
-              <Filter
+              <CarsFilter
                 onFilterChange={handleFilterChange}
                 initialPriceRange={priceRange}
                 types={types}
