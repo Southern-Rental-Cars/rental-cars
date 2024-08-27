@@ -33,7 +33,7 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
         </div>
 
         {/* Right Section - Car details */}
-        <div className="w-full lg:w-1/3 m-4">
+        <div className="w-full lg:w-1/3">
           <h1 className="text-3xl font-bold">{`${car.make} ${car.model} ${car.year}`}</h1>
           <p className="text-lg text-gray-700 mt-2">{car.short_description}</p>
 
