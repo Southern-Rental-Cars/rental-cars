@@ -37,4 +37,24 @@
   display: none !important; /* Ensure caption is hidden when thumbs are focused */
 }
 
+.multi-range-slider .bar-inner {
+  border: none !important;  /* Remove any borders on the inner bar */
+  box-shadow: none !important; /* Remove any shadows on the inner bar */
+}
 
+.multi-range-slider .bar {
+  border: none !important;  /* Remove any borders on the outer bar */
+  box-shadow: none !important; /* Remove any shadows on the outer bar */
+}
+
+.multi-range-slider .bar-left, 
+.multi-range-slider .bar-right {
+  box-shadow: none !important; /* Remove shadows on the left and right bars */
+  border: none !important; /* Remove borders on the left and right bars */
+}
+
+.multi-range-slider .bar-inner-left,
+.multi-range-slider .bar-inner-right {
+  box-shadow: none !important; /* Remove shadows on the inner left and right bars */
+  border: none !important; /* Remove borders on the inner left and right bars */
+}
