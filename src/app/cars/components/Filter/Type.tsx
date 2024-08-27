@@ -1,16 +1,7 @@
 import { useState, useEffect } from 'react';
+import { CarTypeProps } from '@/app/cars/types';
 
-interface Car {
-  type: string;
-}
-
-interface TypeProps {
-  cars: Car[];
-  selectedTypes: string[];
-  onCarClassChange: (selectedTypes: string[]) => void;
-}
-
-export default function CarType({ cars, selectedTypes, onCarClassChange }: TypeProps) {
+export default function CarType({ cars, selectedTypes, onCarClassChange }: CarTypeProps) {
   const [types, setTypes] = useState<string[]>(selectedTypes);
 
   // Get unique types from the car list

@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react';
 import MultiRangeSlider from "multi-range-slider-react";
-import './styles.css';
-
-interface PriceRangeProps {
-  minPrice: number;
-  maxPrice: number;
-  onPriceChange: (minPrice: number, maxPrice: number) => void;
-}
+import './static/styles.css';
+import { CarPriceRangeProps } from '@/app/cars/types';
 
 export default function PriceRange({
   minPrice,
   maxPrice,
   onPriceChange,
-}: PriceRangeProps) {
+}: CarPriceRangeProps) {
 
   const [localMinPrice, setLocalMinPrice] = useState(minPrice);
   const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice);

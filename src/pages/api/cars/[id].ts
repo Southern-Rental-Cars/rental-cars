@@ -16,6 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const car = await prisma.cars.findUnique({
                 where: { id: parseInt(id) },
                 select: {
+                    id: true,
                     car_name: true,
                     make: true,
                     model: true,
@@ -26,6 +27,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     num_doors: true,
                     num_seats: true,
                     long_description: true,
+                    short_description: true,
+                    features: true,
+                    extras: true,
+                    guidelines: true,
+                    faqs: true,
+                    price: true,
+                    turo_url: true,
                     car_images: {
                         select: {
                             image_url: true,

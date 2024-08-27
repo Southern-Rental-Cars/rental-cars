@@ -66,14 +66,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const cars = await prisma.cars.findMany({
         select: {
+          id: true,
           car_name: true,
           mpg: true,
           make: true,
           model: true,
           year: true,
           type: true,
-          price: true, // Fetch price as an integer
           short_description: true,
+          long_description: true,
+          features: true,
+          extras: true,
+          guidelines: true,
+          faqs: true,
+          price: true, // Fetch price as an integer
           turo_url: true,
           num_doors: true,
           num_seats: true,

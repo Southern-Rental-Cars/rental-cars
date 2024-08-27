@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
+import {CarSortProps} from '@/app/cars/types';
 
-interface SortProps {
-  onSortChange: (sortOption: string) => void;
-  selectedSort: string;  // Add this to allow parent component to control the sort option
-}
-
-export default function SortBy({ onSortChange, selectedSort }: SortProps) {
+export default function SortBy({ onSortChange, selectedSort }: CarSortProps) {
   const [selectedOption, setSelectedOption] = useState<string>(selectedSort);
 
   useEffect(() => {
