@@ -13,7 +13,7 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
   if (!car) {
     return (
       <Container>
-        <p>Car not found</p>
+        <h1>404 - Car not found</h1>
       </Container>
     );
   }

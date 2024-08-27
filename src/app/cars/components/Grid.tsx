@@ -32,7 +32,7 @@ console.log(filteredCars);
             }}
             key={i}
           >
-            <Card className="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+            <Card className="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between h-full">
               <div className="relative h-48 w-full">
                 <Image
                   src={car.image_url}
@@ -48,8 +48,8 @@ console.log(filteredCars);
                 <h2 className="mb-2 text-lg font-semibold">
                   {`${car.make} ${car.model} ${car.year}`}
                 </h2>
-                <p className="mb-4 text-gray-600">{car.short_description}</p>
-                <span className="block w-full rounded-md bg-sky-500 py-2 text-center text-white hover:bg-sky-600">
+                <p className="mb-4 text-gray-600 flex-grow">{car.short_description}</p>
+                <span className="block w-full rounded-md bg-sky-500 py-2 text-center text-white hover:bg-sky-600 mt-auto">
                   View Details
                 </span>
               </div>
