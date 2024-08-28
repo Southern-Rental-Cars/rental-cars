@@ -23,7 +23,6 @@ export default function Filter({ onFilterChange, initialPriceRange, cars, sort, 
   // Sync state changes with parent through onFilterChange
   useEffect(() => {
     if (!resetFilter) {
-      console.log('Filter changed: '+ selectedMinPrice + ' ' + selectedMaxPrice + ' ' + selectedTypes + ' ' + selectedSort);
       onFilterChange(selectedMinPrice, selectedMaxPrice, selectedTypes, selectedSort);
     }
   }, [selectedMinPrice, selectedMaxPrice, selectedTypes, selectedSort]);
