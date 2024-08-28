@@ -52,7 +52,7 @@ model cars {
   features          String?
   extras            String?
   guidelines        String?
-  faqs              String?
+  faqs              Json?
   price             Decimal     @db.Decimal(10, 2)
   turo_url          String?
   make              String?     @db.VarChar(100)
