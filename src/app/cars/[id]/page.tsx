@@ -9,7 +9,6 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
   // Fetch the car by id
   const carId = parseInt(params.id);
   const car: Car | null = await fetchCarById(carId);
-
   if (!car) {
     return (
       <Container>
@@ -94,10 +93,17 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
         )}
 
         {/* Only render the FAQs section if there are FAQs available */}
-        {car.faqs && car.faqs.trim() && (
+        {car.faqs && car.faqs.length > 0 && (
           <div>
             <h2 className="text-2xl font-semibold mt-6">FAQs</h2>
-            <p className="text-gray-800">{car.faqs}</p>
+            <div className="mt-2 space-y-4">
+              {car.faqs.map((faq, index) => (
+                <div key={index}>
+                  <p className="font-semibold text-gray-800">{faq.question}</p>
+                  <p className="text-gray-600">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

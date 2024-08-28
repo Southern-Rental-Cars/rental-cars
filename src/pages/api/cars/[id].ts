@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     features: true,
                     extras: true,
                     guidelines: true,
-                    faqs: true,
+                    faqs: true, // This will be parsed if it's a string
                     price: true,
                     turo_url: true,
                     car_images: {
@@ -46,9 +46,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(404).json({ error: 'Car not found' });
             }
 
+            // Parse the `faqs` field if it is a string
+            const parsedFAQs = typeof car.faqs === 'string' ? JSON.parse(car.faqs) : car.faqs;
+
             // Format the response to match the expected output
             const response = {
                 ...car,
+                faqs: parsedFAQs, // Ensure FAQs are correctly parsed
                 image_url: car.car_images.map((img) => img.image_url),
             };
 

@@ -1,4 +1,9 @@
-export interface Car {
+export interface FAQ {
+    question: string;
+    answer: string;
+  }
+  
+  export interface Car {
     id: number;  // Add a unique car identifier
     car_name: string;
     short_description: string;
@@ -15,8 +20,8 @@ export interface Car {
     features: string;
     extras: string;
     guidelines: string;
-    faqs: string;
-  }
+    faqs: FAQ[];  // Update faqs to be an array of FAQ objects
+}
 
 export interface CarViewProps {
     cars: Car[];
