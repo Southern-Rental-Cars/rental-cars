@@ -12,7 +12,7 @@ const Grid = React.memo(function Grid({cars, types, priceRange, sort}: CarGridPr
     const typeMatches = types.length === 0 || types.includes(car.type);
     return priceMatches && typeMatches;
   });
-console.log(filteredCars);
+
   // Sorting Logic
   if (sort === 'lowToHigh') {
     filteredCars = filteredCars.sort((a, b) => a.price - b.price);
