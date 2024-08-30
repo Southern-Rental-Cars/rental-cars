@@ -26,8 +26,8 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
     <Container className="mt-12">
         <h1 className="text-3xl font-semibold mb-5">{`${car.make} ${car.model} ${car.year}`}</h1>
 
-        {/* sm image grid */}
-        <div className="block md:hidden lg:hidden">
+        {/* image grid */}
+        <div className="block">
           <div className="relative h-96">
             <div className="overflow-x-auto flex snap-x snap-mandatory h-full w-full">
               {images.map((url: string, index: number) => (
@@ -45,26 +45,6 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-
-        {/* md,lg image grid */}
-        <div className="hidden md:flex lg:flex h-96 md:h-80 lg:h-96 gap-2">
-          <div className="overflow-x-auto flex snap-x snap-mandatory h-full w-full">
-            {images.map((url: string, index: number) => (
-              <div key={index} className="snap-center shrink-0 w-full h-full relative">
-                <Image
-                  src={url}
-                  alt={`${car.make} ${car.model} - Image ${index + 1}`}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-lg"
-                />
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white text-sm px-2 py-1 rounded">
-                  <span id="current-index">{index+1}</span> / {images.length}
-                </div>
-              </div>
-              ))}
           </div>
         </div>
 
@@ -115,9 +95,7 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
               <p className="text-2xl font-semibold"> ${car.price} </p> 
               <p className="text-black text-md ml-1"> / day </p>
             </div>
-
             <p className="text-lg text-gray-700 py-2">{car.short_description}</p>
-            
             <ul className="grid grid-cols-2 gap-4 text-gray-600">
               <li className="flex items-center">
                 <FontAwesomeIcon icon={faDoorOpen} className="h-5 w-5 text-gray-500 mr-2" />
@@ -136,15 +114,7 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
                 {car.gas_type}
               </li>
             </ul>
-
-            <a
-              href={car.turo_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 block bg-blue-500 text-white py-2 px-4 text-center rounded hover:bg-blue-600"
-            >
-              Book on Turo
-            </a>
+            <a href={car.turo_url} target="_blank" rel="noopener noreferrer" className="mt-6 block bg-blue-500 text-white py-2 px-4 text-center rounded hover:bg-blue-600"> Book on Turo </a>
           </div>          
         </div>
 
@@ -156,9 +126,7 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
               <p className="text-2xl font-semibold">${car.price} </p> 
               <p className="text-black text-md ml-1">/ day</p>
             </div>
-
             <p className="text-lg text-gray-700 py-2">{car.short_description}</p>
-
             <ul className="grid grid-cols-2 gap-4 text-gray-600">
               <li className="flex items-center">
                 <FontAwesomeIcon icon={faDoorOpen} className="h-5 w-5 text-gray-500 mr-2" />
@@ -177,17 +145,8 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
                 {car.gas_type}
               </li>
             </ul>
-              
-            <a
-              href={car.turo_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 block bg-blue-500 text-white py-2 px-4 text-center rounded hover:bg-blue-600"
-            >
-              Book on Turo
-            </a>
+            <a href={car.turo_url} target="_blank" rel="noopener noreferrer" className="mt-6 block bg-blue-500 text-white py-2 px-4 text-center rounded hover:bg-blue-600"> Book on Turo </a>
           </div>
-
           {/* bottom section */}
           <div className="mt-10">
             <h2 className="text-3xl font-semibold">Description</h2>
