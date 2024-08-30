@@ -12,11 +12,13 @@ export interface FAQ {
     make: string;
     model: string;
     year: BigInteger;
+    mpg: number;
     type: string;
     price: number;
     num_seats: number;
     num_doors: number;
     long_description: string;
+    gas_type: string;
     features: string;
     extras: string;
     guidelines: string;
