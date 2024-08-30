@@ -50,29 +50,22 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
 
         {/* md,lg image grid */}
         <div className="hidden md:flex lg:flex h-96 md:h-80 lg:h-96 gap-2">
-          <div className="relative w-full md:w-1/2 lg:w-1/2">
-            <Image
-              src={car.image_url[0]}
-              alt={`${car.make} ${car.model}`}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-lg"
-            />
-          </div>
-          <div className="grid grid-cols-2 grid-rows-2 gap-2 w-full md:w-1/2 lg:w-1/2">
-            {images.slice(1, 5).map((url: string, index: number) => (
-              <div key={index} className="relative">
+          <div className="overflow-x-auto flex snap-x snap-mandatory h-full w-full">
+            {images.map((url: string, index: number) => (
+              <div key={index} className="snap-center shrink-0 w-full h-full relative">
                 <Image
                   src={url}
-                  alt={`${car.make} ${car.model} ${index + 2}`}
+                  alt={`${car.make} ${car.model} - Image ${index + 1}`}
                   layout="fill"
                   objectFit="cover"
                   className="rounded-lg"
                 />
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white text-sm px-2 py-1 rounded">
+                  <span id="current-index">{index+1}</span> / {images.length}
+                </div>
               </div>
-            ))}
+              ))}
           </div>
-
         </div>
 
         {/* md,lg details section  */}
