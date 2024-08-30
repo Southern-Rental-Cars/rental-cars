@@ -28,7 +28,7 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
 
         {/* image grid */}
         <div className="block">
-          <div className="relative h-96">
+          <div className="relative h-72 md:h-96 lg:h-96">
             <div className="overflow-x-auto flex snap-x snap-mandatory h-full w-full">
               {images.map((url: string, index: number) => (
                 <div key={index} className="snap-center shrink-0 w-full h-full relative">
