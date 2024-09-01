@@ -37,7 +37,7 @@ const HomePage = () => {
       </div>
 
       {/* About Us */}
-      <Container className="py-24">
+      <Container className="py-20">
         <div className='flex flex-col lg:flex-row p-2 lg:p-8'>
           <div className="text-center lg:w-2/3">
             <h2 className="text-5xl md:text-5xl font-bold tracking-wide dark:text-[#d9ab69] mb-8">
@@ -72,12 +72,12 @@ const HomePage = () => {
       </Container>
       
             {/* Business Solutions */}
-      <Container className="bg-[#14223f] text-white">
+      <Container className="bg-[#14223f] text-white py-8">
         <BusinessSolutionsPage />
       </Container>  
 
       {/* Contact */}
-      <Container className="bg-gray-300">
+      <Container className="bg-gray-300 py-8">
         <ContactPage />
       </Container>
 
