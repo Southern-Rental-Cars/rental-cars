@@ -45,12 +45,11 @@ const MailIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => {
 
 const ContactPage = async () => {
   return (
-    <Container className="py-24">
-      <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
+      <div className="grid grid-cols-1 py-24 gap-y-16 lg:grid-cols-2 w-11/12 ml-20">
         {/* Column 1: Contact Details */}
         <div className="lg:pl-20">
-          <h1 className="text-center text-5xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
-            Connect with Us
+          <h1 className="text-left text-5xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+            Connect with us
           </h1>
 
           <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
@@ -88,14 +87,13 @@ const ContactPage = async () => {
         <div className="h-96 overflow-hidden rounded-lg lg:order-first lg:h-auto">
           <iframe
             src="https://storage.googleapis.com/maps-solutions-994uusg9w0/locator-plus/ikr6/locator-plus.html"
-            width="100%"
+            width="95%"
             height="100%"
             style={{ border: 0 }}
             loading="eager" // Remove lazy loading if the map is critical to the page
           ></iframe>
         </div>
       </div>
-    </Container>
   )
 }
 
