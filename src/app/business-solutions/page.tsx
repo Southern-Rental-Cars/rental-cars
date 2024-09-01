@@ -33,7 +33,7 @@ const BusinessSolutionsPage = () => {
             Corporate Travel
           </h2>
           <p className="text-left mt-2">
-            Streamline your business travel with scheduled travelling.
+            Streamline your business travel with us.
           </p>
         </div>
 
