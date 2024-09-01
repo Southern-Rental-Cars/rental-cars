@@ -71,15 +71,17 @@ const HomePage = () => {
         </div>
       </Container>
       
+            {/* Business Solutions */}
+      <Container className="bg-[#14223f] text-white">
+        <BusinessSolutionsPage />
+      </Container>  
+
       {/* Contact */}
       <Container className="bg-gray-300">
         <ContactPage />
       </Container>
 
-      {/* Business Solutions */}
-      <Container className="bg-[#14223f] text-white">
-        <BusinessSolutionsPage />
-      </Container>  
+
 
 
 

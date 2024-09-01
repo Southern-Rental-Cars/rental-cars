@@ -9,7 +9,7 @@ const BusinessSolutionsPage = () => {
     <Container className='py-24'>
       <div className="mb-4">
         <Link href={'/business-solutions'}>
-        <h1 className="text-center text-4xl font-bold tracking-wide sm:text-5xl dark:text-zinc-100 mb-4">
+        <h1 className="text-center text-5xl font-bold tracking-wide dark:text-zinc-100 mb-4">
           Business Solutions
         </h1>
         </Link>
@@ -58,12 +58,9 @@ const BusinessSolutionsPage = () => {
 
       {/* Call to Action */}
       <div className="text-center">
-        <p className="text-lg font-semibold mb-4">
-          Get accomodated service.
-        </p>
         <Link href="/contact">
           <button className="bg-[#2f4269] text-white py-3 px-6 rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out inline-flex items-center">
-            Free Quote
+            Get a free quote
           </button>
         </Link>
       </div>

@@ -49,7 +49,7 @@ const ContactPage = async () => {
       <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
         {/* Column 1: Contact Details */}
         <div className="lg:pl-20">
-          <h1 className="text-center text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+          <h1 className="text-center text-5xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
             Connect with Us
           </h1>
 
