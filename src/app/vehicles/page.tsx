@@ -1,6 +1,6 @@
-import CarsView from '@/app/cars/components/View'; // Client Component
+import CarsView from '@/app/vehicles/components/View'; // Client Component
 import { Container } from '@/components/Container';
-import {Car} from '@/app/cars/types';
+import {Car} from '@/app/vehicles/types';
 import { fetchCars } from "@/lib/db/queries";
 
 export default async function Page() {

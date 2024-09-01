@@ -7,8 +7,7 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Container } from '@/components/Container';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import logo from '@/images/transparent_southern_logo_7.png';
-import icon from '@/images/transparent_southern_logo_5.png';
+import logo from '@/images/transparent_southern_logo_3.png';
 
 function NavItem({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
   let isActive = usePathname() === href;
@@ -35,7 +34,8 @@ function DesktopNavigation() {
   return (
     <nav className="hidden md:flex">
       <ul className="flex space-x-6 text-md font-semibold text-white">
-        <NavItem href="/cars">Cars</NavItem>
+        <NavItem href="/">Home</NavItem>
+        <NavItem href="/vehicles"> Book reservation </NavItem>
         <NavItem href="/business-solutions">Business Solutions</NavItem>
         <NavItem href="/contact">Contact Us</NavItem>
       </ul>
@@ -72,7 +72,7 @@ function MobileNavigation({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       }`}
     >
       <ul className="py-1 text-white">
-        <NavItem href="/cars" onClick={onClose}>Cars</NavItem>
+        <NavItem href="/vehicles" onClick={onClose}>Book Online</NavItem>
         <NavItem href="/business-solutions" onClick={onClose}>Business Solutions</NavItem>
         <NavItem href="/contact" onClick={onClose}>Contact Us</NavItem>
       </ul>
@@ -98,7 +98,7 @@ export function Header() {
         <div className="flex items-center space-x-4 md:space-x-12">
           {/* Clickable Logo Image */}
           <Link href="/" passHref>
-            <div className="relative w-44 h-16 cursor-pointer"> {/* Added cursor-pointer for better UX */}
+            <div className="relative w-44 md:52 h-16 cursor-pointer"> {/* Added cursor-pointer for better UX */}
               <Image
                 src={logo} // Adjusted the path based on your directory structure
                 alt="Southern Rental Cars Logo"

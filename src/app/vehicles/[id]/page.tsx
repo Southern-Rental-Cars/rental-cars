@@ -2,10 +2,9 @@
 import { Container } from "@/components/Container";
 import Image from "next/image";
 import { fetchCarById } from "@/lib/db/queries";
-import { Car } from '@/app/cars/types';
+import { Car } from '@/app/vehicles/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faGasPump, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
-import { Button } from "@/components/Button";
 
 export default async function CarDetail({ params }: { params: { id: string } }) {
   // Fetch the car by id
@@ -28,7 +27,7 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
 
         {/* image grid */}
         <div className="block">
-          <div className="relative h-72 md:h-96 lg:h-96">
+          <div className="relative h-72 md:h-96">
             <div className="overflow-x-auto flex snap-x snap-mandatory h-full w-full">
               {images.map((url: string, index: number) => (
                 <div key={index} className="snap-center shrink-0 w-full h-full relative">
@@ -49,9 +48,9 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
         </div>
 
         {/* md,lg details section  */}
-        <div className="hidden md:flex lg:flex">
+        <div className="hidden md:flex">
           {/* left section */}
-          <div className="md:w-2/3 lg:w-2/3 mt-10">
+          <div className="md:w-2/3 mt-10">
                 <h2 className="text-3xl font-semibold">Description</h2>
                 <p className="mt-2 text-gray-700">{car.long_description}</p>
                 {car.features && car.features.trim() && (
@@ -90,7 +89,7 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
                 )}
           </div>
           {/* right section */}
-          <div className="md:w-1/3 lg:w-1/3 mt-10 ml-10 shadow-xl p-5 rounded-xl h-fit border">
+          <div className="md:w-1/3 mt-10 ml-10 shadow-xl p-5 rounded-xl h-fit border">
             <div className="flex items-center">
               <p className="text-2xl font-semibold"> ${car.price} </p> 
               <p className="text-black text-md ml-1"> / day </p>
@@ -114,12 +113,12 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
                 {car.gas_type}
               </li>
             </ul>
-            <a href={car.turo_url} target="_blank" rel="noopener noreferrer" className="mt-6 block bg-blue-500 text-white py-2 px-4 text-center rounded hover:bg-blue-600"> Book on Turo </a>
+            <a href={car.turo_url} target="_blank" rel="noopener noreferrer" className="mt-6 block bg-blue-500 text-white py-2 px-4 text-center rounded hover:bg-blue-600"> Book Now </a>
           </div>          
         </div>
 
         {/* sm details section */}
-        <div className="md:hidden lg:hidden">
+        <div className="md:hidden">
           {/* top section */}
           <div className="mt-10 shadow-xl p-5 rounded-xl h-fit border">
             <div className="flex items-center">
@@ -145,7 +144,7 @@ export default async function CarDetail({ params }: { params: { id: string } }) 
                 {car.gas_type}
               </li>
             </ul>
-            <a href={car.turo_url} target="_blank" rel="noopener noreferrer" className="mt-6 block bg-blue-500 text-white py-2 px-4 text-center rounded hover:bg-blue-600"> Book on Turo </a>
+            <a href={car.turo_url} target="_blank" rel="noopener noreferrer" className="mt-6 block bg-blue-500 text-white py-2 px-4 text-center rounded hover:bg-blue-600"> Book Now </a>
           </div>
           {/* bottom section */}
           <div className="mt-10">

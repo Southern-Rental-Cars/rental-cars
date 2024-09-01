@@ -1,8 +1,8 @@
-import { Card } from '@/app/cars/components/Card';
+import { Card } from '@/app/vehicles/components/Card';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { CarGridProps } from "@/app/cars/types";
+import { CarGridProps } from "@/app/vehicles/types";
 
 const Grid = React.memo(function Grid({cars, types, priceRange, sort}: CarGridProps) {
   
