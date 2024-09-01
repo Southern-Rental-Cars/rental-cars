@@ -6,7 +6,7 @@ import Tig from '@/images/vehicles/blacktig.jpg';
 
 const BusinessSolutionsPage = () => {
   return (
-    <Container className="py-24 flex flex-col">
+    <Container className="mt-10 flex flex-col">
       <div className="mb-4 text-center">
         <Link href={'/business-solutions'}>
           <h1 className="text-5xl font-bold tracking-wide dark:text-zinc-100 mb-8">
@@ -52,7 +52,7 @@ const BusinessSolutionsPage = () => {
           </p>
         </div>
       </div>
-
+      <hr className="w-full border-t border-gray-300 mb-8" />
       {/* Call to Action */}
       <div className="text-center">
         <Link href="/contact">

@@ -72,12 +72,12 @@ const HomePage = () => {
       </Container>
       
             {/* Business Solutions */}
-      <Container className="bg-[#14223f] text-white">
+      <Container className="bg-[#14223f] text-white py-8">
         <BusinessSolutionsPage />
       </Container>  
 
       {/* Contact */}
-      <Container className="bg-gray-300">
+      <Container className="bg-gray-300 py-8">
         <ContactPage />
       </Container>
 
