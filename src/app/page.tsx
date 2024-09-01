@@ -3,11 +3,9 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { Container } from '@/components/Container';
 import Link from 'next/link';
 import Benz from '@/images/vehicles/benz_c_class.png';
-import ContactPage, { MailIcon} from './contact/page';
-import { PhoneIcon } from '@heroicons/react/24/solid'
+import ContactPage from './contact/page';
 import Logo from '@/images/transparent_southern_logo_5.png';
 import BusinessSolutionsPage from './business-solutions/page';
-import { Connection } from 'pg';
 
 const HomePage = () => {
   return (

@@ -1,7 +1,6 @@
 import { type Metadata } from 'next'
 import Link from 'next/link'
 import clsx from 'clsx'
-
 import { Container } from '@/components/Container'
 import { PhoneIcon } from '@heroicons/react/24/solid'
 
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
     'Contact Southern Rental Cars in The Woodlands, Texas for car, truck, and van rentals. Get in touch by email or phone.',
 }
 
-export const SocialLink = ({
+const SocialLink = ({
   className,
   href,
   children,
@@ -33,7 +32,7 @@ export const SocialLink = ({
   </li>
 )
 
-export const MailIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => {
+const MailIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
       <path
