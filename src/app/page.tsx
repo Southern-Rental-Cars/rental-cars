@@ -16,7 +16,7 @@ const HomePage = () => {
           src={Benz}
           alt="Car on a scenic road"
           layout="fill"
-          priority
+          loading="lazy" // Lazily load this image as it is not the LCP element
           objectFit="cover" // Ensures the image covers the container while maintaining aspect ratio
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#14223f] to-transparent brightness-50"></div>

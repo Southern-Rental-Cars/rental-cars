@@ -12,7 +12,7 @@ export async function fetchCars(): Promise<Car[]> {
   
     if (!res.ok) {
       console.error(res.statusText);
-      throw new Error('Failed to fetch cars');
+      throw new Error('Failed to fetch vehicles');
     }
   
     const data = await res.json();
