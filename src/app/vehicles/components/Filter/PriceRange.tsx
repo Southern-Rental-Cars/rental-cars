@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import MultiRangeSlider from "multi-range-slider-react";
 import './static/styles.css';
-import { CarPriceRangeProps } from '@/app/cars/types';
+import { CarPriceRangeProps } from '@/app/vehicles/types';
 
 export default function PriceRange({
   minPrice,

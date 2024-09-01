@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import CarsGrid from '@/app/cars/components/Grid';
-import CarsFilter from '@/app/cars/components/Filter';
+import CarsGrid from '@/app/vehicles/components/Grid';
+import CarsFilter from '@/app/vehicles/components/Filter';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import Modal from '@/app/cars/components/Filter/Modal';
+import Modal from '@/app/vehicles/components/Filter/Modal';
 import Toggle from './Filter/Toggle';
-import { CarViewProps } from '@/app/cars/types';
+import { CarViewProps } from '@/app/vehicles/types';
 
 export default function CarView({ cars }: CarViewProps) {
   
@@ -63,7 +63,7 @@ export default function CarView({ cars }: CarViewProps) {
           {/* Main Content */}
           <main className="flex-1 p-4">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold">Cars Available</h2>
+              <h2 className="text-2xl font-semibold">Vehicles Available</h2>
             </div>
             {/* Pass filter inputs to CarsGrid */}
             <CarsGrid

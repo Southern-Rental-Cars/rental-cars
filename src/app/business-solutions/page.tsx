@@ -6,19 +6,21 @@ import Tig from '@/images/vehicles/blacktig.jpg';
 
 const BusinessSolutionsPage = () => {
   return (
-    <Container className="mt-16 sm:mt-32">
-      <section className="mb-12">
-        <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100 mb-4 text-center">
-          Custom Business Solutions
+    <Container className='py-24'>
+      <div className="mb-4">
+        <Link href={'/business-solutions'}>
+        <h1 className="text-center text-5xl font-bold tracking-wide dark:text-zinc-100 mb-4">
+          Business Solutions
         </h1>
-        <p className="text-center text-lg text-zinc-600 dark:text-zinc-400">
-          Tailored transportation to elevate your business operations.
+        </Link>
+        <p className="text-center text-lg md:text-xl tracking-wide mb-8">
+          Schedule transportation
         </p>
-      </section>
+      </div>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
         {/* Service 1: Corporate Travel */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col">
           <Image 
             src={Tig}
             alt="Corporate Travel"
@@ -27,16 +29,16 @@ const BusinessSolutionsPage = () => {
             className="rounded-lg shadow-md"
             priority // Ensure this image loads as soon as possible
           />
-          <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200 mt-4 text-center">
+          <h2 className="text-left text-2xl font-semibold mt-4">
             Corporate Travel
           </h2>
-          <p className="mt-2 text-center text-zinc-600 dark:text-zinc-400">
-            Streamline your business travel with reliable, comfortable transportation for executives, clients, and employees.
+          <p className="text-left mt-2">
+            Streamline your business travel with us.
           </p>
         </div>
 
         {/* Service 2: Event Transportation */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col">
           <Image 
             src={Benz}
             alt="Event Transportation"
@@ -45,26 +47,23 @@ const BusinessSolutionsPage = () => {
             className="rounded-lg shadow-md"
             loading="lazy" // Lazily load this image as it is not the LCP element
           />
-          <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200 mt-4 text-center">
+          <h2 className="text-left text-2xl font-semibold mt-4">
             Event Transportation
           </h2>
-          <p className="mt-2 text-center text-zinc-600 dark:text-zinc-400">
-            Ensure your guests arrive in style and on time for conferences, meetings, or special occasions.
+          <p className="text-left mt-2">
+            Ensure your guests arrive in style and on time for conferences, meetings, and special occasions.
           </p>
         </div>
-      </section>
+      </div>
 
       {/* Call to Action */}
-      <section className="text-center">
-        <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-4">
-          Let us create a custom solution for your unique needs.
-        </p>
+      <div className="text-center">
         <Link href="/contact">
-          <button className="inline-block rounded-lg bg-[#00205A] px-6 py-3 font-medium text-white hover:bg-[#0050ba]">
-            Get a Quote
+          <button className="bg-[#2f4269] text-white py-3 px-6 rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out inline-flex items-center">
+            Get a free quote
           </button>
         </Link>
-      </section>
+      </div>
     </Container>
   );
 }

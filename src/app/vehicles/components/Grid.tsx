@@ -1,8 +1,8 @@
-import { Card } from '@/app/cars/components/Card';
+import { Card } from '@/app/vehicles/components/Card';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { CarGridProps } from "@/app/cars/types";
+import { CarGridProps } from "@/app/vehicles/types";
 
 const Grid = React.memo(function Grid({cars, types, priceRange, sort}: CarGridProps) {
   
@@ -28,7 +28,7 @@ const Grid = React.memo(function Grid({cars, types, priceRange, sort}: CarGridPr
         {filteredCars.map((car, i) => (
           <Link
             href={{
-              pathname: `/cars/${car.id}`, 
+              pathname: `/vehicles/${car.id}`, 
             }}
             key={i}
           >
@@ -49,9 +49,6 @@ const Grid = React.memo(function Grid({cars, types, priceRange, sort}: CarGridPr
                   {`${car.make} ${car.model} ${car.year}`}
                 </h2>
                 <p className="mb-4 text-gray-600 flex-grow">{car.short_description}</p>
-                <span className="block w-full rounded-md bg-sky-500 py-2 text-center text-white hover:bg-sky-600 mt-auto">
-                  View Details
-                </span>
               </div>
             </Card>
           </Link>

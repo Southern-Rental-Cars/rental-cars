@@ -1,7 +1,6 @@
 import { type Metadata } from 'next'
 import Link from 'next/link'
 import clsx from 'clsx'
-
 import { Container } from '@/components/Container'
 import { PhoneIcon } from '@heroicons/react/24/solid'
 
@@ -46,38 +45,25 @@ const MailIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => {
 
 const ContactPage = async () => {
   return (
-    <Container className="mt-16 sm:mt-32">
+    <Container className="py-24">
       <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
         {/* Column 1: Contact Details */}
         <div className="lg:pl-20">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            Contact Us
+          <h1 className="text-center text-5xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+            Connect with Us
           </h1>
 
-          <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
-            <p>
-              Southern Rental Cars is a car rental company located in The
-              Woodlands, Texas. We offer a wide range of cars for rent,
-              including cars, trucks, and vans.
-            </p>
-            <p>
-              If you have any questions or would like to make a reservation,
-              please contact us by email at{' '}
-              <a
-                href="mailto:sales@southernrentalcars.com"
-                className="text-[#00205A] dark:text-blue-700"
-              >
+          <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
+            <p> Southern Rental Cars is the top car rental service in The Woodlands. We own a fleet of vehicles with sedans, SUVs, vans, and growing. Make a reservation and get top quality service. </p>
+              <p> For inquiries or to book your next drive, reach out to: </p>
+              <a href="mailto:sales@southernrentalcars.com" className="text-[#00205A] dark:text-blue-700" >
                 sales@southernrentalcars.com{' '}
               </a>
               or by phone at{' '}
-              <a
-                href="tel:+1-281-555-5555"
-                className="text-[#00205A] dark:text-blue-700"
-              >
+              <a href="tel:+1-281-555-5555" className="text-[#00205A] dark:text-blue-700" >
                 +1 (832) 684-7072
-              </a>{' '}
-              and we&apos;ll get back to you as soon as possible.
-            </p>
+              </a>
+
           </div>
 
           <ul role="list" className="mt-8">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import {CarSortProps} from '@/app/cars/types';
+import {CarSortProps} from '@/app/vehicles/types';
 
 export default function SortBy({ onSortChange, selectedSort }: CarSortProps) {
   const [selectedOption, setSelectedOption] = useState<string>(selectedSort);

@@ -1,4 +1,4 @@
-import { Car } from "@/app/cars/types";
+import { Car } from "@/app/vehicles/types";
 
 export async function fetchCars(): Promise<Car[]> {
     const baseURL = process.env.API_BASE_URL;
@@ -6,13 +6,13 @@ export async function fetchCars(): Promise<Car[]> {
       console.error('API_BASE_URL is not set');
       throw new Error('API_BASE_URL is not set');
     }
-    const res = await fetch(`${baseURL}/api/cars`, {
+    const res = await fetch(`${baseURL}/api/vehicles`, {
       cache: 'no-store',
     });
   
     if (!res.ok) {
       console.error(res.statusText);
-      throw new Error('Failed to fetch cars');
+      throw new Error('Failed to fetch vehicles');
     }
   
     const data = await res.json();
@@ -31,7 +31,7 @@ export async function fetchCarById(id: number): Promise<Car | null> {
       throw new Error('API_BASE_URL is not set');
     }
   
-    const res = await fetch(`${baseURL}/api/cars/${id}`);
+    const res = await fetch(`${baseURL}/api/vehicles/${id}`);
    
     if (!res.ok) {
       console.error(res.statusText);
