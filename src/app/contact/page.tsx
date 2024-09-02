@@ -1,8 +1,8 @@
 import { type Metadata } from 'next'
 import Link from 'next/link'
 import clsx from 'clsx'
-import { Container } from '@/components/Container'
 import { PhoneIcon } from '@heroicons/react/24/solid'
+import { Container } from '@/components/Container';
 
 export const metadata: Metadata = {
   title: 'Contact | Southern Rental Cars',
@@ -45,55 +45,62 @@ const MailIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => {
 
 const ContactPage = async () => {
   return (
-      <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 w-full mt-10">
-        {/* Column 1: Contact Details */}
-        <div className="ml-5 lg:pl-20">
-          <h1 className="text-left text-5xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
-            Connect with us
-          </h1>
+    <Container className="mt-10">
+      {/* Column 1: Contact Details */}
+        <h1 className="text-center text-5xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+          Contact us
+        </h1>
 
-          <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
-            <p> Southern Rental Cars is the top car rental service in The Woodlands. We own a fleet of vehicles with sedans, SUVs, vans, and growing. Make a reservation and get top quality service. </p>
-              <p> For inquiries or to book your next drive, reach out to: </p>
-              <a href="mailto:sales@southernrentalcars.com" className="text-[#00205A] dark:text-blue-700" >
-                sales@southernrentalcars.com{' '}
-              </a>
-              or by phone at{' '}
-              <a href="tel:+1-281-555-5555" className="text-[#00205A] dark:text-blue-700" >
-                +1 (832) 684-7072
-              </a>
-
-          </div>
-
-          <ul role="list" className="mt-8">
-            <SocialLink
-              href="mailto:sales@southernrentalcars.com"
-              icon={MailIcon}
-              className="border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
-            >
-              sales@southernrentalcars.com
-            </SocialLink>
-            <SocialLink
-              href="tel:+1-832-684-7072"
-              icon={PhoneIcon}
-              className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
-            >
-              +1 (832) 684-7072
-            </SocialLink>
-          </ul>
+        <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
+          <p>
+            Southern Rental Cars is the top car rental service in The Woodlands.
+            We own a fleet of vehicles with sedans, SUVs, vans, and growing.
+            Make a reservation and get top quality service.
+          </p>
+          <p>For inquiries or to book your next drive, reach out to:</p>
+          <a
+            href="mailto:sales@southernrentalcars.com"
+            className="text-[#00205A] dark:text-blue-700"
+          >
+            sales@southernrentalcars.com{' '}
+          </a>
+          or by phone at{' '}
+          <a
+            href="tel:+1-281-555-5555"
+            className="text-[#00205A] dark:text-blue-700"
+          >
+            +1 (832) 684-7072
+          </a>
         </div>
 
-        {/* Column 2: Map */}
-        <div className="h-96 overflow-hidden rounded-lg lg:order-first lg:h-auto ml-5">
-          <iframe
-            src="https://storage.googleapis.com/maps-solutions-994uusg9w0/locator-plus/ikr6/locator-plus.html"
-            width="95%"
-            height="100%"
-            style={{ border: 0 }}
-            loading="eager" // Remove lazy loading if the map is critical to the page
-          ></iframe>
-        </div>
+        <ul role="list" className="mt-2">
+          <SocialLink
+            href="mailto:sales@southernrentalcars.com"
+            icon={MailIcon}
+            className="border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
+          >
+            sales@southernrentalcars.com
+          </SocialLink>
+          <SocialLink
+            href="tel:+1-832-684-7072"
+            icon={PhoneIcon}
+            className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
+          >
+            +1 (832) 684-7072
+          </SocialLink>
+        </ul>
+
+      {/* Column 2: Map */}
+      <div className="h-96 mt-12">
+        <iframe
+          src="https://storage.googleapis.com/maps-solutions-994uusg9w0/locator-plus/ikr6/locator-plus.html"
+          width="100%"
+          height="100%"
+          loading="lazy"
+          className="rounded-md"
+        ></iframe>
       </div>
+    </Container>
   )
 }
 

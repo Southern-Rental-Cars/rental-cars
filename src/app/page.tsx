@@ -6,6 +6,7 @@ import Benz from '@/images/vehicles/benz_c_class.png';
 import ContactPage from './contact/page';
 import Logo from '@/images/transparent_southern_logo_5.png';
 import BusinessSolutionsPage from './business-solutions/page';
+import Testimonials from '@/components/Testimonials';
 
 const HomePage = () => {
   return (
@@ -72,16 +73,19 @@ const HomePage = () => {
       </Container>
       
             {/* Business Solutions */}
-      <Container className="bg-[#14223f] text-white py-8">
+      <Container className="bg-[#14223f] text-white pb-12 p-1">
         <BusinessSolutionsPage />
       </Container>  
 
       {/* Contact */}
-      <Container className="bg-gray-300 py-8">
+      <Container className="pb-12">
         <ContactPage />
       </Container>
 
-
+      {/* Testimonials */}
+      <Container className="bg-gray-200 py-12">
+        <Testimonials />
+      </Container>
 
 
 

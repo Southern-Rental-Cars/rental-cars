@@ -10,7 +10,7 @@ const BusinessSolutionsPage = () => {
       <div className="mb-4 text-center">
         <Link href={'/business-solutions'}>
           <h1 className="text-5xl font-bold tracking-wide dark:text-zinc-100 mb-8">
-            Business Solutions
+            Business solutions
           </h1>
         </Link>
       </div>

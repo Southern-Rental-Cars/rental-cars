@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import CarsFilter from '@/app/vehicles/components/Filter';  // Import Filter from the appropriate path
+import Filter from '@/app/vehicles/components/Filter';  // Import Filter from the appropriate path
 import { ModalProps } from '@/app/vehicles/types';
 
 export default function Modal({isFilterOpen, toggleFilter, handleFilterChange, priceRange, cars, sort, types}: ModalProps) {
@@ -38,7 +38,7 @@ export default function Modal({isFilterOpen, toggleFilter, handleFilterChange, p
               >
                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
               </button>
-              <CarsFilter
+              <Filter
                 onFilterChange={handleFilterChange}
                 initialPriceRange={priceRange}
                 types={types}

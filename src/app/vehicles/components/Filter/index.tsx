@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import PriceRangeSlider from './PriceRange';
-import Type from './Type';
-import SortBy from './Sort';
 import {CarFilterProps} from '@/app/vehicles/types';
+import SelectPrice from './PriceSlider';
+import SelectType from './Type';
+import SelectSort from './Sort';
 
 export default function Filter({ onFilterChange, initialPriceRange, cars, sort, types }: CarFilterProps) {
   const [selectedMinPrice, setSelectedMinPrice] = useState(initialPriceRange[0]);
@@ -50,19 +50,19 @@ export default function Filter({ onFilterChange, initialPriceRange, cars, sort, 
 
   return (
     <div className="mt-5">
-      <Type 
+      <SelectType 
         cars={cars} 
         onCarClassChange={handleTypeChange} 
         selectedTypes={selectedTypes} 
       />
 
-      <PriceRangeSlider 
+      <SelectPrice 
         minPrice={selectedMinPrice} 
         maxPrice={selectedMaxPrice} 
         onPriceChange={handlePriceChange}
       />
 
-      <SortBy 
+      <SelectSort 
         onSortChange={handleSortChange} 
         selectedSort={selectedSort} 
       />
