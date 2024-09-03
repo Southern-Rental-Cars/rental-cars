@@ -19,7 +19,7 @@ export default function Testimonials() {
         <div className="flex space-x-10">
           {testimonialsData.map((item, index) => (
             <div
-              className="flex-shrink-0 bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 w-80 h-110"
+              className="flex-shrink-0 bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 w-72 md:w-80 h-110"
               key={index}
             >
               <h3 className="text-md md:text-lg tracking-wide mb-4 text-zinc-500">
