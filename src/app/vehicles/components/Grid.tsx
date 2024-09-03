@@ -21,8 +21,7 @@ const Grid = React.memo(function Grid({cars, types, priceRange, sort}: CarGridPr
   }
 
   return (
-    <div>
-
+    <>
       {/* Responsive Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-y-6 gap-x-6">
         {filteredCars.map((car, i) => (
@@ -54,8 +53,7 @@ const Grid = React.memo(function Grid({cars, types, priceRange, sort}: CarGridPr
           </Link>
         ))}
       </div>
-
-    </div>
+    </>
   );
 
 });

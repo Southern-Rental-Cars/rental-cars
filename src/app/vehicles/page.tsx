@@ -5,7 +5,6 @@ import { fetchCars } from "@/lib/db/queries";
 
 export default async function Page() {
   const cars: Car[] = await fetchCars();
-
   return (
     <Container className="mt-9">
       <CarsView cars={cars} /> {/* Only pass the data */}

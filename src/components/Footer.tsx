@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInstagram, faYelp, faGoogle } from '@fortawesome/free-brands-svg-icons'
+import { faInstagram, faYelp, faGoogle, faFacebook } from '@fortawesome/free-brands-svg-icons'
 import { ContainerInner, ContainerOuter } from '@/components/Container'
 
 function NavLink({
@@ -41,6 +41,9 @@ export function Footer() {
                 </Link>
                 <Link href="https://g.co/kgs/yA9XKBS" target="_blank">
                   <FontAwesomeIcon icon={faGoogle} className="h-6 w-6 text-zinc-800 dark:text-zinc-200 hover:text-blue-500 transition-colors" />
+                </Link>
+                <Link href="https://www.facebook.com/southernrentalcars" target="_blank">
+                  <FontAwesomeIcon icon={faFacebook} className="h-6 w-6 text-zinc-800 dark:text-zinc-200 hover:text-blue-500 transition-colors" />
                 </Link>
               </div>
               <p className="text-sm text-zinc-400 dark:text-zinc-500">

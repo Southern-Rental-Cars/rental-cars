@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import PriceRangeSlider from './PriceRange';
-import Type from './Type';
-import SortBy from './Sort';
 import {CarFilterProps} from '@/app/vehicles/types';
+import SelectPrice from './PriceSlider';
+import SelectType from './Type';
+import SelectSort from './Sort';
 
 export default function Filter({ onFilterChange, initialPriceRange, cars, sort, types }: CarFilterProps) {
   const [selectedMinPrice, setSelectedMinPrice] = useState(initialPriceRange[0]);
   const [selectedMaxPrice, setSelectedMaxPrice] = useState(initialPriceRange[1]);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(types);
   const [selectedSort, setSelectedSort] = useState<string>(sort);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(types);
   const [resetFilter, setResetFilter] = useState(false);
 
   // Function to reset all filters to default values
@@ -50,28 +50,13 @@ export default function Filter({ onFilterChange, initialPriceRange, cars, sort, 
 
   return (
     <div className="mt-5">
-      <Type 
-        cars={cars} 
-        onCarClassChange={handleTypeChange} 
-        selectedTypes={selectedTypes} 
-      />
-
-      <PriceRangeSlider 
-        minPrice={selectedMinPrice} 
-        maxPrice={selectedMaxPrice} 
-        onPriceChange={handlePriceChange}
-      />
-
-      <SortBy 
-        onSortChange={handleSortChange} 
-        selectedSort={selectedSort} 
-      />
-
+      <SelectType cars={cars} onCarClassChange={handleTypeChange} selectedTypes={selectedTypes} />
+      <SelectPrice minPrice={selectedMinPrice} maxPrice={selectedMaxPrice} onPriceChange={handlePriceChange}/>
+      <SelectSort onSortChange={handleSortChange} selectedSort={selectedSort} />
       <div className="mt-4">
         <button
           className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-sm font-semibold rounded"
-          onClick={resetFilters}
-        > 
+          onClick={resetFilters}> 
           Reset
         </button>
       </div>
