@@ -9,12 +9,20 @@ import Toggle from './Filter/Toggle';
 import { CarViewProps } from '@/app/vehicles/types';
 
 export default function CarView({ cars }: CarViewProps) {
-  
-  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>([22, 95]);
-  const [types, setTypes] = useState<string[]>([]);
-  const [sort, setSort] = useState<string>('default');
   const isMobile = useMediaQuery('(max-width: 767px)');
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
+  const [priceRange, setPriceRange] = useState<[number, number]>(() => {
+    const savedPriceRange = sessionStorage.getItem('priceRange');
+    return savedPriceRange ? JSON.parse(savedPriceRange) : [22, 95];
+  });
+  const [types, setTypes] = useState<string[]>(() => {
+    const savedTypes = sessionStorage.getItem('types');
+    return savedTypes ? JSON.parse(savedTypes) : [];
+  });
+  const [sort, setSort] = useState<string>(() => {
+    const savedSort = sessionStorage.getItem('sort');
+    return savedSort ? savedSort : 'default';
+  });
 
   // Manage scroll lock
   useEffect(() => {
@@ -28,11 +36,23 @@ export default function CarView({ cars }: CarViewProps) {
     };
   }, [isFilterOpen]);
 
-  const handleFilterChange = (minPrice: number, maxPrice: number, selectedTypes: string[], sortBy: string
-  ) => {
+  // Save filter states to session storage
+  useEffect(() => {
+    sessionStorage.setItem('priceRange', JSON.stringify(priceRange));
+  }, [priceRange]);
+
+  useEffect(() => {
+    sessionStorage.setItem('types', JSON.stringify(types));
+  }, [types]);
+
+  useEffect(() => {
+    sessionStorage.setItem('sort', sort);
+  }, [sort]);
+
+  const handleFilterChange = (minPrice: number, maxPrice: number, selectedTypes: string[], sortBy: string) => {
     setPriceRange([minPrice, maxPrice]);
     setTypes(selectedTypes);
-    setSort(sortBy);  // Save the sort state
+    setSort(sortBy);
   };
 
   const toggleFilter = () => {
@@ -54,12 +74,11 @@ export default function CarView({ cars }: CarViewProps) {
                 onFilterChange={handleFilterChange}
                 initialPriceRange={priceRange}
                 types={types}
-                sort={sort}  // Pass the sort state to Filter
+                sort={sort}
                 cars={cars}
               />
             </aside>
           )}
-
           {/* Main Content */}
           <main className="flex-1 p-4">
             <div className="flex items-center justify-between mb-4">
@@ -70,11 +89,10 @@ export default function CarView({ cars }: CarViewProps) {
               cars={cars}
               types={types}
               priceRange={priceRange}
-              sort={sort}  // Pass the sort state to CarsGrid
+              sort={sort}
             />
           </main>
         </div>
-
         {/* Mobile Filter Modal */}
         {isMobile && (
           <Modal
@@ -83,7 +101,7 @@ export default function CarView({ cars }: CarViewProps) {
             handleFilterChange={handleFilterChange}
             priceRange={priceRange}
             types={types}
-            sort={sort}  // Pass the sort state to the modal
+            sort={sort}
             cars={cars}
           />
         )}
