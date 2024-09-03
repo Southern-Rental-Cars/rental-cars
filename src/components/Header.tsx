@@ -34,10 +34,9 @@ function DesktopNavigation() {
   return (
     <nav className="hidden md:flex">
       <ul className="flex space-x-6 text-md font-semibold text-white">
-        <NavItem href="/">Home</NavItem>
         <NavItem href="/vehicles"> Book reservation </NavItem>
         <NavItem href="/business-solutions">Business solutions</NavItem>
-        <NavItem href="/contact">Contact us</NavItem>
+        <NavItem href="/contact">Contact</NavItem>
       </ul>
     </nav>
   );
@@ -73,8 +72,8 @@ function MobileNavigation({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
     >
       <ul className="py-1 text-white">
         <NavItem href="/vehicles" onClick={onClose}>Book reservation</NavItem>
-        <NavItem href="/business-solutions" onClick={onClose}>See business solutions</NavItem>
-        <NavItem href="/contact" onClick={onClose}>Contact us</NavItem>
+        <NavItem href="/business-solutions" onClick={onClose}>Business solutions</NavItem>
+        <NavItem href="/contact" onClick={onClose}>Contact</NavItem>
       </ul>
     </div>
   );
@@ -95,7 +94,7 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-[#19223E] shadow-md">
       <Container className="flex justify-between items-center">
         {/* Title, Logo, and Navigation in One Line */}
-        <div className="flex items-center py-8 space-x-4">
+        <div className="flex items-center py-4 md:py-8 space-x-4">
           {/* Clickable Logo Image */}
           <Link href="/" passHref>
             <div className="relative w-44 md:w-80 h-24 cursor-pointer"> {/* Added cursor-pointer for better UX */}
@@ -115,7 +114,7 @@ export function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={toggleMobileMenu}
-          className="md:hidden ml-auto text-white absolute top-10 top-16 right-4"
+          className="md:hidden ml-auto text-white absolute top-12 right-4"
         >
           <Bars3Icon className="h-8 w-8" />
         </button>
