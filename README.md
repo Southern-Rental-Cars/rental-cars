@@ -21,5 +21,5 @@
 5. Merge to main branch which will update the prod project because prod is linked with main branch
 
 ### Vercel project dashboards
-Preview: https://vercel.com/southernrentalcars/preview/stores/postgres/store_iwHcqT5Pj7aVHx6q/data
-Production: https://vercel.com/southernrentalcars/prod/stores/postgres/store_iwHcqT5Pj7aVHx6q/data
+1. Preview: https://vercel.com/southernrentalcars/preview/stores/postgres/store_iwHcqT5Pj7aVHx6q/data
+2. Production: https://vercel.com/southernrentalcars/prod/stores/postgres/store_iwHcqT5Pj7aVHx6q/data
