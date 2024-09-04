@@ -1,6 +1,6 @@
 # Southern Rental Cars LLC
 
-## - Instructions to set up development (local) environment for preview project (staging) 
+### - How to set up development (local) environment for the preview project (staging) 
 1. Switch to dev branch via Git
 2. enter cmd ```vercel link``` to link to vercel 'preview' project 
   - First prompt: ```y```
@@ -10,10 +10,10 @@
 3. Copy contents of .env.local or .env.development.local into .env file
 4. enter cmd ```npm run dev``` or ```vercel dev``` to run localhost:3000
 
-## - Instructions to set up development (local) environment for prod project (prod)
+### - How to set up development (local) environment for prod project (prod)
 1. Same as instructions for preview project. But step 2 fourth step input ```prod``` instead of ```preview```
 
-## - Instructions on how to push code changes to prod project (production)
+### - How to push latest code changes to the prod project (production)
 1. Commit changes and push code to dev branch (IMPORTANT that we don't go to main branch immediately)
 2. Go to preview project on vercel dashboard and promot latest commit to production
 3. Test latest code changes on the preview project
