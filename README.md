@@ -11,7 +11,7 @@
 4. enter cmd ```npm run dev``` or ```vercel dev``` to run localhost:3000
 
 ### - How to set up development (local) environment for prod project (prod)
-1. Same as instructions for preview project. But step 2 fourth step input ```prod``` instead of ```preview```
+1. Follow instructions for the preview project. But at step two fourth bullet, input ```prod``` instead of ```preview```
 
 ### - How to push latest code changes to the prod project (production)
 1. Commit changes and push code to dev branch (IMPORTANT that we don't go to main branch immediately)
