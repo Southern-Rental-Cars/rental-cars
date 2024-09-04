@@ -15,7 +15,7 @@
 
 ### - How to push latest code changes to the prod project (production)
 1. Commit changes and push code to dev branch (IMPORTANT that we don't go to main branch immediately)
-2. Go to preview project on vercel dashboard and promot latest commit to production
+2. Go to preview project on vercel dashboard and promote your latest commit to production (note: its the production for the preview project, so if it breaks its not a big deal)
 3. Test latest code changes on the preview project
 4. Get code review to verify even further
 5. Merge to main branch which will update the prod project because prod is linked with main branch
