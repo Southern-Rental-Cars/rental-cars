@@ -17,8 +17,8 @@
 1. Commit changes and push code to dev branch (IMPORTANT that we don't go to main branch immediately)
 2. Go to preview project on vercel dashboard and promote your latest commit to production (note: its the production for the preview project, so if it breaks its not a big deal)
 3. Test latest code changes on the preview project
-4. Get code review to verify even further
-5. Merge to main branch which will update the prod project because prod is linked with main branch
+4. Get code review for further verification
+5. Merge to the main branch and this will update the prod project because prod is linked with our main branch code
 
 #### Vercel project dashboards
 1. Preview: https://vercel.com/southernrentalcars/preview/stores/postgres/store_iwHcqT5Pj7aVHx6q/data
