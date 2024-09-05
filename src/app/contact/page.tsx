@@ -48,7 +48,7 @@ const ContactPage = async () => {
     <Container className="mt-10">
       {/* Column 1: Contact Details */}
         <h1 className="text-center text-5xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
-          Contact us
+          Contact
         </h1>
 
         <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
@@ -89,17 +89,6 @@ const ContactPage = async () => {
             +1 (832) 684-7072
           </SocialLink>
         </ul>
-
-      {/* Column 2: Map */}
-      <div className="h-96 mt-12">
-        <iframe
-          src="https://storage.googleapis.com/maps-solutions-994uusg9w0/locator-plus/ikr6/locator-plus.html"
-          width="100%"
-          height="100%"
-          loading="lazy"
-          className="rounded-md"
-        ></iframe>
-      </div>
     </Container>
   )
 }
