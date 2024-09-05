@@ -34,8 +34,8 @@ function DesktopNavigation() {
   return (
     <nav className="hidden md:flex">
       <ul className="flex space-x-6 text-md font-semibold text-white">
-        <NavItem href="/vehicles"> Book reservation </NavItem>
-        <NavItem href="/business-solutions">Business solutions</NavItem>
+        <NavItem href="/vehicles"> Book Vehicle </NavItem>
+        <NavItem href="/business-solutions">Business Solutions</NavItem>
         <NavItem href="/contact">Contact</NavItem>
       </ul>
     </nav>
@@ -71,8 +71,8 @@ function MobileNavigation({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       }`}
     >
       <ul className="py-1 text-white">
-        <NavItem href="/vehicles" onClick={onClose}>Book reservation</NavItem>
-        <NavItem href="/business-solutions" onClick={onClose}>Business solutions</NavItem>
+        <NavItem href="/vehicles" onClick={onClose}>Book Vehicle</NavItem>
+        <NavItem href="/business-solutions" onClick={onClose}>Business Solutions</NavItem>
         <NavItem href="/contact" onClick={onClose}>Contact</NavItem>
       </ul>
     </div>

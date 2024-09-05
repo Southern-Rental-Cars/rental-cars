@@ -81,9 +81,7 @@ export default function CarView({ cars }: CarViewProps) {
           )}
           {/* Main Content */}
           <main className="flex-1 p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold">Vehicles Available</h2>
-            </div>
+
             {/* Pass filter inputs to CarsGrid */}
             <CarsGrid
               cars={cars}
