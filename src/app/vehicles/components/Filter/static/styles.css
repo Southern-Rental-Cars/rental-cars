@@ -3,8 +3,8 @@
   position: relative;
   z-index: 1;
   cursor: pointer;
-  box-shadow: none;  /* Remove shadow */
-  border: none;  /* Remove border */
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .multi-range-slider .thumb::before {
@@ -13,13 +13,14 @@
   position: absolute;
   width: 20px;
   height: 20px;
-  border: none;  /* Remove border */
-  box-shadow: none;  /* Remove shadow */
+  border: none !important;
+  box-shadow: none !important;
   border-radius: 50%;
   z-index: 1;
   margin: -8px -12px;
   cursor: pointer;
 }
+
 
 .multi-range-slider .caption {
   display: none !important; /* Forcefully hide caption */
