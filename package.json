@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/pg": "^8.11.6",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.4",
