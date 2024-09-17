@@ -76,9 +76,8 @@ model extras {
 
 model users {
   id                 Int        @id @default(autoincrement())
-  username           String     @unique @db.VarChar(50)
-  password_hash      String     @db.VarChar(100)
   email              String     @unique @db.VarChar(100)
+  password_hash      String     @db.VarChar(100)
   full_name          String?    @db.VarChar(100)
   date_of_birth      DateTime?  
   role_access        String?    @db.VarChar(10)
