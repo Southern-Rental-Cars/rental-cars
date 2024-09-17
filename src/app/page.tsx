@@ -13,13 +13,16 @@ const HomePage = () => {
     <>
       {/* Hero */}
       <div className="relative w-full h-[67vh]">
-        <Image
-          src={Benz}
-          alt="Car on a scenic road"
-          layout="fill"
-          loading="lazy" // Lazily load this image as it is not the LCP element
-          objectFit="cover" // Ensures the image covers the container while maintaining aspect ratio
-        />
+      <Image
+        src={Benz}
+        alt="Car on a scenic road"
+        layout="fill"
+        loading="eager" // Eager loading for hero images
+        objectFit="cover"
+        priority // Prioritize for faster loading
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Responsive image sizes
+      />
+
         <div className="absolute inset-0 bg-gradient-to-r from-[#14223f] to-transparent brightness-50"></div>
         
         <div className="absolute inset-0 z-20 flex justify-center items-center px-8">
