@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../../../lib/prisma';
 
 type Data = {
   message: string;
@@ -20,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       } = req.body;
 
       // Validate required fields
+      // TODO: remove this, validation happens in client, not necessary here
       if (!email || !password || !license_number || !license_state || !license_expiration) {
         return res.status(400).json({
           message: 'Email, password, license number, license state, and license expiration are required.'

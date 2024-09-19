@@ -67,8 +67,7 @@ model extras {
   id                 Int              @id @default(autoincrement())
   name               String           @db.VarChar(255)
   description        String?
-  available_quantity Int?
-  available          Boolean?         @default(true)
+  available_quantity Int
   price_type         String?          @db.VarChar(50)
   price_amount       Int?
   booking_extras     booking_extras[]
