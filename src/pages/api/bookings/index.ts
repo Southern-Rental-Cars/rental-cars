@@ -78,7 +78,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             throw new Error(`Extra with id ${extra_id} is not available.`);
           }
 
-          if (extraRecord.available_quantity < quantity) {
+          // for some reason these null checks are required in typescript
+          if (extraRecord.available_quantity === null) {
+            throw new Error(`${extraRecord.name} has no available quantity.`);
+          } else if (extraRecord.available_quantity < quantity) {
             throw new Error(
               `${extraRecord.name} is unavailable in the requested quantity. Available quantity: ${extraRecord.available_quantity}`
             );
@@ -126,27 +129,106 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await prisma.$disconnect();
     }
   } else if (req.method === 'GET') {
-    try {
-      const bookings = await prisma.bookings.findMany({
-        include: {
-          booking_extras: {
-            include: {
-              extras: true,
-            },
-          },
-        },
-      });
+    // Extract the 'id', 'car_id', and 'userId' from the query parameters
+    const { id, car_id, user_id } = req.query;
 
-      res.status(200).json(bookings);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error occurred';
-      console.error('Error fetching bookings:', message);
-      res.status(500).json({ error: message || 'Internal Server Error' });
-    } finally {
-      await prisma.$disconnect();
+    // Validate that 'id', 'car_id', and 'userId' are strings if they exist
+    if (
+        (id && typeof id !== 'string') || 
+        (car_id && typeof car_id !== 'string') || 
+        (user_id && typeof user_id !== 'string')
+    ) {
+        return res.status(400).json({ error: 'Invalid ID, car_id, or userId' });
     }
-  } else {
-    res.setHeader('Allow', ['POST', 'GET']);
-    res.status(405).json({ error: `Method ${req.method} Not Allowed` });
+      try {
+        // Case: Fetch booking by booking ID
+        if (id) {
+            const booking = await prisma.bookings.findUnique({
+                where: {
+                    id: parseInt(id),
+                },
+                select: {
+                    id: true,
+                    car_id: true,
+                    user_id: true,
+                    start_date: true,
+                    end_date: true,
+                    status: true,
+                    booking_extras: {
+                        select: {
+                            extra_id: true,
+                            quantity: true,
+                        },
+                    },
+                },
+            });
+
+            if (booking) {
+                return res.status(200).json(booking);
+            } else {
+                return res.status(404).json({ error: 'Booking not found' });
+            }
+        }
+
+        // Case: Fetch bookings by car ID
+        else if (car_id) {
+            const bookings = await prisma.bookings.findMany({
+                where: {
+                    car_id: parseInt(car_id),
+                },
+                select: {
+                    id: true,
+                    car_id: true,
+                    user_id: true,
+                    start_date: true,
+                    end_date: true,
+                    status: true,
+                },
+            });
+
+            return res.status(200).json(bookings);
+        }
+
+        // Case: Fetch bookings by user ID
+        else if (user_id) {
+          console.log('userId:', user_id);
+            const bookings = await prisma.bookings.findMany({
+                where: {
+                    user_id: parseInt(user_id),
+                },
+                select: {
+                    id: true,
+                    car_id: true,
+                    user_id: true,
+                    start_date: true,
+                    end_date: true,
+                    status: true,
+                },
+            });
+
+            return res.status(200).json(bookings);
+        }
+        else {
+        // Case: Fetch all bookings if no ID, car_id, or userId is provided
+        const bookings = await prisma.bookings.findMany({
+            select: {
+                id: true,
+                car_id: true,
+                user_id: true,
+                start_date: true,
+                end_date: true,
+                status: true,
+            },
+        });
+
+        return res.status(200).json(bookings);
+      }
+
+    } catch (err) {
+        console.error('Error fetching booking:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        await prisma.$disconnect();
+    }
   }
 }

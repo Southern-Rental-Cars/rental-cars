@@ -37,11 +37,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Iterate through each booking and process it
       const results = await Promise.all(
         bookingsToComplete.map(async (booking) => {
-          // Update the booking's status to 'COMPLETE'
+          // Update the booking's status to 'completed'
           const updatedBooking = await prisma.bookings.update({
             where: { id: booking.id },
             data: {
-              status: 'complete',
+              status: 'completed',
               updated_at: now,
             },
           });

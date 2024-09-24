@@ -1,10 +1,16 @@
+// File: /pages/api/auth/login.ts
+
 import type { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
 import prisma from '../../../lib/prisma';
 
 type Data = {
     message: string;
-    user?: any;
+    user?: {
+        id: number;
+        email: string;
+        full_name: string;
+    };
     error?: string;
 }
 
@@ -12,6 +18,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     if (req.method === 'POST') {
         try {
             const { email, password } = req.body;
+
+            if (!email || !password) {
+                return res.status(400).json({ message: 'Email and password are required.' });
+            }
 
             const existingUser = await prisma.users.findUnique({ where: { email } });
             if (!existingUser) {
@@ -28,11 +38,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 user: {
                     id: existingUser.id,
                     email: existingUser.email,
-                    full_name: existingUser.full_name,
-                }
+                    full_name: existingUser.full_name || 'Default Name',
+                },
             });
         } catch (error) {
-            // Ensure that error is treated as an Error object
             const errorMessage = (error as Error).message || 'Unknown error occurred';
             return res.status(500).json({ message: 'An error occurred.', error: errorMessage });
         }
