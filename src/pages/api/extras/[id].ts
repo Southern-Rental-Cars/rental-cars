@@ -54,57 +54,59 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse, id: string) 
 // Handler for PUT requests to update an extra by ID
 async function handlePut(req: NextApiRequest, res: NextApiResponse, id: string) {
     const {
-        name,
-        description,
-        available_quantity,
-        price_type,
-        price_amount,
+      name,
+      description,
+      total_quantity,  // Updated to total_quantity
+      price_type,
+      price_amount,
     } = req.body;
-
+  
     // Check if at least one field is provided for update
     if (
-        name === undefined &&
-        description === undefined &&
-        available_quantity === undefined &&
-        price_type === undefined &&
-        price_amount === undefined
+      name === undefined &&
+      description === undefined &&
+      total_quantity === undefined &&  // Updated field check
+      price_type === undefined &&
+      price_amount === undefined
     ) {
-        return res.status(400).json({ error: 'No fields provided for update' });
+      return res.status(400).json({ error: 'No fields provided for update' });
     }
-
+  
     try {
-        await prisma.extras.update({
-            where: { id: parseInt(id, 10) },
-            data: {
-                ...(name !== undefined && { name }),
-                ...(description !== undefined && { description }),
-                ...(available_quantity !== undefined && {
-                    available_quantity: parseInt(available_quantity, 10),
-                }),
-                ...(price_type !== undefined && { price_type }),
-                ...(price_amount !== undefined && {
-                    price_amount: parseInt(price_amount, 10),
-                }),
-            },
-        });
-
-        res.status(204).end();
+      // Update the extra with the provided fields
+      await prisma.extras.update({
+        where: { id: parseInt(id, 10) },
+        data: {
+          ...(name !== undefined && { name }),
+          ...(description !== undefined && { description }),
+          ...(total_quantity !== undefined && {
+            total_quantity: parseInt(total_quantity, 10), // Changed field to total_quantity
+          }),
+          ...(price_type !== undefined && { price_type }),
+          ...(price_amount !== undefined && {
+            price_amount: parseInt(price_amount, 10),
+          }),
+        },
+      });
+  
+      res.status(204).end(); // Successful update with no content
     } catch (error) {
-        console.error('Error updating extra:', error);
-
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === 'P2025') {
-                res.status(404).json({ error: 'Extra not found' });
-            } else {
-                res.status(500).json({ error: 'Database error' });
-            }
+      console.error('Error updating extra:', error);
+  
+      // Handle Prisma errors
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          res.status(404).json({ error: 'Extra not found' });
         } else {
-            res.status(500).json({ error: 'Internal Server Error' });
+          res.status(500).json({ error: 'Database error' });
         }
+      } else {
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
     } finally {
-        await prisma.$disconnect();
+      await prisma.$disconnect();
     }
-}
+  }
 
 // Handler for DELETE requests to delete an extra by ID
 async function handleDelete(req: NextApiRequest, res: NextApiResponse, id: string) {

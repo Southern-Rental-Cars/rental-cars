@@ -1,234 +1,177 @@
-// File: /pages/api/bookings/index.ts
-
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 
-// Define TypeScript interfaces for request body
-interface ExtraRequest {
-  extra_id: number;
-  quantity: number;
+// Step 1: Validate booking input
+async function validateBookingInput(car_id: number, user_id: number, start_date: string, end_date: string) {
+  if (!car_id || !user_id || !start_date || !end_date) {
+    throw new Error('Missing required fields.');
+  }
 }
 
-interface BookingRequestBody {
-  car_id: number;
-  user_id?: number;
-  start_date: string;
-  end_date: string;
-  status?: string;
-  extras: ExtraRequest[];
+// Step 2: Check for overlapping car bookings
+async function checkOverlappingBookings(res: NextApiResponse, car_id: number, start_date: string, end_date: string) {
+  const overlappingBooking = await prisma.bookings.findFirst({
+    where: {
+      car_id: car_id,
+      status: 'active',
+      OR: [
+        { start_date: { lte: new Date(end_date) }, end_date: { gte: new Date(start_date) } },
+      ],
+    },
+  });
+
+  if (overlappingBooking) {
+    return res.status(400).json({ error: 'This car is booked for the selected dates.' });
+  }
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const { car_id, user_id, start_date, end_date, status, extras } = req.body as BookingRequestBody;
 
-    try {
-      // Validate input
-      if (!car_id || !start_date || !end_date || !extras || !Array.isArray(extras)) {
-        return res.status(400).json({ error: 'Missing required fields or invalid extras format.' });
-      }
+// Step 3: Check if extras are available for the entire date range
+async function checkExtrasAvailability(res: NextApiResponse, extras: any[], start_date: string, end_date: string) {
+  console.log('Checking extras availability:', extras);
 
-      // Start a transaction
-      const result = await prisma.$transaction(async (prisma) => {
-        // Check if the car exists
-        const car = await prisma.cars.findUnique({
-          where: { id: car_id },
-        });
+  for (const extra of extras) {
+    const { id, quantity } = extra;  // Changed to `id` as per the log structure
 
-        if (!car) {
-          throw new Error('Car not found.');
-        }
+    // Fetch the total available quantity of the extra
+    const extraDetails = await prisma.extras.findUnique({
+      where: { id: id },  // Use `id` instead of `extra_id`
+      select: { name: true, total_quantity: true },
+    });
 
-        // Check for overlapping active bookings for the same car
-        const overlappingBooking = await prisma.bookings.findFirst({
-          where: {
-            car_id: car_id,
-            status: 'active',
+    if (!extraDetails) {
+      return res.status(404).json({ error: `Extra with ID ${id} not found.` });
+    }
+
+    const extraName = extraDetails.name;
+
+    // Check if there are enough extras available across the requested date range
+    let currentDate = new Date(start_date);
+    const endDate = new Date(end_date);
+
+    while (currentDate <= endDate) {
+      // Aggregate the total quantity of the extra already booked in the current date range
+      const totalBookedQuantity = await prisma.booking_extras.aggregate({
+        _sum: { quantity: true },
+        where: {
+          extra_id: id,  // Use `id` here as well
+          bookings: {
             OR: [
-              {
-                start_date: {
-                  lte: new Date(end_date),
-                },
-                end_date: {
-                  gte: new Date(start_date),
-                },
-              },
+              { start_date: { lte: currentDate }, end_date: { gte: currentDate } },
             ],
           },
-        });
-
-        if (overlappingBooking) {
-          throw new Error('This car is booked for the selected dates.');
-        }
-
-        // Validate and update available_quantity for each extra
-        for (const extra of extras) {
-          const { extra_id, quantity } = extra;
-
-          if (!extra_id || !quantity || quantity <= 0) {
-            throw new Error('Invalid extra_id or quantity.');
-          }
-
-          const extraRecord = await prisma.extras.findUnique({
-            where: { id: extra_id },
-            select: { available_quantity: true, name: true },
-          });
-
-          if (!extraRecord) {
-            throw new Error(`Extra with id ${extra_id} is not available.`);
-          }
-
-          // for some reason these null checks are required in typescript
-          if (extraRecord.available_quantity === null) {
-            throw new Error(`${extraRecord.name} has no available quantity.`);
-          } else if (extraRecord.available_quantity < quantity) {
-            throw new Error(
-              `${extraRecord.name} is unavailable in the requested quantity. Available quantity: ${extraRecord.available_quantity}`
-            );
-          }
-
-          // Decrement available_quantity
-          await prisma.extras.update({
-            where: { id: extra_id },
-            data: {
-              available_quantity: { decrement: quantity },
-            },
-          });
-        }
-
-        // Proceed to create booking
-        const newBooking = await prisma.bookings.create({
-          data: {
-            car_id,
-            user_id,
-            start_date: new Date(start_date),
-            end_date: new Date(end_date),
-            status: status || 'active',
-            booking_extras: {
-              create: extras.map((extra) => ({
-                extra_id: extra.extra_id,
-                quantity: extra.quantity,
-              })),
-            },
-          },
-          include: {
-            booking_extras: true,
-          },
-        });
-
-        return newBooking;
+        },
       });
 
-      // Respond with the newly created booking
-      res.status(201).json(result);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'An error occurred';
-      console.error('Error creating booking:', message);
-      res.status(400).json({ error: message || 'Internal Server Error' });
-    } finally {
-      await prisma.$disconnect();
-    }
-  } else if (req.method === 'GET') {
-    // Extract the 'id', 'car_id', and 'userId' from the query parameters
-    const { id, car_id, user_id } = req.query;
+      const bookedQuantity = totalBookedQuantity._sum.quantity || 0;
 
-    // Validate that 'id', 'car_id', and 'userId' are strings if they exist
-    if (
-        (id && typeof id !== 'string') || 
-        (car_id && typeof car_id !== 'string') || 
-        (user_id && typeof user_id !== 'string')
-    ) {
-        return res.status(400).json({ error: 'Invalid ID, car_id, or userId' });
-    }
-      try {
-        // Case: Fetch booking by booking ID
-        if (id) {
-            const booking = await prisma.bookings.findUnique({
-                where: {
-                    id: parseInt(id),
-                },
-                select: {
-                    id: true,
-                    car_id: true,
-                    user_id: true,
-                    start_date: true,
-                    end_date: true,
-                    status: true,
-                    booking_extras: {
-                        select: {
-                            extra_id: true,
-                            quantity: true,
-                        },
-                    },
-                },
-            });
-
-            if (booking) {
-                return res.status(200).json(booking);
-            } else {
-                return res.status(404).json({ error: 'Booking not found' });
-            }
-        }
-
-        // Case: Fetch bookings by car ID
-        else if (car_id) {
-            const bookings = await prisma.bookings.findMany({
-                where: {
-                    car_id: parseInt(car_id),
-                },
-                select: {
-                    id: true,
-                    car_id: true,
-                    user_id: true,
-                    start_date: true,
-                    end_date: true,
-                    status: true,
-                },
-            });
-
-            return res.status(200).json(bookings);
-        }
-
-        // Case: Fetch bookings by user ID
-        else if (user_id) {
-          console.log('userId:', user_id);
-            const bookings = await prisma.bookings.findMany({
-                where: {
-                    user_id: parseInt(user_id),
-                },
-                select: {
-                    id: true,
-                    car_id: true,
-                    user_id: true,
-                    start_date: true,
-                    end_date: true,
-                    status: true,
-                },
-            });
-
-            return res.status(200).json(bookings);
-        }
-        else {
-        // Case: Fetch all bookings if no ID, car_id, or userId is provided
-        const bookings = await prisma.bookings.findMany({
-            select: {
-                id: true,
-                car_id: true,
-                user_id: true,
-                start_date: true,
-                end_date: true,
-                status: true,
-            },
+      // Check if adding this booking would exceed the total available quantity
+      if (bookedQuantity + quantity > extraDetails.total_quantity) {
+        return res.status(400).json({
+          error: `Not enough ${extraName} available on ${currentDate.toDateString()}. Requested: ${quantity}, Available: ${extraDetails.total_quantity - bookedQuantity}`
         });
-
-        return res.status(200).json(bookings);
       }
 
-    } catch (err) {
-        console.error('Error fetching booking:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    } finally {
-        await prisma.$disconnect();
+      // Move to the next day in the range
+      currentDate.setDate(currentDate.getDate() + 1);
     }
+  }
+
+  return res.status(200).json({ message: 'All extras are available.' });
+}
+
+
+
+// Step 4: Create the booking with extras
+async function createBooking(car_id: number, user_id: number, start_date: string, end_date: string, total_price: string, extras: any[]) {
+  return await prisma.bookings.create({
+    data: {
+      car_id,
+      user_id,
+      start_date: new Date(start_date),
+      end_date: new Date(end_date),
+      total_price: parseFloat(total_price),
+      status: 'active',
+      booking_extras: {
+        create: extras.map((extra) => ({
+          extra_id: extra.id,
+          quantity: extra.quantity,
+        })),
+      },
+    },
+    include: {
+      booking_extras: true,
+    },
+  });
+}
+
+// Main handler for booking creation
+async function handlePostRequest(req: NextApiRequest, res: NextApiResponse) {
+  const { car_id, user_id, start_date, end_date, total_price, extras = [] } = req.body;
+
+  try {
+    // Step 1: Validate booking input
+    await validateBookingInput(car_id, user_id, start_date, end_date);
+
+    // Step 2: Check for overlapping car bookings
+    await checkOverlappingBookings(res, car_id, start_date, end_date); // Pass 'res' here
+
+    // Step 3: Check if extras are available across the entire date range
+    await checkExtrasAvailability(res, extras, start_date, end_date);
+
+    // Step 4: Create the booking with extras
+    const newBooking = await createBooking(car_id, user_id, start_date, end_date, total_price, extras);
+
+    // Respond with the newly created booking
+    res.status(201).json(newBooking);
+  } catch (error) {
+    console.error('Error creating booking:', error);
+    res.status(400).json({ error: error.message });
+  }
+}
+
+// Step 5: Retrieve bookings for a user
+async function getBookingsByUser(user_id: number) {
+  return await prisma.bookings.findMany({
+    where: { user_id },
+    include: {
+      cars: true, // Include car details in the booking
+      booking_extras: {
+        include: {
+          extras: true, // Include extra details
+        },
+      },
+    },
+  });
+}
+
+// Main handler for retrieving user bookings
+async function handleGetRequest(req: NextApiRequest, res: NextApiResponse) {
+  const { user_id } = req.query;
+
+  if (!user_id) {
+    return res.status(400).json({ error: 'Missing user_id' });
+  }
+
+  try {
+    const bookings = await getBookingsByUser(parseInt(user_id as string));
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: 'No bookings found for this user.' });
+    }
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error('Error retrieving bookings:', error);
+    res.status(500).json({ error: 'Failed to retrieve bookings' });
+  }
+}
+
+// Main API handler
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'POST') {
+    await handlePostRequest(req, res);
+  } else if (req.method === 'GET') {
+    await handleGetRequest(req, res);
+  } else {
+    res.status(405).json({ error: `Method ${req.method} Not Allowed` });
   }
 }

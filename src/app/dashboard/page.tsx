@@ -9,8 +9,19 @@ interface Booking {
   car_id: number;
   start_date: string;
   end_date: string;
+  status: string;
   total_cost: number;
-  car_name?: string; // Optional field to store the fetched car name
+  car_name?: string;
+  booking_extras: {
+    id: number;
+    extra_id: number;
+    quantity: number;
+    extras: {
+      name: string;
+      description: string;
+      price_amount: number;
+    };
+  }[];
 }
 
 interface User {
@@ -25,6 +36,7 @@ const Dashboard = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<string>('active'); // Default filter is 'active'
 
   // Fetch user information and bookings when the component mounts
   useEffect(() => {
@@ -67,6 +79,14 @@ const Dashboard = () => {
     fetchUserData();
   }, [user]);
 
+  // Filter bookings based on the selected status
+  const filteredBookings = bookings.filter((b) => b.status === filter);
+
+  // Handle filter change
+  const handleFilterChange = (newFilter: string) => {
+    setFilter(newFilter);
+  };
+
   if (!user) {
     return <p>Please log in to view your dashboard.</p>;
   }
@@ -91,16 +111,54 @@ const Dashboard = () => {
 
       <div className="bg-gray-100 p-5 rounded-lg">
         <h2 className="text-xl font-medium mb-3">Booking History</h2>
-        {bookings.length > 0 ? (
-          bookings.map((booking) => (
+
+        {/* Filter Buttons */}
+        <div className="mb-4">
+          <button
+            className={`mr-2 px-4 py-2 rounded ${filter === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => handleFilterChange('active')}
+          >
+            Active
+          </button>
+          <button
+            className={`mr-2 px-4 py-2 rounded ${filter === 'canceled' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => handleFilterChange('canceled')}
+          >
+            Canceled
+          </button>
+          <button
+            className={`px-4 py-2 rounded ${filter === 'completed' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => handleFilterChange('completed')}
+          >
+            Completed
+          </button>
+        </div>
+
+        {filteredBookings.length > 0 ? (
+          filteredBookings.map((booking) => (
             <div key={booking.id} className="mb-4 p-4 border rounded-lg bg-white shadow">
-              <h3 className="text-lg font-medium">{booking.car_name}</h3>
+              <h3 className="text-lg font-medium mb-1">{booking.car_name}</h3>
               <p><strong>Start Date:</strong> {new Date(booking.start_date).toLocaleDateString()}</p>
               <p><strong>End Date:</strong> {new Date(booking.end_date).toLocaleDateString()}</p>
+              <p><strong>Status:</strong> {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</p>
+              <p><strong>Amount:</strong> ${booking.total_price}</p> {/* Display total price */}
+              {/* Display Extras */}
+              {booking.booking_extras.length > 0 && (
+                <div className="mt-2">
+                  <h4 className="text-md font-semibold">Extras:</h4>
+                  <ul>
+                    {booking.booking_extras.map((extra) => (
+                      <li key={extra.id}>
+                        {extra.extras.name} - Quantity: {extra.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           ))
         ) : (
-          <p>You have no bookings yet.</p>
+          <p>No bookings found for the selected status.</p>
         )}
       </div>
     </div>

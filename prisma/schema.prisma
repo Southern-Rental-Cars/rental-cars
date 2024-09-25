@@ -17,13 +17,23 @@ model CarImages {
   @@map("car_images")
 }
 
+model extras {
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(100)
+  total_quantity Int              // Total quantity of the extra
+  description    String?
+  price_type     String?          @db.VarChar(50)
+  price_amount   Int?
+  booking_extras booking_extras[] // Relation to booking_extras
+}
+
 model booking_extras {
-  id         Int       @id @default(autoincrement())
-  booking_id Int?
-  extra_id   Int?
-  quantity   Int?
-  bookings   bookings? @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  extras     extras?   @relation(fields: [extra_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id         Int      @id @default(autoincrement())
+  booking_id Int
+  extra_id   Int
+  quantity   Int // Quantity of extras booked for the given period
+  bookings   bookings @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  extras     extras   @relation(fields: [extra_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model bookings {
@@ -33,6 +43,7 @@ model bookings {
   start_date     DateTime         @db.Timestamp(6)
   end_date       DateTime         @db.Timestamp(6)
   status         String?          @default("active") @db.VarChar(20)
+  total_price    Decimal?         @db.Decimal(10, 2) // New total price field
   created_at     DateTime?        @default(now()) @db.Timestamp(6)
   updated_at     DateTime?        @default(now()) @db.Timestamp(6)
   booking_extras booking_extras[]
@@ -63,56 +74,45 @@ model cars {
   car_images        CarImages[] @relation("CarToCarImages")
 }
 
-model extras {
-  id                 Int              @id @default(autoincrement())
-  name               String           @db.VarChar(255)
-  description        String?
-  available_quantity Int
-  price_type         String?          @db.VarChar(50)
-  price_amount       Int?
-  booking_extras     booking_extras[]
-}
-
 model users {
-  id                 Int        @id @default(autoincrement())
-  email              String     @unique @db.VarChar(100)
-  password_hash      String     @db.VarChar(100)
-  full_name          String?    @db.VarChar(100)
-  date_of_birth      DateTime?  
-  role_access        String?    @db.VarChar(10)
-  phone              String?    @db.VarChar(20) 
-  street_address     String?    @db.Text
-  zip_code           String?    @db.VarChar(10)
-  country            String?    @db.VarChar(3)
+  id             Int       @id @default(autoincrement())
+  email          String    @unique @db.VarChar(100)
+  password_hash  String    @db.VarChar(100)
+  full_name      String?   @db.VarChar(100)
+  date_of_birth  DateTime?
+  role_access    String?   @db.VarChar(10)
+  phone          String?   @db.VarChar(20)
+  street_address String?   @db.Text
+  zip_code       String?   @db.VarChar(10)
+  country        String?   @db.VarChar(3)
 
   // License Information
-  license_number     String     @db.VarChar(25)
-  license_state      String     @db.VarChar(25)
-  license_front_img  String     @db.Text 
-  license_back_img   String     @db.Text 
-  license_expiration DateTime 
+  license_number     String   @db.VarChar(25)
+  license_state      String   @db.VarChar(25)
+  license_front_img  String   @db.Text
+  license_back_img   String   @db.Text
+  license_expiration DateTime
 
   // Stripe-related fields for payment
-  stripe_customer_id String?    @unique @db.VarChar(100)  // Stripe's customer ID
-  stripe_payment_method_id String? @db.VarChar(100)       // Stripe payment method ID
+  stripe_customer_id       String? @unique @db.VarChar(100) // Stripe's customer ID
+  stripe_payment_method_id String? @db.VarChar(100) // Stripe payment method ID
 
   // Billing Information
-  billing_full_name      String?    @db.VarChar(100)        // Optional: Full name for billing
-  billing_street_address String?    @db.Text                // Billing address line 1
-  billing_city           String?    @db.VarChar(50)         // Billing city
-  billing_state          String?    @db.VarChar(50)         // Billing state or province
-  billing_country        String?    @db.VarChar(3)          // ISO 3166-1 country code
-  billing_postal_code    String?    @db.VarChar(10)         // Billing postal or ZIP code
+  billing_full_name      String? @db.VarChar(100) // Optional: Full name for billing
+  billing_street_address String? @db.Text // Billing address line 1
+  billing_city           String? @db.VarChar(50) // Billing city
+  billing_state          String? @db.VarChar(50) // Billing state or province
+  billing_country        String? @db.VarChar(3) // ISO 3166-1 country code
+  billing_postal_code    String? @db.VarChar(10) // Billing postal or ZIP code
 
   // Optionally, if tax data is required
-  tax_id                String?     @db.VarChar(50)        // Optional: Tax identification number
-  billing_email         String?     @db.VarChar(100)       // Optional: Different billing email address
+  tax_id        String? @db.VarChar(50) // Optional: Tax identification number
+  billing_email String? @db.VarChar(100) // Optional: Different billing email address
 
   // Relationships
-  bookings           bookings[]
+  bookings bookings[]
 
   // Timestamps
-  created_at         DateTime?  @default(now()) @db.Timestamp(6)
-  updated_at         DateTime?  @updatedAt @db.Timestamp(6) // Automatically update on }
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @updatedAt @db.Timestamp(6) // Automatically update on }
 }
-

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useUser } from '@/components/contexts/UserContext';
+import Toast from '@/components/Toast'; // Import your Toast component
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -13,6 +14,8 @@ export default function RegisterPage() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null); // Error state for submission
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<'success' | 'error'>('success'); // Success or Error type
 
   // Personal and contact information state
   const [personalInfo, setPersonalInfo] = useState({
@@ -40,11 +43,11 @@ export default function RegisterPage() {
 
   const handleNextStep = () => {
     if (personalInfo.password !== personalInfo.confirmPassword) {
-      setError("Passwords don't match");
+      setToastType('error');
+      setToastMessage("Passwords don't match");
       return;
     }
     setStep(step + 1);
-    setError(null); // Clear any existing errors
   };
 
   const handlePrevStep = () => {
@@ -95,8 +98,6 @@ export default function RegisterPage() {
         country: licenseInfo.country,
       };
 
-      console.log('Payload:', payload); // Log the payload for debugging purposes
-
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -110,10 +111,12 @@ export default function RegisterPage() {
         await loginUser(personalInfo.email, personalInfo.password);
       } else {
         const data = await response.json();
-        setError(data.message || 'Registration failed. Please try again.');
+        setToastType('error');
+        setToastMessage(data.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
+      setToastType('error');
+      setToastMessage('An unexpected error occurred during login.');
     } finally {
       setIsSubmitting(false); // Re-enable the submit button
     }
@@ -137,12 +140,16 @@ export default function RegisterPage() {
           full_name: data.user.full_name,
           email: data.user.email,
         });
+        setToastType('success');
+        setToastMessage('Registration successful! Redirecting...');
         router.push('/'); // Redirect to the homepage after logging in
       } else {
-        setError('Login failed after registration. Please log in manually.');
+        setToastType('error');
+        setToastMessage('Login failed after registration. Please log in manually.');
       }
     } catch (error) {
-      setError('An unexpected error occurred during login.');
+      setToastType('error');
+      setToastMessage('An unexpected error occurred during login.');
     }
   };
 
@@ -164,12 +171,11 @@ export default function RegisterPage() {
 
   return (
     <div className="flex justify-center mt-10">
+
       <div className="w-full max-w-md p-8">
+        <h2 className="text-3xl font-semibold mb-6 text-center">Create Account</h2>
         {/* Display error message if there is one */}
         {error && <div className="mb-4 text-red-600 text-center">{error}</div>}
-
-        {/* Render step dots */}
-        {renderDots()}
 
         {step === 1 && (
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
@@ -277,6 +283,8 @@ export default function RegisterPage() {
                 placeholder="90210"
               />
             </div>
+            {/* Render step dots */}
+            {renderDots()}
             <div className="flex justify-between">
               <Link href="/login" className="text-blue-600 hover:underline">Already have an account? Login</Link>
               <button onClick={handleNextStep} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
@@ -365,6 +373,10 @@ export default function RegisterPage() {
               </button>
             </div>
           </form>
+        )}
+        {/* Render Toast if message exists */}
+        {toastMessage && (
+          <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage(null)} />
         )}
       </div>
     </div>

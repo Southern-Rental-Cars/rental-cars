@@ -5,15 +5,16 @@ interface BookingConfirmationProps {
   carId: number;
   startDate: string;
   endDate: string;
+  selectedExtras: any[];
   totalCost: number;
 }
 
-const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ carName, carId, startDate, endDate, totalCost }) => {
+const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ carName, carId, startDate, endDate, selectedExtras, totalCost }) => {
   return (
     <div className="container mx-auto p-5 max-w-4xl">
-      <h1 className="text-3xl font-semibold mb-5">Booking Confirmed!</h1>
+      <h1 className="text-3xl font-semibold mb-5">Booking Confirmation</h1>
 
-      <div className="bg-gray-100 p-4 rounded-lg mb-5">
+      <div className="bg-white p-5 rounded-lg mb-5">
         <h2 className="text-lg font-medium mb-2">Your Booking</h2>
         <div className="flex justify-between items-center mb-3">
           <div>
@@ -34,9 +35,9 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ carName, carI
         </div>
       </div>
 
-      <div className="bg-gray-100 p-4 rounded-lg mb-5">
+      <div className="bg-white p-5 rounded-lg mb-5">
         <h2 className="text-lg font-medium mb-2">Price Details</h2>
-        <p className="text-lg font-semibold mt-4">Total Cost: ${totalCost}</p>
+        <p className="text-lg font-semibold mt-4">Total: ${totalCost}</p>
       </div>
 
       <button
