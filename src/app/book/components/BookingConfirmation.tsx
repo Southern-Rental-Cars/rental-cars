@@ -9,7 +9,7 @@ interface BookingConfirmationProps {
   totalCost: number;
 }
 
-const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ carName, carId, startDate, endDate, selectedExtras, totalCost }) => {
+const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ carName, startDate, endDate, selectedExtras, totalCost }) => {
   return (
     <div className="container mx-auto p-5 max-w-4xl">
       <h1 className="text-3xl font-semibold mb-5">Booking Confirmation</h1>

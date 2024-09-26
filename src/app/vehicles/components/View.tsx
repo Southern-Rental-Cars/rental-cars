@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import CarsGrid from '@/app/vehicles/components/Grid';
-import CarsFilter from '@/app/vehicles/components/Filter';
+import VehicleGrid from '@/app/vehicles/components/Grid';
+import VehicleFilter from '@/app/vehicles/components/Filter';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import Modal from '@/app/vehicles/components/Filter/Modal';
 import Toggle from './Filter/Toggle';
 import { CarViewProps } from '@/app/vehicles/types';
 
-export default function CarView({ cars }: CarViewProps) {
+export default function VehicleView({ cars }: CarViewProps) {
   const isMobile = useMediaQuery('(max-width: 767px)');
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<[number, number]>(() => {
@@ -70,7 +70,7 @@ export default function CarView({ cars }: CarViewProps) {
           {/* Sidebar Filter for Desktop */}
           {!isMobile && (
             <aside className="w-64 self-start">
-              <CarsFilter
+              <VehicleFilter
                 onFilterChange={handleFilterChange}
                 initialPriceRange={priceRange}
                 types={types}
@@ -83,7 +83,7 @@ export default function CarView({ cars }: CarViewProps) {
           <main className="flex-1 p-4">
 
             {/* Pass filter inputs to CarsGrid */}
-            <CarsGrid
+            <VehicleGrid
               cars={cars}
               types={types}
               priceRange={priceRange}
