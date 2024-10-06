@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       image_url,
     } = await req.json(); // Parse request body
 
-    const newCar = await prisma.cars.create({
+    const newCar = await prisma.car.create({
       data: {
         car_name,
         mpg,
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
 // GET /api/vehicles - Fetch all vehicles
 export async function GET() {
   try {
-    const cars = await prisma.cars.findMany({
+    const cars = await prisma.car.findMany({
       select: {
         id: true,
         car_name: true,
@@ -81,7 +81,7 @@ export async function GET() {
         turo_url: true,
         num_doors: true,
         num_seats: true,
-        car_images: {
+        carImages: {
           select: {
             image_url: true,
           },
@@ -92,12 +92,13 @@ export async function GET() {
     const formattedCars = cars.map((car) => ({
       ...car,
       price: parseInt(car.price.toString(), 10), // Ensure price is returned as an integer
-      image_url: car.car_images[0]?.image_url || '',
+      image_url: car.carImages[0]?.image_url || '',
     }));
 
     return NextResponse.json(formattedCars, { status: 200 });
   } catch (err) {
     console.error('Error fetching cars:', err);
+    console.error(err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

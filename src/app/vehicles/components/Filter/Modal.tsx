@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Filter from '@/app/vehicles/components/Filter';  // Import Filter from the appropriate path
-import { ModalProps } from '@/app/vehicles/types';
+import { ModalProps } from '@/types';
 
 export default function Modal({isFilterOpen, toggleFilter, handleFilterChange, priceRange, cars, sort, types}: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);

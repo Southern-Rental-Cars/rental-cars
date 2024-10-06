@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import {CarFilterProps} from '@/app/vehicles/types';
+import {CarFilterProps} from '@/types';
 import SelectPrice from './PriceSlider';
 import SelectType from './Type';
 import SelectSort from './Sort';

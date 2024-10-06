@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CarPriceRangeProps } from '@/app/vehicles/types';
+import { CarPriceRangeProps } from '@/types';
 import './static/styles.css';
 import MultiRangeSlider from "multi-range-slider-react";
 

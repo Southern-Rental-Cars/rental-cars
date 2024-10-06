@@ -21,7 +21,7 @@ async function checkExtrasAvailability(
     const { id } = extra;
 
     // Fetch the total available quantity of the extra
-    const extraDetails = await prisma.extras.findUnique({
+    const extraDetails = await prisma.extra.findUnique({
       where: { id: id },
       select: { name: true, total_quantity: true },
     });
@@ -35,11 +35,11 @@ async function checkExtrasAvailability(
     const endDateObject = new Date(end_date);
     // Check availability for each day in the range
     while (currentDate <= endDateObject) {
-      const bookedQuantityResult = await prisma.booking_extras.aggregate({
+      const bookedQuantityResult = await prisma.bookingExtra.aggregate({
         _sum: { quantity: true },
         where: {
           extra_id: id,
-          bookings: {
+          booking: {
             OR: [
               { start_date: { lte: currentDate }, end_date: { gte: currentDate } },
             ],

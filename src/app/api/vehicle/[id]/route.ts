@@ -11,7 +11,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
   try {
     // Prisma query to fetch car details and associated images
-    const car = await prisma.cars.findUnique({
+    const car = await prisma.car.findUnique({
       where: { id: parseInt(id) },
       select: {
         id: true,
@@ -32,7 +32,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         faqs: true, // This will be parsed if it's a string
         price: true,
         turo_url: true,
-        car_images: {
+        carImages: {
           select: {
             image_url: true,
           },
@@ -51,7 +51,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     const response = {
       ...car,
       faqs: parsedFAQs,
-      image_url: car.car_images.map((img) => img.image_url),
+      image_url: car.carImages.map((img) => img.image_url),
     };
 
     return NextResponse.json(response, { status: 200 });
@@ -71,7 +71,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
   try {
     // Prisma query to delete the car by ID
-    const deletedCar = await prisma.cars.delete({
+    const deletedCar = await prisma.car.delete({
       where: { id: parseInt(id) },
     });
 

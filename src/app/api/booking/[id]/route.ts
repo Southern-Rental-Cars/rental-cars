@@ -15,9 +15,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     // Start a transaction
     await prisma.$transaction(async (prisma) => {
       // Fetch the existing booking and its extras
-      const booking = await prisma.bookings.findUnique({
+      const booking = await prisma.booking.findUnique({
         where: { id: parseInt(id) },
-        include: { booking_extras: true },
+        include: { bookingExtras: true },
       });
 
       if (!booking) {
@@ -26,12 +26,12 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
       // If status is being updated to 'completed', increment available_quantity
       if (status && status === 'completed' && booking.status !== 'completed') {
-        for (const bookingExtra of booking.booking_extras) {
+        for (const bookingExtra of booking.bookingExtras) {
           if (bookingExtra.extra_id !== null && bookingExtra.quantity !== null) {
-            await prisma.extras.update({
+            await prisma.extra.update({
               where: { id: bookingExtra.extra_id },
               data: {
-                available_quantity: { increment: bookingExtra.quantity },
+                total_quantity: { increment: bookingExtra.quantity },
               },
             });
           }
@@ -39,7 +39,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       }
 
       // Update the booking
-      await prisma.bookings.update({
+      await prisma.booking.update({
         where: {
           id: parseInt(id),
         },
@@ -76,12 +76,12 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
   try {
     // Fetch the booking and its related booking_extras
-    const booking = await prisma.bookings.findUnique({
+    const booking = await prisma.booking.findUnique({
       where: {
         id: parseInt(id),
       },
       include: {
-        booking_extras: true, // Include the booking_extras in the query
+        bookingExtras: true, // Include the booking_extras in the query
       },
     });
 
@@ -96,9 +96,9 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     // Increment the available_quantity for each extra in booking_extras
-    for (const bookingExtra of booking.booking_extras) {
+    for (const bookingExtra of booking.bookingExtras) {
       if (bookingExtra.extra_id && bookingExtra.quantity) {
-        await prisma.extras.update({
+        await prisma.extra.update({
           where: { id: bookingExtra.extra_id },
           data: {
             total_quantity: {
@@ -110,7 +110,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     // Update the booking status to "CANCEL"
-    const updatedBooking = await prisma.bookings.update({
+    const updatedBooking = await prisma.booking.update({
       where: {
         id: parseInt(id),
       },
@@ -136,3 +136,36 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     await prisma.$disconnect();
   }
 }
+
+// GET handler to retrieve a Booking by its ID
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  const { id } = params;
+
+  try {
+    // Fetch the booking by its ID
+    const booking = await prisma.booking.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        car: true, // Include car details
+        bookingExtras: {
+          include: {
+            extra: true, // Include details about each extra
+          },
+        },
+      },
+    });
+
+    // Check if the booking exists
+    if (!booking) {
+      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(booking, { status: 200 });
+  } catch (error) {
+    console.error('Error retrieving booking:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+

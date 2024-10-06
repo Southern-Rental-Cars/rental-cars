@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CarTypeProps } from '@/app/vehicles/types';
+import { CarTypeProps } from '@/types';
 
 export default function CarType({ cars, selectedTypes, onCarClassChange }: CarTypeProps) {
   const [types, setTypes] = useState<string[]>(selectedTypes);

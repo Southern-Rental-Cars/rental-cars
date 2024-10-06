@@ -4,6 +4,7 @@ import { fetchExtras, fetchAvailability } from '@/lib/db/queries';
 
 interface SearchParams {
   carId: string;
+  carName: string;
   startDate: string;
   endDate: string;
   totalCost: string;
@@ -11,15 +12,13 @@ interface SearchParams {
 
 export default async function BookPage({ searchParams }: { searchParams: SearchParams }) {
   const { carId, startDate, endDate, totalCost } = searchParams;
-
-  // Validate required booking information
   if (!carId || !startDate || !endDate || !totalCost) {
-    return <p>Missing required booking information.</p>;
+    return <p>Something is wrong. Try again.</p>;
   }
-
   try {
     // Fetch extras and their availability for the selected dates
     const extras = await fetchExtras();
+    //TODO: setTimeout or reimplementation
     const availability = await fetchAvailability(startDate, endDate, extras);
 
     // Render the BookView component with necessary props
@@ -28,7 +27,7 @@ export default async function BookPage({ searchParams }: { searchParams: SearchP
         carId={carId}
         startDate={startDate}
         endDate={endDate}
-        totalCost={parseFloat(totalCost)}  // Pass base cost as a number
+        totalCost={totalCost}  // Pass base cost as a number
         extras={extras}
         availability={availability}
       />

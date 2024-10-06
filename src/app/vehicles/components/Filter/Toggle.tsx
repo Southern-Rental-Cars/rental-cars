@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { ToggleProps } from '@/app/vehicles/types';
+import { ToggleProps } from '@/types';
 
 const Toggle: FC<ToggleProps> = ({ isFilterOpen, toggleFilter }) => {
   return (

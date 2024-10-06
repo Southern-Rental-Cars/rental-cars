@@ -8,54 +8,62 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model CarImages {
+model CarImage {
   id        Int    @id @default(autoincrement())
   car_id    Int?
   image_url String
-  car       cars?  @relation("CarToCarImages", fields: [car_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  car       Car?   @relation("CarToCarImages", fields: [car_id], references: [id], onDelete: Cascade)
 
   @@map("car_images")
 }
 
-model extras {
-  id             Int              @id @default(autoincrement())
-  name           String           @db.VarChar(100)
-  total_quantity Int              // Total quantity of the extra
+model Extra {
+  id             Int            @id @default(autoincrement())
+  name           String         @db.VarChar(100)
+  total_quantity Int // Total quantity of the extra
   description    String?
-  price_type     String?          @db.VarChar(50)
-  price_amount   Int?
-  booking_extras booking_extras[] // Relation to booking_extras
+  price_type     String?        @db.VarChar(50) // e.g., "per day", "per booking"
+  price_amount   Int? // Amount charged for the extra
+  bookingExtras  BookingExtra[] // Relation to BookingExtras
+
+  @@map("extras")
 }
 
-model booking_extras {
-  id         Int      @id @default(autoincrement())
+model BookingExtra {
+  id         Int     @id @default(autoincrement())
   booking_id Int
   extra_id   Int
+  extra_name String?
   quantity   Int // Quantity of extras booked for the given period
-  bookings   bookings @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  extras     extras   @relation(fields: [extra_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  booking    Booking @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+  extra      Extra   @relation(fields: [extra_id], references: [id], onDelete: Cascade)
+
+  @@unique([booking_id, extra_id]) // Ensure no duplicate extras per booking
 }
 
-model bookings {
-  id             Int              @id @default(autoincrement())
-  car_id         Int
-  user_id        Int?
-  start_date     DateTime         @db.Timestamp(6)
-  end_date       DateTime         @db.Timestamp(6)
-  status         String?          @default("active") @db.VarChar(20)
-  total_price    Decimal?         @db.Decimal(10, 2) // New total price field
-  created_at     DateTime?        @default(now()) @db.Timestamp(6)
-  updated_at     DateTime?        @default(now()) @db.Timestamp(6)
-  booking_extras booking_extras[]
-  cars           cars             @relation(fields: [car_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_car_id")
-  users          users?           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id")
+model Booking {
+  id            Int            @id @default(autoincrement())
+  car_id        Int
+  car_name      String?
+  user_id       Int?
+  start_date    DateTime       @db.Timestamp(6)
+  end_date      DateTime       @db.Timestamp(6)
+  status        String?        @default("active") @db.VarChar(20) // Booking status (e.g., "active", "cancelled")
+  total_price   Decimal?       @db.Decimal(10, 2)
+  created_at    DateTime?      @default(now()) @db.Timestamp(6)
+  updated_at    DateTime?      @default(now()) @updatedAt @db.Timestamp(6)
+  bookingExtras BookingExtra[]
+  car           Car            @relation(fields: [car_id], references: [id], onDelete: Cascade)
+  user          User?          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([start_date, end_date]) // Index for optimizing availability checks
 }
 
-model cars {
-  id                Int         @id @default(autoincrement())
-  car_name          String      @db.VarChar(100)
-  mpg               Decimal?    @db.Decimal(5, 2)
-  gas_type          String?     @db.VarChar(50)
+model Car {
+  id                Int        @id @default(autoincrement())
+  car_name          String     @db.VarChar(100)
+  mpg               Decimal?   @db.Decimal(5, 2)
+  gas_type          String?    @db.VarChar(50)
   num_doors         Int?
   num_seats         Int?
   short_description String?
@@ -64,17 +72,20 @@ model cars {
   extras            String?
   guidelines        String?
   faqs              Json?
-  price             Decimal     @db.Decimal(10, 2)
+  price             Decimal    @db.Decimal(10, 2)
   turo_url          String?
-  make              String?     @db.VarChar(100)
-  model             String?     @db.VarChar(100)
+  make              String?    @db.VarChar(100)
+  model             String?    @db.VarChar(100)
   year              Int?
-  type              String?     @db.VarChar(50)
-  bookings          bookings[]
-  car_images        CarImages[] @relation("CarToCarImages")
+  type              String?    @db.VarChar(50)
+  bookings          Booking[]
+  carImages         CarImage[] @relation("CarToCarImages")
+  deleted_at        DateTime? // Soft delete field
+
+  @@map("cars")
 }
 
-model users {
+model User {
   id             Int       @id @default(autoincrement())
   email          String    @unique @db.VarChar(100)
   password_hash  String    @db.VarChar(100)
@@ -94,25 +105,25 @@ model users {
   license_expiration DateTime
 
   // Stripe-related fields for payment
-  stripe_customer_id       String? @unique @db.VarChar(100) // Stripe's customer ID
-  stripe_payment_method_id String? @db.VarChar(100) // Stripe payment method ID
+  stripe_customer_id       String? @unique @db.VarChar(100)
+  stripe_payment_method_id String? @db.VarChar(100)
 
   // Billing Information
-  billing_full_name      String? @db.VarChar(100) // Optional: Full name for billing
-  billing_street_address String? @db.Text // Billing address line 1
-  billing_city           String? @db.VarChar(50) // Billing city
-  billing_state          String? @db.VarChar(50) // Billing state or province
-  billing_country        String? @db.VarChar(3) // ISO 3166-1 country code
-  billing_postal_code    String? @db.VarChar(10) // Billing postal or ZIP code
+  billing_full_name      String? @db.VarChar(100)
+  billing_street_address String? @db.Text
+  billing_city           String? @db.VarChar(50)
+  billing_state          String? @db.VarChar(50)
+  billing_country        String? @db.VarChar(3)
+  billing_postal_code    String? @db.VarChar(10)
 
   // Optionally, if tax data is required
-  tax_id        String? @db.VarChar(50) // Optional: Tax identification number
-  billing_email String? @db.VarChar(100) // Optional: Different billing email address
+  tax_id        String? @db.VarChar(50)
+  billing_email String? @db.VarChar(100)
 
-  // Relationships
-  bookings bookings[]
-
-  // Timestamps
+  bookings   Booking[]
   created_at DateTime? @default(now()) @db.Timestamp(6)
-  updated_at DateTime? @updatedAt @db.Timestamp(6) // Automatically update on }
+  updated_at DateTime? @updatedAt @db.Timestamp(6)
+  deleted_at DateTime? // Soft delete field
+
+  @@map("users")
 }

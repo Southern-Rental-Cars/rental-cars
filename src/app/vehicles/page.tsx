@@ -1,13 +1,13 @@
-import VehiclesView from '@/app/vehicles/components/View'; // Client Component
+import Vehicles from '@/app/vehicles/components/View'; // Client Component
 import { Container } from '@/components/Container';
-import {Car} from '@/app/vehicles/types';
-import { fetchCars } from "@/lib/db/queries";
+import {Car} from '@/types';
+import { fetchVehicles } from "@/lib/db/queries";
 
 export default async function VehiclesPage() {
-  const cars: Car[] = await fetchCars();
+  const cars: Car[] = await fetchVehicles();
   return (
     <Container className="mt-9">
-      <VehiclesView cars={cars} /> {/* Only pass the data */}
+      <Vehicles cars={cars} /> {/* Only pass the data */}
     </Container>
   );
 }

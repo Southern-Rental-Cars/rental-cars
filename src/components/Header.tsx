@@ -50,7 +50,7 @@ function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLo
   return (
     <nav className="hidden md:flex">
       <ul className="flex space-x-6 text-md font-semibold text-white list-none m-0 p-0">
-        <NavItem href="/vehicles">Book Vehicle</NavItem>
+        <NavItem href="/vehicles">Book</NavItem>
         <NavItem href="/business-solutions">Business Solutions</NavItem>
         <NavItem href="/contact">Contact</NavItem>
         {isLoggedIn ? (
@@ -131,7 +131,7 @@ function MobileNavigation({ isOpen, onClose, isLoggedIn, onLogout }: { isOpen: b
       }`}
     >
       <ul className="py-1 text-white list-none m-0 p-0">
-        <NavItem href="/vehicles" onClick={onClose}>Book Vehicle</NavItem>
+        <NavItem href="/vehicles" onClick={onClose}>Book</NavItem>
         <NavItem href="/business-solutions" onClick={onClose}>Business Solutions</NavItem>
         <NavItem href="/contact" onClick={onClose}>Contact</NavItem>
         {isLoggedIn ? (

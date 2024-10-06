@@ -2,7 +2,7 @@
 import { Container } from "@/components/Container";
 import Image from "next/image";
 import { fetchCarById } from "@/lib/db/queries";
-import { Car } from '@/app/vehicles/types';
+import { Car } from '@/types';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the BookingCard component to render on the client side only

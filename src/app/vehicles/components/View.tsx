@@ -6,25 +6,41 @@ import VehicleFilter from '@/app/vehicles/components/Filter';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import Modal from '@/app/vehicles/components/Filter/Modal';
 import Toggle from './Filter/Toggle';
-import { CarViewProps } from '@/app/vehicles/types';
+import { CarViewProps } from '@/types';
 
-export default function VehicleView({ cars }: CarViewProps) {
+export default function Vehicles({ cars }: CarViewProps) {
   const isMobile = useMediaQuery('(max-width: 767px)');
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>(() => {
-    const savedPriceRange = sessionStorage.getItem('priceRange');
-    return savedPriceRange ? JSON.parse(savedPriceRange) : [22, 95];
-  });
-  const [types, setTypes] = useState<string[]>(() => {
-    const savedTypes = sessionStorage.getItem('types');
-    return savedTypes ? JSON.parse(savedTypes) : [];
-  });
-  const [sort, setSort] = useState<string>(() => {
-    const savedSort = sessionStorage.getItem('sort');
-    return savedSort ? savedSort : 'default';
-  });
 
-  // Manage scroll lock
+  // Default values for filters
+  const defaultPriceRange: [number, number] = [22, 95];
+  const defaultTypes: string[] = [];
+  const defaultSort: string = 'default';
+
+  const [priceRange, setPriceRange] = useState<[number, number]>(defaultPriceRange);
+  const [types, setTypes] = useState<string[]>(defaultTypes);
+  const [sort, setSort] = useState<string>(defaultSort);
+
+  // Load session storage values after component mounts
+  useEffect(() => {
+    const savedPriceRange = sessionStorage.getItem('priceRange');
+    const savedTypes = sessionStorage.getItem('types');
+    const savedSort = sessionStorage.getItem('sort');
+
+    if (savedPriceRange) {
+      setPriceRange(JSON.parse(savedPriceRange));
+    }
+
+    if (savedTypes) {
+      setTypes(JSON.parse(savedTypes));
+    }
+
+    if (savedSort) {
+      setSort(savedSort);
+    }
+  }, []);
+
+  // Manage scroll lock for modal open/close
   useEffect(() => {
     if (isFilterOpen) {
       document.body.classList.add('no-scroll');
@@ -36,7 +52,7 @@ export default function VehicleView({ cars }: CarViewProps) {
     };
   }, [isFilterOpen]);
 
-  // Save filter states to session storage
+  // Save filter states to session storage whenever they change
   useEffect(() => {
     sessionStorage.setItem('priceRange', JSON.stringify(priceRange));
   }, [priceRange]);

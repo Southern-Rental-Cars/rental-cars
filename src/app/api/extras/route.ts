@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const { name, description, total_quantity, price_type, price_amount } = await req.json();
     
     // Create a new extra without date requirements
-    const newExtra = await prisma.extras.create({
+    const newExtra = await prisma.extra.create({
       data: {
         name,
         description,
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     // Fetch all extras without date filtering
-    const extras = await prisma.extras.findMany();
+    const extras = await prisma.extra.findMany();
     return NextResponse.json(extras, { status: 200 });
   } catch (err) {
     console.error('Error fetching extras:', err);
