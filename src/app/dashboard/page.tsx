@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { fetchCarById } from '@/lib/db/queries';
+import { fetchVehicleById } from '@/lib/db/queries';
 import { Booking, User } from '@/types';
 
 const fetchUserById = async (userId: number): Promise<User> => {
@@ -39,7 +39,7 @@ const fetchUserBookings = async (userId: number): Promise<Booking[]> => {
   // Fetch car names for each booking
   const bookingsWithCarNames = await Promise.all(
     bookingsData.map(async (booking: Booking) => {
-      const car = await fetchCarById(booking.car_id);
+      const car = await fetchVehicleById(booking.car_id);
       return {
         ...booking,
         car_name: car ? `${car.make} ${car.model} ${car.year}` : 'Car not found',

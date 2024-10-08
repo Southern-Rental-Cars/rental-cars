@@ -1,6 +1,8 @@
-import { Car } from "@/types";
+import { Vehicle } from "@/types";
 
-export async function fetchVehicles(): Promise<Car[]> {
+
+// TO DO: fetch based on DateTime parameters
+export async function fetchAvailabileVehicles(): Promise<Vehicle[]> {
     const baseURL = process.env.API_BASE_URL;
     if (!baseURL) {
       console.error('API_BASE_URL is not set');
@@ -18,13 +20,13 @@ export async function fetchVehicles(): Promise<Car[]> {
   
     const data = await res.json();
   
-    return data.map((car: any) => ({
-      ...car,
-      price: Number(car.price),
+    return data.map((vehicle: any) => ({
+      ...vehicle,
+      price: Number(vehicle.price),
     }));
   }
 
-export async function fetchCarById(id: number): Promise<Car | null> {
+export async function fetchVehicleById(id: number): Promise<Vehicle | null> {
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
     if (!baseURL) {
       console.error('NEXT_PUBLIC_API_BASE_URL is not cat');
@@ -49,7 +51,7 @@ export async function fetchExtras() {
   return await response.json();
 }
 
-export async function fetchAvailability(startDate: string, endDate: string, extras: any[]) {
+export async function fetchExtrasAvailability(startDate: string, endDate: string, extras: any[]) {
   const baseURL = process.env.API_BASE_URL;
   if (!startDate || !endDate) {
     throw new Error('Invalid dates provided for availability check.');

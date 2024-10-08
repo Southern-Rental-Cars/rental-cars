@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Toast from '../../../components/Toast';
-import Extras from './Extras';
-import { fetchCarById, createBooking } from '../../../lib/db/queries';
+import Extras from './extras/Extras';
+import { fetchVehicleById, createBooking } from '../../../lib/db/queries';
 import { useRouter } from 'next/navigation';
 
 interface BookViewProps {
-  carId: string;
+  vehicleId: string;
   startDate: string;
   endDate: string;
   totalCost: string;
@@ -18,7 +17,7 @@ interface BookViewProps {
 const TAX_RATE = 8.25; // Tax rate
 
 const BookView: React.FC<BookViewProps> = ({
-  carId,
+  vehicleId,
   startDate,
   endDate,
   totalCost,
@@ -28,9 +27,7 @@ const BookView: React.FC<BookViewProps> = ({
   const [selectedExtras, setSelectedExtras] = useState<any[]>([]);
   const [totalCostWithExtras, setTotalCostWithExtras] = useState<number>(parseFloat(totalCost));
   const [taxAmount, setTaxAmount] = useState<number>(0);
-  const [carName, setCarName] = useState<string | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const [vehicleName, setVehicleName] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
 
@@ -45,17 +42,16 @@ const BookView: React.FC<BookViewProps> = ({
 
   // Fetch car details by ID
   useEffect(() => {
-    const fetchCarDetails = async () => {
+    const fetchVehicleDetails = async () => {
       try {
-        const car = await fetchCarById(parseInt(carId));
-        setCarName(`${car.make} ${car.model} ${car.year}`);
+        const vehicle = await fetchVehicleById(parseInt(vehicleId));
+        setVehicleName(`${vehicle.make} ${vehicle.model} ${vehicle.year}`);
       } catch (error) {
-        setToastMessage('Failed to fetch car details.');
-        setToastType('error');
+          console.log("Error: " + error);
       }
     };
-    fetchCarDetails();
-  }, [carId]);
+    fetchVehicleDetails();
+  }, [vehicleId]);
 
   // Calculate total cost (without tax) and update total
   const calculateTotalCost = useCallback((selectedExtras: any[]) => {
@@ -87,16 +83,14 @@ const BookView: React.FC<BookViewProps> = ({
   };
 
   // Handle booking confirmation
-  const handleConfirmBooking = async () => {
+  const handleConfirmBook = async () => {
     if (!userId) {
-      setToastMessage('User not logged in!');
-      setToastType('error');
       return;
     }
 
     const payload = {
-      car_id: carId,
-      car_name: carName,
+      car_id: vehicleId,
+      car_name: vehicleName,
       user_id: userId,
       start_date: startDate,
       end_date: endDate,
@@ -109,50 +103,36 @@ const BookView: React.FC<BookViewProps> = ({
       if (response?.id) {
         router.push(`/confirmation/${response.id}`);
       } else {
-        setToastMessage('Error during booking.');
-        setToastType('error');
+        
       }
     } catch (error) {
-      setToastMessage('Unexpected error. Please try again.');
-      setToastType('error');
+      
     }
   };
 
   return (
     <div className="container mx-auto p-6 max-w-4xl bg-gray-50 rounded-lg shadow-lg">
-      <h1 className="text-3xl font-semibold mb-6 text-center">Confirm Booking</h1>
-      
-      {/* Car Details */}
+      <h1 className="text-3xl font-semibold mb-6 text-center">Booking Details</h1>
+      {/* Vehicle Details */}
       <div className="bg-white p-6 mb-6 rounded-lg shadow-md border border-gray-200">
         <h2 className="text-xl font-medium mb-4">Your Trip Details</h2>
-        <p className="text-gray-700 mb-2"><strong>Car:</strong> {carName || 'Fetching car details...'}</p>
+        <p className="text-gray-700 mb-2"><strong>Car:</strong> {vehicleName || 'Fetching car details...'}</p>
         <p className="text-gray-700 mb-2"><strong>Start Date:</strong> {new Date(startDate).toLocaleDateString()}</p>
         <p className="text-gray-700 mb-2"><strong>End Date:</strong> {new Date(endDate).toLocaleDateString()}</p>
       </div>
-
-      {/* Extras Section */}
+      {/* Extras */}
       <Extras extras={extras} availability={availability} onAddToCart={handleAddToCart} />
-
-      {/* Price Breakdown */}
+      {/* Price */}
       <div className="bg-white p-6 mt-6 rounded-lg shadow-md border border-gray-200">
         <h2 className="text-xl font-medium mb-4">Price Breakdown</h2>
         <p className="text-gray-700 mb-2"><strong>Base Price:</strong> ${totalCost}</p>
         <p className="text-gray-700 mb-2"><strong>Tax ({TAX_RATE}%):</strong> ${taxAmount.toFixed(2)}</p>
         <p className="text-gray-700"><strong>Total Cost (extras + tax):</strong> ${totalCostWithExtras.toFixed(2)}</p>
       </div>
-      {/* Confirm Button and Toast Container */}
       <div className="relative flex flex-col items-center mt-8">
-        <button
-          onClick={handleConfirmBooking}
-          className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300 ease-in-out"
-        >
+        <button onClick={handleConfirmBook} className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300 ease-in-out">
           Confirm and Pay
         </button>
-
-        {/* Toast Notification */}
-        {toastMessage && (
-          <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage(null)} />
-        )}
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ export async function POST(req: Request) {
         }
 
         // Find the user by email
-        const existingUser = await prisma.users.findUnique({ where: { email } });
+        const existingUser = await prisma.user.findUnique({ where: { email } });
         if (!existingUser) {
             return NextResponse.json({ message: 'User with this email does not exist.' }, { status: 400 });
         }

@@ -50,7 +50,7 @@ function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLo
   return (
     <nav className="hidden md:flex">
       <ul className="flex space-x-6 text-md font-semibold text-white list-none m-0 p-0">
-        <NavItem href="/vehicles">Book</NavItem>
+        <NavItem href="/book">Book</NavItem>
         <NavItem href="/business-solutions">Business Solutions</NavItem>
         <NavItem href="/contact">Contact</NavItem>
         {isLoggedIn ? (
