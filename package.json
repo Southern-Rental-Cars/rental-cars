@@ -36,6 +36,7 @@
     "bcryptjs": "^2.4.3",
     "cheerio": "1.0.0-rc.12",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "fast-glob": "^3.3.2",
     "feed": "^4.2.2",
     "framer-motion": "^11.3.28",

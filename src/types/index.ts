@@ -32,7 +32,7 @@ export interface FAQ {
     carImages: CarImage[]; // Include the array of images here
   }
   
-  export interface VehicleGridProps {
+  export interface GridProps {
     vehicles: Vehicle[];  // List of cars to display in the grid
   }
 

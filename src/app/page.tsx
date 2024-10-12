@@ -33,7 +33,7 @@ const HomePage = () => {
             <p className="text-lg tracking-right md:text-xl text-gray-300 mb-4">
               Explore The Woodlands and Houston with our handpicked cars
             </p>
-            <Link href="/vehicles" className="bg-[#2f4269] text-white py-3 px-6 rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out inline-flex items-center" passHref>
+            <Link href="/book" className="bg-[#2f4269] text-white py-3 px-6 rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out inline-flex items-center" passHref>
                 Search reservations  <ChevronRightIcon className="h-5 w-5 ml-2" />
             </Link>
           </div>

@@ -1,7 +1,5 @@
 import { Vehicle } from "@/types";
 
-
-// TO DO: fetch based on DateTime parameters
 export async function fetchAvailabileVehicles(): Promise<Vehicle[]> {
     const baseURL = process.env.API_BASE_URL;
     if (!baseURL) {
@@ -40,10 +38,10 @@ export async function fetchVehicleById(id: number): Promise<Vehicle | null> {
     }
   
     return res.json();
-  }
+}
 
 export async function fetchExtras() {
-  const baseURL = process.env.API_BASE_URL;
+  const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const response = await fetch(`${baseURL}/api/extras`);
   if (!response.ok) {
     throw new Error('Failed to fetch extras');
@@ -52,11 +50,10 @@ export async function fetchExtras() {
 }
 
 export async function fetchExtrasAvailability(startDate: string, endDate: string, extras: any[]) {
-  const baseURL = process.env.API_BASE_URL;
+  const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!startDate || !endDate) {
     throw new Error('Invalid dates provided for availability check.');
   }
-
   const response = await fetch(`${baseURL}/api/extras/availability`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
