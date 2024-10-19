@@ -48,7 +48,7 @@ const Confirmation = async ({ params }: ConfirmationProps) => {
           bookingExtras.map((extra: Extra) => (
             <div key={extra.id} className="flex justify-between">
               <p>{extra.extra_name || `Extra ${extra.extra_id}`}</p>
-              <p>q: {extra.quantity}</p>
+              <p>x{extra.quantity}</p>
             </div>
           ))
         ) : (

@@ -5,8 +5,7 @@ import { format } from 'date-fns'; // Import date-fns for consistent date format
 import Extras from '../extras/ExtrasBox';
 import { createBooking } from '../../../../lib/db/queries';
 import { useRouter } from 'next/navigation';
-
-const TAX_RATE = 8.25; // Tax rate
+import PaypalButtons from './PaypalButtons';
 
 interface PaymentPageProps {
   vehicleId: number;
@@ -20,10 +19,10 @@ interface PaymentPageProps {
   };
   startDate: string;
   endDate: string;
-  basePrice: number; // Base price without tax
+  basePrice: number;
   extras: any[];
   availability: any;
-  onBackToDetails: () => void; // Add the onBackToDetails prop
+  onBackToDetails: () => void;
 }
 
 const Payment: React.FC<PaymentPageProps> = ({
@@ -35,11 +34,11 @@ const Payment: React.FC<PaymentPageProps> = ({
   basePrice,
   extras,
   availability,
-  onBackToDetails, // Destructure the new prop
+  onBackToDetails,
 }) => {
   const [selectedExtras, setSelectedExtras] = useState<any[]>([]);
-  const [totalCostWithExtras, setTotalCostWithExtras] = useState<number>(basePrice);
-  const [taxAmount, setTaxAmount] = useState<number>(basePrice * (TAX_RATE / 100)); // Initial tax on base price
+  const [totalCost, setTotalCost] = useState<number>(basePrice);
+  const [taxAmount, setTaxAmount] = useState<number>(basePrice * (8.25 / 100)); // Initial tax on base price
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
 
@@ -51,28 +50,25 @@ const Payment: React.FC<PaymentPageProps> = ({
     }
   }, []);
 
-  // Format dates consistently using date-fns
   const formattedStartDate = format(new Date(startDate), 'EEE MMM do, hh:mm a');
   const formattedEndDate = format(new Date(endDate), 'EEE MMM do, hh:mm a');
 
-  // Function to calculate the total cost including extras and update tax
   const calculateTotalCost = useCallback(
     (selectedExtras: any[]) => {
       let total = basePrice;
       selectedExtras.forEach((extra) => {
         if (extra.price_type === 'DAILY') {
           const days = Math.ceil(
-            (new Date(endDate).getTime() - new Date(startDate).getTime()) /
-              (1000 * 60 * 60 * 24)
+            (new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)
           );
           total += extra.price_amount * extra.quantity * days;
         } else {
           total += extra.price_amount * extra.quantity;
         }
       });
-      const tax = total * (TAX_RATE / 100); // Recalculate tax based on new total
+      const tax = total * (8.25 / 100); // Recalculate tax based on new total
       setTaxAmount(tax);
-      setTotalCostWithExtras(total + tax); // Update total cost including tax
+      setTotalCost(total + tax); // Update total cost including tax
     },
     [startDate, endDate, basePrice]
   );
@@ -86,8 +82,10 @@ const Payment: React.FC<PaymentPageProps> = ({
     });
   };
 
-  const handleConfirmBook = async () => {
+  const handlePaymentSuccess = async () => {
+    console.log("INSIDE PAYMENT SUCCESS");
     if (!userId) {
+      console.log("NOTHING INSIDE");
       return;
     }
     const payload = {
@@ -96,7 +94,7 @@ const Payment: React.FC<PaymentPageProps> = ({
       user_id: userId,
       start_date: startDate,
       end_date: endDate,
-      total_price: totalCostWithExtras.toFixed(2),
+      total_price: totalCost.toFixed(2),
       extras: selectedExtras,
     };
     try {
@@ -104,27 +102,27 @@ const Payment: React.FC<PaymentPageProps> = ({
       if (response?.id) {
         router.push(`/confirmation/${response.id}`);
       } else {
-        console.error('Booking could not be created');
+        console.error('Booking could not be confirmed');
       }
     } catch (error) {
-      console.error('Error during booking:', error);
+      console.error('Error confirming booking:', error);
     }
   };
 
   return (
     <div className="max-w-7xl w-full mx-auto p-6 bg-white rounded-lg mt-8">
-      {/* Back to Details Button */}
+      {/* Back */}
       <button
-        onClick={onBackToDetails} // Trigger the back to details function
+        onClick={onBackToDetails}
         className="mb-6 text-blue-500 hover:text-blue-700 transition duration-200 text-lg font-medium"
       >
         ← Back
       </button>
-
-      {/* Two-column layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Booking Overview and Extras */}
-        <div className="lg:col-span-2 space-y-6">
+      {/* Main layout with two columns */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column: Booking details & Extras */}
+        <div className="space-y-6">
+          {/* Booking Details */}
           <div className="bg-white p-5 rounded-lg border border-gray-200">
             <h2 className="text-xl font-semibold mb-6 text-gray-800">Booking details</h2>
             <div className="grid grid-cols-2 text-sm mb-3">
@@ -140,35 +138,37 @@ const Payment: React.FC<PaymentPageProps> = ({
           </div>
           {/* Extras Selection */}
           <Extras extras={extras} availability={availability} onAddToCart={handleAddToCart} />
-          {/* Confirm Booking */}
-          <div className="mt-6 flex justify-center">
-            <button onClick={handleConfirmBook} className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out">
-              Confirm and pay
-            </button>
-          </div>
         </div>
-        {/* Right Column: Price Breakdown */}
-        <div className="bg-white p-4 rounded-lg border border-gray-200 h-fit lg:max-w-sm">
-          <h2 className="text-xl font-semibold mb-6 text-gray-800">Price details</h2>
-          <p className="text-gray-700 mb-3">
-            <strong>Base price:</strong> ${basePrice.toFixed(2)}
-          </p>
-          {selectedExtras.length > 0 && (
-            <div className="text-gray-700 mb-3">
-              <strong>Extras:</strong>
-              <ul className="pl-4 list-disc">
-                {selectedExtras.map((extra) => (
-                  <li key={extra.id}>
-                    {extra.name} (${extra.price_amount.toFixed(2)} x {extra.quantity})
-                  </li>
-                ))}
-              </ul>
+
+        {/* Right Column: Price details and payment */}
+        <div className="space-y-6">
+          {/* Price Breakdown */}
+          <div className="bg-white p-5 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-semibold mb-6 text-gray-800">Price breakdown</h2>
+            <p className="text-gray-700 mb-3"><strong>Subtotal:</strong> ${basePrice.toFixed(2)}</p>
+            {selectedExtras.length > 0 && (
+              <div className="text-gray-700 mb-3">
+                <strong>Extras:</strong>
+                <ul className="pl-4 list-disc">
+                  {selectedExtras.map((extra) => (
+                    <li key={extra.id}>
+                      {extra.name} (${extra.price_amount.toFixed(2)} x {extra.quantity})
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <p className="text-gray-700 mb-3"><strong>Tax (8.25%):</strong> ${taxAmount.toFixed(2)}</p>
+            <p className="text-gray-700 font-bold text-lg">Total: ${totalCost.toFixed(2)}</p>
+          </div>
+
+          {/* Payment Section */}
+          <div className="bg-white p-5 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-semibold mb-6 text-gray-800">Payment Method</h2>
+            <div className="flex justify-center">
+              <PaypalButtons totalPrice={totalCost} onPaymentSuccess={handlePaymentSuccess}/>
             </div>
-          )}
-          <p className="text-gray-700 mb-3">
-            <strong>Tax ({TAX_RATE}%):</strong> ${taxAmount.toFixed(2)}
-          </p>
-          <p className="text-gray-700 font-bold text-lg"> Total: ${totalCostWithExtras.toFixed(2)}</p>
+          </div>
         </div>
       </div>
     </div>

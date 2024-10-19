@@ -104,7 +104,6 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
             )}
           </div>
         </div>
-
         {/* Booking Details */}
         <div className="bg-white border border-gray-200 p-6 rounded-lg space-y-3">
           <h2 className="text-2xl font-bold">Booking details</h2>
@@ -117,19 +116,18 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
               <span className="font-semibold">To:</span> {formattedEndDate}
             </p>
           </div>
-
           {/* Pricing */}
           <div className="border-t border-gray-300 mt-3" />
           <div className="mt-3">
-            <h3 className="text-lg font-bold mb-1">Price details</h3>
-            <div className="text-lg text-gray-700 space-y-2">
+            <div className="text-lg text-gray-700 space-y-3">
               <div className="flex justify-between">
-                <p>Rate:</p>
+                <p className='text-md'>Daily rate:</p>
                 <p>${vehicle.price.toFixed(2)} / day</p>
               </div>
+              <div className="border-t border-gray-300 space-y-3" />
               <div className="flex justify-between">
-                <p>Base Price:</p>
-                <p className="font-bold">${totalCost.toFixed(2)}</p>
+                <p className="font-bold text-md">Subtotal:</p>
+                <p className="font-bold text-2xl">${totalCost.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -139,7 +137,7 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
       {/* Proceed */}
       <div className="mt-10 text-center">
         <button onClick={onProceedToPayment} className="px-6 py-3 bg-blue-600 text-white rounded-full text-lg font-medium hover:bg-blue-700 transition duration-200 shadow-lg">
-          Proceed to Payment
+          Proceed to checkout
         </button>
       </div>
 

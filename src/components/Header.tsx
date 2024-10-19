@@ -131,7 +131,7 @@ function MobileNavigation({ isOpen, onClose, isLoggedIn, onLogout }: { isOpen: b
       }`}
     >
       <ul className="py-1 text-white list-none m-0 p-0">
-        <NavItem href="/vehicles" onClick={onClose}>Book</NavItem>
+        <NavItem href="/book" onClick={onClose}>Book</NavItem>
         <NavItem href="/business-solutions" onClick={onClose}>Business Solutions</NavItem>
         <NavItem href="/contact" onClick={onClose}>Contact</NavItem>
         {isLoggedIn ? (
