@@ -44,14 +44,14 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
         {/* Image Section with Vehicle Details */}
         <div className="relative w-full h-[350px] lg:h-[450px] rounded-lg overflow-hidden group">
           <Image
-            src={vehicle.carImages[activeImageIndex].image_url}
+            src={vehicle.vehicleImages[activeImageIndex].image_url}
             alt={`Image of ${vehicle.make} ${vehicle.model}`}
             fill
             style={{ objectFit: 'cover' }}
             className="rounded-lg"
             onClick={() => handleImageClick(activeImageIndex)}
           />
-          {vehicle.carImages.length > 1 && (
+          {vehicle.vehicleImages.length > 1 && (
             <>
               <button
                 onClick={handlePrevImage}
@@ -71,7 +71,7 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
           {/* Vehicle Details */}
           <div className="absolute bottom-0 left-0 w-full p-6 bg-black bg-opacity-60 backdrop-blur-sm text-white rounded-b-lg">
             <h2 className="text-2xl font-bold">
-              {vehicle.car_name} ({vehicle.year})
+              {vehicle.make} {vehicle.model} {vehicle.year}
             </h2>
             <div className="grid grid-cols-2 text-sm mt-2">
               <p>

@@ -82,21 +82,24 @@ const Payment: React.FC<PaymentPageProps> = ({
     });
   };
 
-  const handlePaymentSuccess = async () => {
-    console.log("INSIDE PAYMENT SUCCESS");
-    if (!userId) {
-      console.log("NOTHING INSIDE");
-      return;
-    }
+  const handlePaymentSuccess = async (paypalData: {
+    paypal_order_id: string;
+    paypal_transaction_id: string;
+    is_paid: boolean;
+  }) => {
+    if (!userId) { return;}
     const payload = {
-      car_id: vehicleId,
-      car_name: vehicleName,
+      vehicle_id: vehicleId,
       user_id: userId,
       start_date: startDate,
       end_date: endDate,
       total_price: totalCost.toFixed(2),
       extras: selectedExtras,
+      paypal_order_id: paypalData.paypal_order_id,
+      paypal_transaction_id: paypalData.paypal_transaction_id,
+      is_paid: paypalData.is_paid,
     };
+    console.log(payload);
     try {
       const response = await createBooking(payload);
       if (response?.id) {
@@ -107,17 +110,11 @@ const Payment: React.FC<PaymentPageProps> = ({
     } catch (error) {
       console.error('Error confirming booking:', error);
     }
-  };
+  };  
 
   return (
     <div className="max-w-7xl w-full mx-auto p-6 bg-white rounded-lg mt-8">
-      {/* Back */}
-      <button
-        onClick={onBackToDetails}
-        className="mb-6 text-blue-500 hover:text-blue-700 transition duration-200 text-lg font-medium"
-      >
-        ← Back
-      </button>
+      <button onClick={onBackToDetails} className="mb-6 text-blue-500 hover:text-blue-700 transition duration-200 text-lg font-medium"> ← Back </button>
       {/* Main layout with two columns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column: Booking details & Extras */}
@@ -136,10 +133,8 @@ const Payment: React.FC<PaymentPageProps> = ({
             <p className="text-gray-700 mb-2"><strong>From:</strong> {formattedStartDate}</p>
             <p className="text-gray-700"><strong>To:</strong> {formattedEndDate}</p>
           </div>
-          {/* Extras Selection */}
           <Extras extras={extras} availability={availability} onAddToCart={handleAddToCart} />
         </div>
-
         {/* Right Column: Price details and payment */}
         <div className="space-y-6">
           {/* Price Breakdown */}
@@ -161,7 +156,6 @@ const Payment: React.FC<PaymentPageProps> = ({
             <p className="text-gray-700 mb-3"><strong>Tax (8.25%):</strong> ${taxAmount.toFixed(2)}</p>
             <p className="text-gray-700 font-bold text-lg">Total: ${totalCost.toFixed(2)}</p>
           </div>
-
           {/* Payment Section */}
           <div className="bg-white p-5 rounded-lg border border-gray-200">
             <h2 className="text-xl font-semibold mb-6 text-gray-800">Payment Method</h2>

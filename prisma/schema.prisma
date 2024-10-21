@@ -8,11 +8,11 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model CarImage {
-  id        Int    @id @default(autoincrement())
-  car_id    Int?
-  image_url String
-  car       Car?   @relation("CarToCarImages", fields: [car_id], references: [id], onDelete: Cascade)
+model VehicleImage {
+  id            Int    @id @default(autoincrement())
+  vehicle_id    Int?
+  image_url     String
+  vehicle       Vehicle?   @relation("VehicleToVehicleImages", fields: [vehicle_id], references: [id], onDelete: Cascade)
 
   @@map("car_images")
 }
@@ -42,26 +42,34 @@ model BookingExtra {
 }
 
 model Booking {
-  id            Int            @id @default(autoincrement())
-  car_id        Int
-  car_name      String?
-  user_id       Int?
-  start_date    DateTime       @db.Timestamp(6)
-  end_date      DateTime       @db.Timestamp(6)
-  status        String?        @default("active") @db.VarChar(20) // Booking status (e.g., "active", "cancelled")
-  total_price   Decimal?       @db.Decimal(10, 2)
-  created_at    DateTime?      @default(now()) @db.Timestamp(6)
-  updated_at    DateTime?      @default(now()) @updatedAt @db.Timestamp(6)
-  bookingExtras BookingExtra[]
-  car           Car            @relation(fields: [car_id], references: [id], onDelete: Cascade)
-  user          User?          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id                   Int            @id @default(autoincrement())
+  vehicle_id           Int?
+  user_id              Int?
+  start_date           DateTime       @db.Timestamp(6)
+  end_date             DateTime       @db.Timestamp(6)
+  status               String?        @default("active") @db.VarChar(20) // Booking status (e.g., "active", "cancelled")
+  total_price          Decimal?       @db.Decimal(10, 2)
+  
+  // PayPal-related fields
+  paypal_order_id      String?        @db.VarChar(100) // PayPal Order ID
+  paypal_transaction_id String?       @db.VarChar(100) // PayPal Transaction ID
+  payment_provider     String?        @default("paypal") @db.VarChar(50) // Payment provider
+  currency             String         @default("USD") @db.VarChar(3) // Currency used in the transaction
+  is_paid              Boolean        @default(false) // Whether the booking has been fully paid
+  
+  created_at           DateTime?      @default(now()) @db.Timestamp(6)
+  updated_at           DateTime?      @default(now()) @updatedAt @db.Timestamp(6)
+
+  // Relations
+  bookingExtras        BookingExtra[]
+  vehicle              Vehicle?        @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  user                 User?          @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([start_date, end_date]) // Index for optimizing availability checks
 }
 
-model Car {
+model Vehicle {
   id                Int        @id @default(autoincrement())
-  car_name          String     @db.VarChar(100)
   mpg               Decimal?   @db.Decimal(5, 2)
   gas_type          String?    @db.VarChar(50)
   num_doors         Int?
@@ -79,34 +87,35 @@ model Car {
   year              Int?
   type              String?    @db.VarChar(50)
   bookings          Booking[]
-  carImages         CarImage[] @relation("CarToCarImages")
+  vehicleImages     VehicleImage[] @relation("VehicleToVehicleImages")
   deleted_at        DateTime? // Soft delete field
 
   @@map("cars")
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique @db.VarChar(100)
-  password_hash  String    @db.VarChar(100)
-  full_name      String?   @db.VarChar(100)
-  date_of_birth  DateTime?
-  role_access    String?   @db.VarChar(10)
-  phone          String?   @db.VarChar(20)
-  street_address String?   @db.Text
-  zip_code       String?   @db.VarChar(10)
-  country        String?   @db.VarChar(3)
+  id                   Int       @id @default(autoincrement())
+  email                String    @unique @db.VarChar(100)
+  password_hash        String    @db.VarChar(100)
+  full_name            String?   @db.VarChar(100)
+  date_of_birth        DateTime?
+  role_access          String?   @db.VarChar(10)
+  phone                String?   @db.VarChar(20)
+  street_address       String?   @db.Text
+  zip_code             String?   @db.VarChar(10)
+  country              String?   @db.VarChar(3)
 
   // License Information
-  license_number     String   @db.VarChar(25)
-  license_state      String   @db.VarChar(25)
-  license_front_img  String   @db.Text
-  license_back_img   String   @db.Text
-  license_expiration DateTime
+  license_number       String    @db.VarChar(25)
+  license_state        String    @db.VarChar(25)
+  license_front_img    String    @db.Text
+  license_back_img     String    @db.Text
+  license_expiration   DateTime
 
-  // Stripe-related fields for payment
-  stripe_customer_id       String? @unique @db.VarChar(100)
-  stripe_payment_method_id String? @db.VarChar(100)
+  // PayPal-related fields for payment
+  paypal_payer_id      String?   @db.VarChar(100) // Unique PayPal payer ID for identifying the PayPal account
+  paypal_billing_agreement_id String? @db.VarChar(100) // PayPal billing agreement ID for saved payment methods
+  paypal_payment_token String?   @db.VarChar(100) // Token used for recurring payments or stored payment methods
 
   // Billing Information
   billing_full_name      String? @db.VarChar(100)
@@ -120,10 +129,11 @@ model User {
   tax_id        String? @db.VarChar(50)
   billing_email String? @db.VarChar(100)
 
-  bookings   Booking[]
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  updated_at DateTime? @updatedAt @db.Timestamp(6)
-  deleted_at DateTime? // Soft delete field
+  bookings       Booking[]
+  created_at     DateTime? @default(now()) @db.Timestamp(6)
+  updated_at     DateTime? @updatedAt @db.Timestamp(6)
+  deleted_at     DateTime? // Soft delete field
 
   @@map("users")
 }
+

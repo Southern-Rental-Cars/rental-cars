@@ -14,7 +14,7 @@ interface ConfirmationProps {
 }
 
 const Confirmation = async ({ params }: ConfirmationProps) => {
-  const bookingId = parseInt(params.id, 10);
+  const bookingId = params.id;
   const booking = await fetchBookingById(bookingId);
   if (!booking) {
     return <div className="text-center text-lg mt-10">Booking not found</div>;

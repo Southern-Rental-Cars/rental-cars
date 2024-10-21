@@ -61,7 +61,6 @@ export default function Book() {
       />
     );
   }
-
   // If a vehicle is selected, render the details page
   if (selectedVehicle) {
     return (
@@ -76,7 +75,6 @@ export default function Book() {
       </div>
     );
   }
-
   // Render the vehicle selection and grid by default
   return (
     <div className="flex flex-col items-center justify-center">

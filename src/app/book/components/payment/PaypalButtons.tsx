@@ -12,8 +12,12 @@ import {
 
 interface PaypalButtonsProps {
     totalPrice: number; // Define the totalPrice prop
-    onPaymentSuccess: () => void; // Add callback for payment success
-  }
+    onPaymentSuccess: (paypalData: {
+      paypal_order_id: string;
+      paypal_transaction_id: string;
+      is_paid: boolean;
+    }) => void;
+}
 
 // PayPal configuration
 const paypalConfig = {
@@ -68,7 +72,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
 
   // Create PayPal order
   const createOrder = async () => {
-    console.log("INSIDE createOrder");
     try {
       const response = await fetch("/api/orders", {
         method: "POST",
@@ -105,25 +108,28 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
           "Content-Type": "application/json",
         },
       });
-
       const orderData = await response.json();
-      console.log("INSIDE ONAPPROVE: " + orderData);
-
       const transaction =
         orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
         orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
-
+      console.log(transaction);
       if (!transaction || transaction.status === "DECLINED") {
         const errorMessage = `Transaction ${transaction?.status}: ${transaction?.id}`;
         throw new Error(errorMessage);
       }
+      // Collect PayPal transaction data
+      const paypalData = {
+        paypal_order_id: data.orderID,
+        paypal_transaction_id: transaction.id,
+        is_paid: transaction.status === "COMPLETED",
+      };
       // Call the callback to notify the parent component of payment success
-      onPaymentSuccess();
+      onPaymentSuccess(paypalData);
     } catch (error) {
       console.error("Transaction approval error:", error);
     }
   };
-
+  
   // Handle PayPal errors
   const onError = (error: any) => {
     console.error("PayPal error:", error);
@@ -173,7 +179,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
                     placeholder="Address line"
                     onChange={(e) => handleBillingAddressChange("addressLine1", e.target.value)}
                     />
-
                     <input
                     type="text"
                     placeholder="Postal/zip code"
@@ -203,12 +208,7 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
 };
 
 // Payment Radio Option Component
-const PaymentRadioOption: React.FC<{
-  label: string;
-  value: string;
-  selectedValue: string;
-  onChange: (value: string) => void;
-}> = ({ label, value, selectedValue, onChange }) => (
+const PaymentRadioOption: React.FC<{ label: string; value: string; selectedValue: string; onChange: (value: string) => void; }> = ({ label, value, selectedValue, onChange }) => (
   <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
     <input
       type="radio"
@@ -252,7 +252,7 @@ const SubmitPaymentButton: React.FC<{
       className={`mt-6 w-full p-3 bg-blue-600 text-white rounded-lg ${isPaying ? "opacity-50" : ""}`}
       onClick={handleClick}
       disabled={isPaying} >
-      {isPaying ? "Processing..." : "Pay"}
+      {isPaying ? "Processing..." : "Confirm booking"}
     </button>
   );
 };

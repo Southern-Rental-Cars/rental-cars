@@ -28,7 +28,6 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
       try {
         const fetchedExtras = await fetchExtras();
         setExtras(fetchedExtras);
-
         const fetchedAvailability = await fetchExtrasAvailability(startDateTime, endDateTime, fetchedExtras);
         setAvailability(fetchedAvailability);
       } catch (err) {
@@ -59,7 +58,7 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
   return (
     <Payments
       vehicleId={vehicle.id} // Ensure `vehicle.id` is valid
-      vehicleName={vehicle.car_name} // Use the vehicle's name
+      vehicleName={`${vehicle.make} ${vehicle.model}`} // Concatenating year, make, and model
       vehicleDetails={vehicleDetails} // Pass the vehicle details object
       startDate={startDateTime}
       endDate={endDateTime}

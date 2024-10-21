@@ -36,7 +36,7 @@ const ExtrasBox: React.FC<BoxProps> = ({ extras, availability, onAddToCart }) =>
             <div
               key={extra.id}
               className={`p-6 rounded-lg border ${
-                availableQuantity > 0 ? 'bg-gray-50 hover:shadow-md transition-shadow duration-300' : 'opacity-50 bg-gray-100'
+                availableQuantity > 0 ? 'bg-gray-50 duration-300' : 'opacity-50 bg-gray-100'
               }`}
             >
               <h3 className="text-lg font-medium text-gray-800">{extra.name}</h3>

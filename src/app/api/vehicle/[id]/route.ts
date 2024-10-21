@@ -11,11 +11,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
   try {
     // Prisma query to fetch car details and associated images
-    const car = await prisma.car.findUnique({
+    const car = await prisma.vehicle.findUnique({
       where: { id: parseInt(id) },
       select: {
         id: true,
-        car_name: true,
         make: true,
         model: true,
         year: true,
@@ -32,7 +31,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         faqs: true, // This will be parsed if it's a string
         price: true,
         turo_url: true,
-        carImages: {
+        vehicleImages: {
           select: {
             image_url: true,
           },
@@ -51,9 +50,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     const response = {
       ...car,
       faqs: parsedFAQs,
-      image_url: car.carImages.map((img) => img.image_url),
+      image_url: car.vehicleImages.map((img) => img.image_url),
     };
-
     return NextResponse.json(response, { status: 200 });
   } catch (err) {
     console.error('Error fetching car details:', err);
@@ -64,17 +62,14 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 // DELETE /api/vehicles/:id - Delete a car by ID
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
-
   if (isNaN(Number(id))) {
     return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
   }
-
   try {
     // Prisma query to delete the car by ID
-    const deletedCar = await prisma.car.delete({
+    const deletedCar = await prisma.vehicle.delete({
       where: { id: parseInt(id) },
     });
-
     return NextResponse.json(deletedCar, { status: 200 });
   } catch (err) {
     console.error('Error deleting car:', err);

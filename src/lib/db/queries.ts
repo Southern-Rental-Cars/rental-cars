@@ -1,23 +1,19 @@
 import { Vehicle } from "@/types";
 
-export async function fetchAvailabileVehicles(): Promise<Vehicle[]> {
+export async function fetchAvailableVehicles(): Promise<Vehicle[]> {
     const baseURL = process.env.API_BASE_URL;
     if (!baseURL) {
       console.error('API_BASE_URL is not set');
       throw new Error('API_BASE_URL is not set');
     }
-    console.log(baseURL)
     const res = await fetch(`${baseURL}/api/vehicle`, {
       cache: 'no-store',
     });
-  
     if (!res.ok) {
       console.error(res.statusText);
       throw new Error('Failed to fetch vehicles');
     }
-  
     const data = await res.json();
-  
     return data.map((vehicle: any) => ({
       ...vehicle,
       price: Number(vehicle.price),
@@ -27,16 +23,14 @@ export async function fetchAvailabileVehicles(): Promise<Vehicle[]> {
 export async function fetchVehicleById(id: number): Promise<Vehicle | null> {
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
     if (!baseURL) {
-      console.error('NEXT_PUBLIC_API_BASE_URL is not cat');
-      throw new Error('NEXT_PUBLIC_API_BASE_URL is not cat');
+      console.error('NEXT_PUBLIC_API_BASE_URL is not set');
+      throw new Error('NEXT_PUBLIC_API_BASE_URL is not set');
     }
-  
     const res = await fetch(`${baseURL}/api/vehicle/${id}`);
     if (!res.ok) {
       console.error(res.statusText);
       return null;
     }
-  
     return res.json();
 }
 
@@ -64,13 +58,10 @@ export async function fetchExtrasAvailability(startDate: string, endDate: string
     }),
     cache: 'no-store', // Disable caching temporarily
   });
-
   if (!response.ok) {
     throw new Error('Failed to fetch availability');
   }
-
   const responseData = await response.json();
-
   return responseData;
 }
 
@@ -81,37 +72,29 @@ export async function createBooking(payload: any) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-
   if (!response.ok) {
     throw new Error('Failed to create booking');
   }
-
   const responseData = await response.json();
   return responseData;
 }
 
 export async function fetchBookingById(id: string) {
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  // Ensure baseURL is set
   if (!baseURL) {
     throw new Error('API base URL is not set in the environment variables');
   }
-
   try {
     const response = await fetch(`${baseURL}/api/booking/${id}`, {
       method: 'GET', // Explicitly setting the HTTP method
     });
-
     if (!response.ok) {
       // Try to extract and log the error message from the response body
       const errorMessage = await response.text();
       throw new Error(`Failed to fetch booking: ${errorMessage}`);
     }
-
     const responseData = await response.json();
     return responseData;
-
   } catch (error: any) {
     // Catch and throw a more specific error message
     throw new Error(`An error occurred while fetching the booking: ${error.message}`);

@@ -3,15 +3,14 @@ export interface FAQ {
     answer: string;
   }
   
-  export interface CarImage {
+  export interface VehicleImage {
     id: number;
-    car_id: number;
+    vehicle_id: number;
     image_url: string;
   }
   
   export interface Vehicle {
     id: number;
-    car_name: string;
     short_description: string;
     image_url: string;
     turo_url: string;
@@ -29,7 +28,7 @@ export interface FAQ {
     extras: string;
     guidelines: string;
     faqs: FAQ[];
-    carImages: CarImage[]; // Include the array of images here
+    vehicleImages: VehicleImage[]; // Include the array of images here
   }
   
   export interface GridProps {
@@ -49,12 +48,11 @@ export interface FAQ {
   
   export interface Booking {
     id: number;
-    car_id: number;
+    vehicle_id: number;
     start_date: string;
     end_date: string;
     status: string;
     total_cost: number;
-    car_name?: string;
     booking_extras: BookingExtras[];
   }
   

@@ -73,7 +73,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 // DELETE handler to cancel a booking
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const id = params.id;
-
   try {
     // Fetch the booking and its related booking_extras
     const booking = await prisma.booking.findUnique({
@@ -108,14 +107,13 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         });
       }
     }
-
     // Update the booking status to "CANCEL"
     const updatedBooking = await prisma.booking.update({
       where: {
         id: parseInt(id),
       },
       data: {
-        status: 'CANCEL',  // Update the status field to "CANCEL"
+        status: 'CANCEL',
       },
     });
 
@@ -137,16 +135,16 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   }
 }
 
-// GET handler to retrieve a Booking by its ID
+// GET handler to retrieve a Booking by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
-
+  console.log("id: " +id );
   try {
-    // Fetch the booking by its ID
+    // Fetch booking by ID
     const booking = await prisma.booking.findUnique({
       where: { id: parseInt(id) },
       include: {
-        car: true, // Include car details
+        vehicle: true, // Include vehicle details
         bookingExtras: {
           include: {
             extra: true, // Include details about each extra
@@ -154,12 +152,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         },
       },
     });
-
-    // Check if the booking exists
+    // Check if booking exists
     if (!booking) {
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
-
     return NextResponse.json(booking, { status: 200 });
   } catch (error) {
     console.error('Error retrieving booking:', error);
