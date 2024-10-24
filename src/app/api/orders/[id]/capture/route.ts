@@ -31,22 +31,28 @@ const captureOrder = async (orderID: string) => {
     const payload = { id: orderID, prefer: 'return=minimal'};
     try {
         const { body, ...httpResponse } = await ordersController.ordersCapture(payload);
-        console.log("BODY: " + body);
-        console.log("http response: " + httpResponse.statusCode);
-        return { jsonResponse: JSON.parse(body.toString()), httpStatusCode: httpResponse.statusCode };
+        return { 
+            jsonResponse: JSON.parse(body.toString()), 
+            httpStatusCode: httpResponse.statusCode 
+        };
     } catch (error) {
         if (error instanceof ApiError) {
           console.error("PayPal API Error:", error.message);
-          return { jsonResponse: { error: error.message }, httpStatusCode: error.statusCode || 500 };
+          return { 
+            jsonResponse: { error: error.message }, 
+            httpStatusCode: error.statusCode || 500 
+        };
         }
-        return { jsonResponse: { error: "Unknown error occurred during order capture." }, httpStatusCode: 500};
+        return { 
+            jsonResponse: { error: "Unknown error occurred during order capture." }, 
+            httpStatusCode: 500
+        };
       }
 };
 
 export async function POST(req: NextRequest) {
     const pathSegments = req.nextUrl.pathname.split('/'); // Split the URL by slashes
     const orderID = pathSegments[pathSegments.length - 2]; // Get the second last part of the path (which is the orderID)
-    console.log("ORDERID: " + orderID);
     try {
         if (!orderID) { throw new Error("Order ID is missing"); }
         const { jsonResponse, httpStatusCode } = await captureOrder(orderID as string);

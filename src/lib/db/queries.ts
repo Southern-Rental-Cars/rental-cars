@@ -1,13 +1,25 @@
 import { Vehicle } from "@/types";
+import Cookies from 'js-cookie';  // Import the library to access cookies
+
+// Helper function to get the JWT token from cookies
+function getToken() {
+  return Cookies.get('token'); // Assuming the token is stored in a cookie named 'token'
+}
 
 export async function fetchAvailableVehicles(): Promise<Vehicle[]> {
-    const baseURL = process.env.API_BASE_URL;
+    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL; // Ensure this is set correctly
     if (!baseURL) {
-      console.error('API_BASE_URL is not set');
-      throw new Error('API_BASE_URL is not set');
+      console.error('NEXT_PUBLIC_API_BASE_URL is not set');
+      throw new Error('NEXT_PUBLIC_API_BASE_URL is not set');
     }
+
+    const token = getToken(); // Get the JWT token
+
     const res = await fetch(`${baseURL}/api/vehicle`, {
       cache: 'no-store',
+      headers: {
+        'Authorization': `Bearer ${token}` // Include the Authorization header
+      }
     });
     if (!res.ok) {
       console.error(res.statusText);
@@ -18,7 +30,7 @@ export async function fetchAvailableVehicles(): Promise<Vehicle[]> {
       ...vehicle,
       price: Number(vehicle.price),
     }));
-  }
+}
 
 export async function fetchVehicleById(id: number): Promise<Vehicle | null> {
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -26,7 +38,14 @@ export async function fetchVehicleById(id: number): Promise<Vehicle | null> {
       console.error('NEXT_PUBLIC_API_BASE_URL is not set');
       throw new Error('NEXT_PUBLIC_API_BASE_URL is not set');
     }
-    const res = await fetch(`${baseURL}/api/vehicle/${id}`);
+
+    const token = getToken(); // Get the JWT token
+
+    const res = await fetch(`${baseURL}/api/vehicle/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Include the Authorization header
+      }
+    });
     if (!res.ok) {
       console.error(res.statusText);
       return null;
@@ -34,9 +53,16 @@ export async function fetchVehicleById(id: number): Promise<Vehicle | null> {
     return res.json();
 }
 
-export async function fetchExtras() {
+export async function fetchAllExtras() {
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const response = await fetch(`${baseURL}/api/extras`);
+
+  const token = getToken(); // Get the JWT token
+
+  const response = await fetch(`${baseURL}/api/extras`, {
+    headers: {
+      'Authorization': `Bearer ${token}` // Include the Authorization header
+    }
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch extras');
   }
@@ -48,9 +74,15 @@ export async function fetchExtrasAvailability(startDate: string, endDate: string
   if (!startDate || !endDate) {
     throw new Error('Invalid dates provided for availability check.');
   }
+
+  const token = getToken(); // Get the JWT token
+
   const response = await fetch(`${baseURL}/api/extras/availability`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` // Include the Authorization header
+    },
     body: JSON.stringify({
       start_date: startDate,
       end_date: endDate,
@@ -67,9 +99,15 @@ export async function fetchExtrasAvailability(startDate: string, endDate: string
 
 export async function createBooking(payload: any) {
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL; // accessed by server
+
+  const token = getToken(); // Get the JWT token
+
   const response = await fetch(`${baseURL}/api/booking`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` // Include the Authorization header
+    },
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
@@ -84,9 +122,15 @@ export async function fetchBookingById(id: string) {
   if (!baseURL) {
     throw new Error('API base URL is not set in the environment variables');
   }
+
+  const token = getToken(); // Get the JWT token
+
   try {
     const response = await fetch(`${baseURL}/api/booking/${id}`, {
       method: 'GET', // Explicitly setting the HTTP method
+      headers: {
+        'Authorization': `Bearer ${token}` // Include the Authorization header
+      }
     });
     if (!response.ok) {
       // Try to extract and log the error message from the response body
@@ -100,7 +144,3 @@ export async function fetchBookingById(id: string) {
     throw new Error(`An error occurred while fetching the booking: ${error.message}`);
   }
 }
-
-
-
-

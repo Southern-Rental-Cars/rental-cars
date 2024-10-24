@@ -41,9 +41,6 @@ const createOrder = async (totalCost: string) => {
     const { body, ...httpResponse } = await ordersController.ordersCreate(payload);
     const jsonResponse = JSON.parse(body.toString());
 
-    console.log("BODY: ", jsonResponse);
-    console.log("HTTPRESPONSE: ", httpResponse.statusCode);
-
     return {
       jsonResponse,
       httpStatusCode: httpResponse.statusCode,

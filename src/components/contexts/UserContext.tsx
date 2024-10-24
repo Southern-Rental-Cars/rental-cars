@@ -1,4 +1,4 @@
-'use client'; // Ensures this is a client component to use hooks and cookies
+'use client';
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import Cookies from 'js-cookie';
@@ -10,10 +10,11 @@ interface UserContextType {
     full_name: string;
     email: string;
   } | null;
-  setUser: (user: { id: number; full_name: string; email: string } | null) => void;
+  token: string | null; // Add token to context
+  setUser: (user: { id: number; full_name: string; email: string } | null, token: string | null) => void;
 }
 
-// Create the context with a default value of null
+// Create the context with a default value of undefined
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 // Custom hook to use the UserContext
@@ -28,37 +29,35 @@ export const useUser = () => {
 // UserProvider component to wrap around the app
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUserState] = useState<{ id: number; full_name: string; email: string } | null>(null);
+  const [token, setTokenState] = useState<string | null>(null);
 
-  // Helper to store user in both state, cookies, and local storage
-  const setUser = (user: { id: number; full_name: string; email: string } | null) => {
+  // Helper to store user and token in both state and cookies
+  const setUser = (user: { id: number; full_name: string; email: string } | null, token: string | null) => {
     setUserState(user);
-    if (user) {
-      // Store the user in cookies and local storage
+    setTokenState(token);
+    if (user && token) {
+      // Store the user and token in cookies
       Cookies.set('user', JSON.stringify(user), { expires: 7 }); // Cookie expires in 7 days
-      localStorage.setItem('user', JSON.stringify(user)); // Store in localStorage
+      Cookies.set('token', token, { expires: 7 }); // Store JWT token in cookie
     } else {
-      // Remove the user from cookies and local storage
+      // Remove the user and token from cookies if logged out
       Cookies.remove('user');
-      localStorage.removeItem('user');
+      Cookies.remove('token');
     }
   };
 
-  // Load the user from local storage first, then cookies if necessary, when the app starts
+  // Load the user and token from cookies when the app starts
   useEffect(() => {
-    const storedUser = localStorage.getItem('user'); // Try loading from local storage
-    if (storedUser) {
-      setUserState(JSON.parse(storedUser)); // If found in local storage, set the user state
-    } else {
-      // If not found in local storage, load from cookies
-      const cookieUser = Cookies.get('user');
-      if (cookieUser) {
-        setUserState(JSON.parse(cookieUser));
-      }
+    const cookieUser = Cookies.get('user');
+    const cookieToken = Cookies.get('token');
+    if (cookieUser && cookieToken) {
+      setUserState(JSON.parse(cookieUser));
+      setTokenState(cookieToken);
     }
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, token, setUser }}>
       {children}
     </UserContext.Provider>
   );

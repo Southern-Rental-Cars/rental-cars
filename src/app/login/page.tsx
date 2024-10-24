@@ -1,13 +1,12 @@
 'use client';
-
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link'; // Import Link for navigation
-import { useUser } from '@/components/contexts/UserContext'; // Import the useUser hook
+import Link from 'next/link';
+import { useUser } from '@/components/contexts/UserContext';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setUser } = useUser(); // Get the setUser function from context to set user state globally
+  const { setUser } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -28,13 +27,15 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
-        const data = await response.json(); // Your API response format
-        // Set the user data from the response (make sure it's extracted correctly)
+        const data = await response.json();
+        
+        // Set the user data and token in the context
         setUser({
-          id: data.user.id, // Make sure you're using `data.user.id`
-          full_name: data.user.full_name, // Make sure you're using `data.user.full_name`
+          id: data.user.id,
+          full_name: data.user.full_name,
           email: data.user.email,
-        });
+        }, data.token); // Store the JWT token as well
+
         router.push('/'); // Redirect to homepage or dashboard after successful login
       } else {
         const data = await response.json();

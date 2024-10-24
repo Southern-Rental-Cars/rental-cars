@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Payments from './PaymentPage';
-import { fetchExtras, fetchExtrasAvailability } from '@/lib/db/queries';
+import { fetchAllExtras, fetchExtrasAvailability } from '@/lib/db/queries';
 import { Vehicle } from '@/types'; // Import the actual type of Vehicle from your models
+import Loader from '@/components/Loader';
 
 interface PaymentDataProviderProps {
   vehicle: Vehicle; // Adjusted to use the correct Vehicle type
@@ -26,10 +27,10 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedExtras = await fetchExtras();
-        setExtras(fetchedExtras);
-        const fetchedAvailability = await fetchExtrasAvailability(startDateTime, endDateTime, fetchedExtras);
-        setAvailability(fetchedAvailability);
+        const allExtras = await fetchAllExtras();
+        setExtras(allExtras);
+        const extrasAvailability = await fetchExtrasAvailability(startDateTime, endDateTime, allExtras);
+        setAvailability(extrasAvailability);
       } catch (err) {
         setError('Failed to load booking data.');
       } finally {
@@ -40,13 +41,11 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
   }, [startDateTime, endDateTime]);
 
   if (loading) {
-    return <p>Loading booking information...</p>;
+    return <Loader/>
   }
-
   if (error) {
     return <p>{error}</p>;
   }
-
   const vehicleDetails = {
     year: vehicle.year,
     gas_type: vehicle.gas_type,
@@ -54,15 +53,14 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
     num_doors: vehicle.num_doors,
     mpg: vehicle.mpg,
   };
-
   return (
     <Payments
-      vehicleId={vehicle.id} // Ensure `vehicle.id` is valid
-      vehicleName={`${vehicle.make} ${vehicle.model}`} // Concatenating year, make, and model
+      vehicleId={vehicle.id} 
+      vehicleName={`${vehicle.make} ${vehicle.model}`} 
       vehicleDetails={vehicleDetails} // Pass the vehicle details object
       startDate={startDateTime}
       endDate={endDateTime}
-      basePrice={totalCost} // Pass the base price as totalCost
+      basePrice={totalCost}
       extras={extras}
       availability={availability}
       onBackToDetails={onBackToDetails} // Pass the onBackToDetails prop to Payments

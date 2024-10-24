@@ -14,8 +14,8 @@ export default function Book() {
   });
 
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null); // Track the selected vehicle
-  const [isProceedingToPayment, setIsProceedingToPayment] = useState(false); // Track if the user proceeds to payment
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [isProceedingToPayment, setIsProceedingToPayment] = useState(false);
 
   // Fetch vehicles based on the date range
   const fetchAvailableVehicles = async (start: string, end: string) => {
@@ -39,7 +39,7 @@ export default function Book() {
 
   const handleBack = () => {
     if (isProceedingToPayment) {
-      setIsProceedingToPayment(false); // Navigate back to details page
+      setIsProceedingToPayment(false);
     } else {
       setSelectedVehicle(null); // Navigate back to vehicle list
     }
@@ -49,19 +49,19 @@ export default function Book() {
     setIsProceedingToPayment(true); // Navigate to payment page
   };
 
-  // If proceeding to payment, render the PaymentDataProvider
+  // Render Payments page
   if (isProceedingToPayment && selectedVehicle) {
     return (
       <PaymentDataProvider
         vehicle={selectedVehicle}
         startDateTime={dateRange.startDateTime}
         endDateTime={dateRange.endDateTime}
-        totalCost={selectedVehicle.price * (new Date(dateRange.endDateTime).getDate() - new Date(dateRange.startDateTime).getDate())}
-        onBackToDetails={handleBack} // Pass the back function to PaymentDataProvider
+        totalCost={selectedVehicle.price * (new Date(dateRange.endDateTime).getDate() - new Date(dateRange.startDateTime).getDate() + 1)}
+        onBackToDetails={handleBack} 
       />
     );
   }
-  // If a vehicle is selected, render the details page
+  // Render details page
   if (selectedVehicle) {
     return (
       <div className="flex flex-col items-center justify-center">
@@ -75,7 +75,7 @@ export default function Book() {
       </div>
     );
   }
-  // Render the vehicle selection and grid by default
+  // Render the vehicle selection grid by default
   return (
     <div className="flex flex-col items-center justify-center">
       <Dates onDateChange={handleDateChange} defaultStartDateTime={dateRange.startDateTime} defaultEndDateTime={dateRange.endDateTime} />

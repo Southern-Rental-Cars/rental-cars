@@ -101,6 +101,7 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
 
   // Handle PayPal payment approval
   const onApprove = async (data: any) => {
+    console.log("data: " + totalPrice);
     try {
       const response = await fetch(`/api/orders/${data.orderID}/capture`, {
         method: "POST",
@@ -112,7 +113,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
       const transaction =
         orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
         orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
-      console.log(transaction);
       if (!transaction || transaction.status === "DECLINED") {
         const errorMessage = `Transaction ${transaction?.status}: ${transaction?.id}`;
         throw new Error(errorMessage);
@@ -150,12 +150,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
           <PaymentRadioOption
             label="PayPal"
             value="PayPal"
-            selectedValue={paymentMethod}
-            onChange={setPaymentMethod}
-          />
-          <PaymentRadioOption
-            label="Google Pay"
-            value="Google Pay"
             selectedValue={paymentMethod}
             onChange={setPaymentMethod}
           />

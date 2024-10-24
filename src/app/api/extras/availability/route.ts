@@ -1,67 +1,5 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma'; // Adjust the path to your prisma client
-import { start } from 'repl';
-
-// Utility function to validate a date string
-function isValidDate(dateString: string): boolean {
-  const date = new Date(dateString);
-  return !isNaN(date.getTime()); // Return false if date is Invalid
-}
-
-// Helper function to check extras availability
-async function checkExtrasAvailability(
-  
-  extras: { id: number; quantity: number }[],
-  start_date: Date,
-  end_date: Date
-) {
-  const availabilityQuantity: { [key: number]: { available_quantity: number } } = {};
-
-  for (const extra of extras) {
-    const { id } = extra;
-
-    // Fetch the total available quantity of the extra
-    const extraDetails = await prisma.extra.findUnique({
-      where: { id: id },
-      select: { name: true, total_quantity: true },
-    });
-
-    if (!extraDetails) {
-      return NextResponse.json({ error: `Extra with ID ${id} not found.` }, { status: 404 });
-    }
-
-    let totalBookedQuantity = 0;
-    let currentDate = new Date(start_date);
-    const endDateObject = new Date(end_date);
-    // Check availability for each day in the range
-    while (currentDate <= endDateObject) {
-      const bookedQuantityResult = await prisma.bookingExtra.aggregate({
-        _sum: { quantity: true },
-        where: {
-          extra_id: id,
-          booking: {
-            OR: [
-              { start_date: { lte: currentDate }, end_date: { gte: currentDate } },
-            ],
-            status: 'active',  // Ensure only 'active' bookings are counted
-          },
-        },
-      });
-
-      const bookedQuantity = bookedQuantityResult._sum.quantity || 0;
-      totalBookedQuantity = Math.max(totalBookedQuantity, bookedQuantity);
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    const availableQuantity = extraDetails.total_quantity - totalBookedQuantity;
-
-    availabilityQuantity[id] = {
-      available_quantity: availableQuantity,
-    };
-  }
-
-  return availabilityQuantity;
-}
 
 // Handler for the POST request
 export async function POST(req: Request) {
@@ -69,7 +7,6 @@ export async function POST(req: Request) {
     const { start_date, end_date, extras } = await req.json();
     console.log("Availability for start_date:", start_date); // Log start_date
     console.log("End_date:", end_date); // Log end_date
-
     // Validate request body
     if (!start_date || !end_date || !extras) {
       return NextResponse.json({ error: 'Missing required parameters.' }, { status: 400 });
@@ -83,7 +20,6 @@ export async function POST(req: Request) {
     // Parse start_date and end_date as valid Date objects
     const startDateObj = new Date(start_date);
     const endDateObj = new Date(end_date);
-
     if (startDateObj > endDateObj) {
       return NextResponse.json({ error: 'Start date cannot be later than end date.' }, { status: 400 });
     }
@@ -98,8 +34,78 @@ export async function POST(req: Request) {
   }
 }
 
+// Helper function to check extras availability
+async function checkExtrasAvailability(
+  extras: { id: number; quantity: number }[],
+  start_date: Date,
+  end_date: Date
+) {
+  const availabilityQuantity: { [key: number]: { available_quantity: number | string } } = {};
+
+  for (const extra of extras) {
+    const { id } = extra;
+
+    // Fetch the total available quantity and price_type of the extra
+    const extraDetails = await prisma.extra.findUnique({
+      where: { id: id },
+      select: { name: true, total_quantity: true, price_type: true }, // Fetch price_type
+    });
+
+    if (!extraDetails) {
+      return NextResponse.json({ error: `Extra with ID ${id} not found.` }, { status: 404 });
+    }
+
+    // If the extra is a non-tangible type (TRIP), it's always available
+    if (extraDetails.price_type === 'TRIP') {
+      availabilityQuantity[id] = {
+        available_quantity: 999, // Use a string to represent always available
+      };
+      continue; // Skip the rest of the loop for non-tangible extras
+    }
+
+    // For tangible extras (e.g., DAILY), check availability
+    let totalBookedQuantity = 0;
+    let currentDate = new Date(start_date);
+    const endDateObject = new Date(end_date);
+
+    // Check availability for each day in the range
+    while (currentDate <= endDateObject) {
+      const bookedQuantityResult = await prisma.bookingExtra.aggregate({
+        _sum: { quantity: true },
+        where: {
+          extra_id: id,
+          booking: {
+            OR: [
+              { start_date: { lte: currentDate }, end_date: { gte: currentDate } },
+            ],
+            status: 'active',
+          },
+        },
+      });
+
+      const bookedQuantity = bookedQuantityResult._sum.quantity || 0;
+      totalBookedQuantity = Math.max(totalBookedQuantity, bookedQuantity);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Calculate the available quantity
+    const availableQuantity = extraDetails.total_quantity - totalBookedQuantity;
+    availabilityQuantity[id] = {
+      available_quantity: availableQuantity,
+    };
+  }
+
+  return availabilityQuantity;
+}
+
 
 // Handle unsupported methods
 export async function GET() {
   return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
+
+// Utility function to validate a date string
+function isValidDate(dateString: string): boolean {
+  const date = new Date(dateString);
+  return !isNaN(date.getTime()); // Return false if date is Invalid
 }

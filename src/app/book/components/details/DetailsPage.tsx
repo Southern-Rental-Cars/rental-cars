@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Vehicle, CarImage } from '@/types';
+import { Vehicle, VehicleImage } from '@/types';
 import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
 import { format, differenceInDays } from 'date-fns';
 
 interface DetailsProps {
-  vehicle: Vehicle & { carImages: CarImage[] };
+  vehicle: Vehicle & { vehicleImages: VehicleImage[] };
   startDateTime: string;
   endDateTime: string;
   onBack: () => void;
@@ -24,8 +24,8 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
   const formattedStartDate = format(startDate, 'EEE MMM do, hh:mm a');
   const formattedEndDate = format(endDate, 'EEE MMM do, hh:mm a');
 
-  const handleNextImage = () => setActiveImageIndex((prev) => (prev + 1) % vehicle.carImages.length);
-  const handlePrevImage = () => setActiveImageIndex((prev) => (prev === 0 ? vehicle.carImages.length - 1 : prev - 1));
+  const handleNextImage = () => setActiveImageIndex((prev) => (prev + 1) % vehicle.vehicleImages.length);
+  const handlePrevImage = () => setActiveImageIndex((prev) => (prev === 0 ? vehicle.vehicleImages.length - 1 : prev - 1));
   const handleImageClick = (index: number) => {
     setActiveImageIndex(index);
     setIsModalOpen(true);
@@ -35,10 +35,7 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
 
   return (
     <div className="max-w-7xl w-full mx-auto p-6 bg-white rounded-lg mt-8">
-      <button onClick={onBack} className="mb-6 text-blue-500 hover:text-blue-700 transition duration-200 text-lg font-medium">
-        ← Back
-      </button>
-
+      <button onClick={onBack} className="mb-6 text-blue-500 hover:text-blue-700 transition duration-200 text-lg font-medium"> ← Back </button>
       {/* Two-column layout: Image with Vehicle Details on the left, Booking Details on the right */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Image Section with Vehicle Details */}
@@ -67,7 +64,6 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
               </button>
             </>
           )}
-
           {/* Vehicle Details */}
           <div className="absolute bottom-0 left-0 w-full p-6 bg-black bg-opacity-60 backdrop-blur-sm text-white rounded-b-lg">
             <h2 className="text-2xl font-bold">
@@ -88,7 +84,6 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
               </p>
             </div>
           </div>
-
           {/* Features - Hover to Show */}
           <div className="absolute inset-0 p-6 bg-black bg-opacity-60 backdrop-blur-sm text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
             <h3 className="text-lg font-semibold">Features:</h3>
@@ -107,7 +102,6 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
         {/* Booking Details */}
         <div className="bg-white border border-gray-200 p-6 rounded-lg space-y-3">
           <h2 className="text-2xl font-bold">Booking details</h2>
-          <div className="border-t border-gray-300 mt-3" />
           <div className="mt-3">
             <p className="text-lg text-gray-700">
               <span className="font-semibold">From:</span> {formattedStartDate}
@@ -124,10 +118,9 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
                 <p className='text-md'>Daily rate:</p>
                 <p>${vehicle.price.toFixed(2)} / day</p>
               </div>
-              <div className="border-t border-gray-300 space-y-3" />
               <div className="flex justify-between">
                 <p className="font-bold text-md">Subtotal:</p>
-                <p className="font-bold text-2xl">${totalCost.toFixed(2)}</p>
+                <p className="font-bold text-xl">${totalCost.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -145,11 +138,11 @@ const Details: React.FC<DetailsProps> = ({ vehicle, onBack, startDateTime, endDa
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
           <div className="relative w-full h-full max-w-4xl max-h-full flex items-center">
-            <Image src={vehicle.carImages[activeImageIndex].image_url} alt={`Full view of ${vehicle.make} ${vehicle.model}`} fill style={{ objectFit: 'contain' }} />
+            <Image src={vehicle.vehicleImages[activeImageIndex].image_url} alt={`Full view of ${vehicle.make} ${vehicle.model}`} fill style={{ objectFit: 'contain' }} />
             <button onClick={handleCloseModal} className="absolute top-4 right-4 text-white text-3xl">
               <FaTimes />
             </button>
-            {vehicle.carImages.length > 1 && (
+            {vehicle.vehicleImages.length > 1 && (
               <>
                 <button onClick={handlePrevImage} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl">
                   <FaArrowLeft />
