@@ -22,9 +22,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // Attempt to retrieve the token from Authorization header
-  let token = request.headers.get('Authorization')?.split(' ')[1];
-  // If no token is found in Authorization header, block the request
-  if (!token) {
+  const authHeader = request.headers.get('Authorization');
+  let token = authHeader ? authHeader.split(' ')[1] : null;
+
+  // If no token is found, return an unauthorized response
+  if (!token || token === 'undefined') {
     return new NextResponse('Unauthorized: No token provided', { status: 401 });
   }
 

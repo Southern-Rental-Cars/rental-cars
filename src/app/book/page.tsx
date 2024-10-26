@@ -79,11 +79,10 @@ export default function Book() {
   return (
     <div className="flex flex-col items-center justify-center">
       <Dates onDateChange={handleDateChange} defaultStartDateTime={dateRange.startDateTime} defaultEndDateTime={dateRange.endDateTime} />
-      {filteredVehicles.length > 0 && (
-        <div className="mt-8 w-full max-w-6xl">
-          <Grid vehicles={filteredVehicles} onSelectVehicle={handleSelectVehicle} />
-        </div>
-      )}
+      <div className="mt-8 w-full max-w-6xl">
+        <Grid vehicles={filteredVehicles} onSelectVehicle={handleSelectVehicle} />
+      </div>
+
     </div>
   );
 }

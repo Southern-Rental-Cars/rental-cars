@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma'; // Adjust the path to your prisma client
 
-// GET /api/users/:id - Returns the user by ID
+// GET /api/user/:id - Returns the user by ID
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
@@ -34,7 +34,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-// PUT /api/users/:id - Updates a user's fields
+// PUT /api/user/:id - Updates a user's fields
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
@@ -54,7 +54,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-// DELETE /api/users/:id - Deletes a user and returns the deleted userId
+// DELETE /api/user/:id - Deletes a user and returns the deleted userId
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 

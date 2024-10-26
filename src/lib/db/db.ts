@@ -100,13 +100,13 @@ export async function fetchExtrasAvailability(startDate: string, endDate: string
 export async function createBooking(payload: any) {
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL; // accessed by server
 
-  const token = getToken(); // Get the JWT token
+  const token = getToken(); 
 
   const response = await fetch(`${baseURL}/api/booking`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` // Include the Authorization header
+      'Authorization': `Bearer ${token}` 
     },
     body: JSON.stringify(payload),
   });
@@ -123,13 +123,13 @@ export async function fetchBookingById(id: string) {
     throw new Error('API base URL is not set in the environment variables');
   }
 
-  const token = getToken(); // Get the JWT token
+  const token = getToken();
 
   try {
     const response = await fetch(`${baseURL}/api/booking/${id}`, {
-      method: 'GET', // Explicitly setting the HTTP method
+      method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}` // Include the Authorization header
+        'Authorization': `Bearer ${token}`
       }
     });
     if (!response.ok) {
@@ -144,3 +144,35 @@ export async function fetchBookingById(id: string) {
     throw new Error(`An error occurred while fetching the booking: ${error.message}`);
   }
 }
+
+export async function fetchUserById(id: number) {
+  const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!baseURL) {
+    throw new Error('API base URL is not set in the environment variables');
+  }
+
+  const token = getToken(); // Get the JWT token
+
+  try {
+    const response = await fetch(`${baseURL}/api/user/${id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (!response.ok) {
+      // Log and throw a descriptive error message if the request fails
+      const errorMessage = await response.text();
+      throw new Error(`Failed to fetch user: ${errorMessage}`);
+    }
+    
+    // Parse and return the response JSON data
+    const userData = await response.json();
+    return userData;
+  } catch (error: any) {
+    // Catch and throw a more specific error message if an error occurs
+    throw new Error(`An error occurred while fetching the user: ${error.message}`);
+  }
+}
+

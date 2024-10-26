@@ -108,9 +108,14 @@ model User {
   // License Information
   license_number       String    @db.VarChar(25)
   license_state        String    @db.VarChar(25)
+  license_city         String    @db.VarChar(25)
+  license_street_address  String    @db.VarChar(50)
+  license_zip          String    @db.VarChar(25)
+  license_dob          DateTime  
+  license_expiration   DateTime
+  license_country      String    @db.VarChar(25)
   license_front_img    String    @db.Text
   license_back_img     String    @db.Text
-  license_expiration   DateTime
 
   // PayPal-related fields for payment
   paypal_payer_id      String?   @db.VarChar(100) // Unique PayPal payer ID for identifying the PayPal account

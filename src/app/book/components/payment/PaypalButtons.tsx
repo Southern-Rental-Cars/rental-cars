@@ -9,6 +9,7 @@ import {
   PayPalExpiryField,
   PayPalCVVField,
 } from "@paypal/react-paypal-js";
+import { useUser } from "@/components/contexts/UserContext"; // Import the useUser hook
 
 interface PaypalButtonsProps {
     totalPrice: number; // Define the totalPrice prop
@@ -51,6 +52,7 @@ const cardFieldStyle = {
   
 
 const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSuccess }) => {
+  const { user, token } = useUser(); // Get the user and token from context
   const [isPaying, setIsPaying] = useState(false);
   const [billingAddress, setBillingAddress] = useState({
     addressLine1: "",
@@ -77,6 +79,8 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the JWT token in the headers
+
         },
         body: JSON.stringify({
           totalCost: totalPrice.toFixed(2),
@@ -107,6 +111,7 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the JWT token in the headers
         },
       });
       const orderData = await response.json();

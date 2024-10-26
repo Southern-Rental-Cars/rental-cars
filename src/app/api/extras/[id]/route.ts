@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
   try {
     const extraId = parseId(id);
-    const extra = await prisma.extras.findUnique({
+    const extra = await prisma.extra.findUnique({
       where: { id: extraId },
     });
 
@@ -53,7 +53,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 
     // Update the extra with the provided fields
-    await prisma.extras.update({
+    await prisma.extra.update({
       where: { id: extraId },
       data: {
         ...(name !== undefined && { name }),
@@ -90,7 +90,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   try {
     const extraId = parseId(id);
 
-    await prisma.extras.delete({
+    await prisma.extra.delete({
       where: { id: extraId },
     });
 

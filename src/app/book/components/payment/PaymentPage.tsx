@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
 import Extras from '../extras/ExtrasBox';
-import { createBooking } from '../../../../lib/db/queries';
+import { createBooking } from '../../../../lib/db/db';
 import { useRouter } from 'next/navigation';
 import PaypalButtons from './PaypalButtons';
 import { useUser } from '@/components/contexts/UserContext';
@@ -65,10 +65,9 @@ const Payment: React.FC<PaymentPageProps> = ({
   const router = useRouter();
 
   useEffect(() => {
-    console.log("USERID: " + userId);
-    // Recalculate total cost when selectedExtras changes
+    // Calculate total cost when selectedExtras changes
     updateTotalPrice();
-  }, [selectedExtras]); // Add selectedExtras as a dependency
+  }, [selectedExtras]);
 
   const formattedStartDate = useMemo(
     () => format(new Date(startDate), 'EEE MMM do, hh:mm a'),
@@ -108,7 +107,11 @@ const Payment: React.FC<PaymentPageProps> = ({
   };
 
 const handlePaymentSuccess = async (paypalData: PaypalData) => {
-  if (!userId) return;
+      // Redirect to login if the user is not logged in
+  if (!userId) {
+    router.push('/login');
+    return;
+  }
   setIsProcessing(true); // Start the loading state
   setError(null); // Clear any previous error messages
 

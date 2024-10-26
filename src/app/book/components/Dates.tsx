@@ -10,6 +10,20 @@ interface SelectDatesBoxProps {
 const SelectDatesBox: React.FC<SelectDatesBoxProps> = ({ onDateChange, defaultStartDateTime, defaultEndDateTime }) => {
   const [dates, setDates] = useState({ startDateTime: defaultStartDateTime, endDateTime: defaultEndDateTime });
 
+  // Function to get today's date in the required format (YYYY-MM-DDTHH:MM)
+  const getMinDateTime = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+    const day = String(today.getDate()).padStart(2, '0');
+    const hours = String(today.getHours()).padStart(2, '0');
+    const minutes = String(today.getMinutes()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  const minDateTime = getMinDateTime();
+
   // Handle search button click
   const handleSearch = () => {
     const { startDateTime, endDateTime } = dates;
@@ -30,6 +44,7 @@ const SelectDatesBox: React.FC<SelectDatesBoxProps> = ({ onDateChange, defaultSt
             type="datetime-local"
             value={dates.startDateTime.slice(0, 16)}
             onChange={(e) => setDates((prev) => ({ ...prev, startDateTime: e.target.value }))}
+            min={minDateTime} // Prevent selecting dates before today
             className="border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-150 ease-in-out"
           />
         </div>
@@ -41,6 +56,7 @@ const SelectDatesBox: React.FC<SelectDatesBoxProps> = ({ onDateChange, defaultSt
             type="datetime-local"
             value={dates.endDateTime.slice(0, 16)}
             onChange={(e) => setDates((prev) => ({ ...prev, endDateTime: e.target.value }))}
+            min={dates.startDateTime} // The "To" date cannot be earlier than the "From" date
             className="border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-150 ease-in-out"
           />
         </div>

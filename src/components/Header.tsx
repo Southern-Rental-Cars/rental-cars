@@ -3,24 +3,22 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation'; // Added useRouter for logout
-import clsx from 'clsx';
-import { Container } from '@/components/Container';
-import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline'; // Import the ChevronDown icon for the dropdown
+import { usePathname, useRouter } from 'next/navigation';
+import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import logo from '@/images/transparent_southern_logo_3.png';
-import { useUser } from '@/components/contexts/UserContext'; // Import the useUser hook
+import { useUser } from '@/components/contexts/UserContext';
+import { Container } from '@/components/Container';
 
 function NavItem({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
-  let isActive = usePathname() === href;
+  const isActive = usePathname() === href;
 
   return (
-    <li onClick={onClick}>
+    <li onClick={onClick} className="inline-block">
       <Link
         href={href}
-        className={clsx(
-          'relative block px-3 py-2 transition',
+        className={`relative block px-4 py-2 transition ${
           isActive ? 'text-blue-600' : 'hover:text-blue-600'
-        )}
+        }`}
       >
         {children}
         {isActive && (
@@ -32,10 +30,10 @@ function NavItem({ href, children, onClick }: { href: string; children: React.Re
 }
 
 function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLogout: () => void }) {
-  const [isProfileOpen, setIsProfileOpen] = useState(false); // State for profile dropdown
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close the profile dropdown when clicking outside of it
+  // Close the profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
@@ -49,50 +47,46 @@ function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLo
 
   return (
     <nav className="hidden md:flex">
-      <ul className="flex space-x-6 text-md font-semibold text-white list-none m-0 p-0">
+      <ul className="flex items-center space-x-8 text-md font-semibold text-white list-none m-0 p-0">
         <NavItem href="/book">Book</NavItem>
         <NavItem href="/business-solutions">Business Solutions</NavItem>
         <NavItem href="/contact">Contact</NavItem>
         {isLoggedIn ? (
-          <>
-            <div className="relative" ref={profileRef}>
-              <button
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="ml-4 flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-              >
-                Profile <ChevronDownIcon className="h-5 w-5 ml-2" />
-              </button>
-
-              {/* Profile Dropdown */}
-              {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                  <ul className="py-1">
-                    <li>
-                      <Link
-                        href="/dashboard"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        Dashboard
-                      </Link>
-                    </li>
-                    <li>
-                      <button
-                        onClick={onLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Logout
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-          </>
+          <div className="relative inline-block" ref={profileRef}>
+            <button
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="flex items-center px-4 py-2 text-white transition"
+            >
+              Profile <ChevronDownIcon className="h-5 w-5 ml-2" />
+            </button>
+            {isProfileOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                <ul className="py-1">
+                  <li>
+                    <Link
+                      href="/dashboard"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={onLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         ) : (
           <Link
             href="/login"
-            className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
           >
             Login
           </Link>
@@ -102,7 +96,17 @@ function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLo
   );
 }
 
-function MobileNavigation({ isOpen, onClose, isLoggedIn, onLogout }: { isOpen: boolean; onClose: () => void; isLoggedIn: boolean; onLogout: () => void }) {
+function MobileNavigation({
+  isOpen,
+  onClose,
+  isLoggedIn,
+  onLogout,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  isLoggedIn: boolean;
+  onLogout: () => void;
+}) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -163,7 +167,7 @@ function MobileNavigation({ isOpen, onClose, isLoggedIn, onLogout }: { isOpen: b
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, setUser } = useUser(); // Access the user and setUser from UserContext
+  const { user, setUser } = useUser();
   const router = useRouter();
 
   const toggleMobileMenu = () => {
@@ -175,36 +179,22 @@ export function Header() {
   };
 
   const handleLogout = () => {
-    setUser(null); // Clear user from the context
-    localStorage.removeItem('user'); // Clear user from localStorage
-    router.push('/'); // Redirect to homepage or login page after logout
+    setUser(null);
+    router.push('/');
   };
 
   return (
     <header className="sticky top-0 z-50 bg-[#19223E] shadow-md">
       <Container className="flex justify-between items-center">
-        {/* Title, Logo, and Navigation in One Line */}
-        <div className="flex items-center py-4 md:py-8 space-x-4">
-          {/* Clickable Logo Image */}
+        <div className="flex items-center py-4 md:py-8 space-x-8">
           <Link href="/" passHref>
             <div className="relative w-44 md:w-80 h-24 cursor-pointer">
-              <Image
-                src={logo}
-                alt="Southern Rental Cars Logo"
-                layout="fill"
-                objectFit="contain"
-                priority
-              />
+              <Image src={logo} alt="Southern Rental Cars Logo" layout="fill" objectFit="contain" priority />
             </div>
           </Link>
-          {/* Desktop Navigation */}
-          <DesktopNavigation
-            isLoggedIn={!!user} // Pass login status
-            onLogout={handleLogout} // Handle logout
-          />
+          <DesktopNavigation isLoggedIn={!!user} onLogout={handleLogout} />
         </div>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={toggleMobileMenu}
           className="md:hidden ml-auto text-white absolute top-12 right-4"
@@ -212,12 +202,11 @@ export function Header() {
           <Bars3Icon className="h-8 w-8" />
         </button>
 
-        {/* Mobile Navigation */}
         <MobileNavigation
           isOpen={isMobileMenuOpen}
           onClose={closeMobileMenu}
-          isLoggedIn={!!user} // Pass login status
-          onLogout={handleLogout} // Handle logout
+          isLoggedIn={!!user}
+          onLogout={handleLogout}
         />
       </Container>
     </header>
