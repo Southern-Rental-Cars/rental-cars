@@ -35,11 +35,9 @@ const paypalConfig = {
 const cardFieldStyle = {
     input: {
       "font-size": "16px", // This corresponds to text-base in Tailwind
-      "font-family": "Arial, sans-serif", // Use font-sans for this in Tailwind
       color: "#333", // Corresponds to text-gray-800 in Tailwind
       padding: "8px", // p-2 in Tailwind
       "border-radius": "8px", // rounded-lg in Tailwind
-      "border": "1px solid #ddd", // border-gray-300 in Tailwind
     },
     ".invalid": {
       color: "red", // text-red-500 in Tailwind
@@ -62,7 +60,7 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
     countryCode: "US",
     postalCode: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState("Credit Card");
+  const [paymentMethod, setPaymentMethod] = useState("Credit/Debit");
 
   // Handle billing address changes
   const handleBillingAddressChange = (field: string, value: string) => {
@@ -145,10 +143,10 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
       {/* Container with consistent width */}
       <div className="bg-white rounded-lg">
         {/* Payment Method Selection */}
-        <div className="flex mb-6 space-x-6">
+        <div className="flex mb-3 space-x-6">
           <PaymentRadioOption
-            label="Credit Card"
-            value="Credit Card"
+            label="Credit/Debit"
+            value="Credit/Debit"
             selectedValue={paymentMethod}
             onChange={setPaymentMethod}
           />
@@ -159,10 +157,9 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
             onChange={setPaymentMethod}
           />
         </div>
-
         {/* Consistent width for Credit Card and PayPal */}
         <div className="w-full">
-          {paymentMethod === "Credit Card" && (
+          {paymentMethod === "Credit/Debit" && (
             <PayPalCardFieldsProvider createOrder={createOrder} onApprove={onApprove} onError={onError} style={cardFieldStyle}>
               <div className="credit-card-fields space-y-0">
                 <PayPalNumberField/>
@@ -174,15 +171,17 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
                 {/* Billing Address */}
                 <div className="grid grid-cols-2 gap-4">
                 <input
-                    type="text"
-                    placeholder="Address line"
-                    onChange={(e) => handleBillingAddressChange("addressLine1", e.target.value)}
-                    />
-                    <input
-                    type="text"
-                    placeholder="Postal/zip code"
-                    onChange={(e) => handleBillingAddressChange("postalCode", e.target.value)}
-                    />
+                  className="border border-gray-400 rounded-lg p-2 ml-1 placeholder-gray-600"
+                  type="text"
+                  placeholder="Address line"
+                  onChange={(e) => handleBillingAddressChange("addressLine1", e.target.value)}
+                  />
+                <input
+                  className="border border-gray-400 rounded-lg p-2 mr-1 placeholder-gray-600"
+                  type="text"
+                  placeholder="Postal code"
+                  onChange={(e) => handleBillingAddressChange("postalCode", e.target.value)}
+                />
                 </div>
               </div>
               {/* Submit Payment Button */}
@@ -240,7 +239,7 @@ const SubmitPaymentButton: React.FC<{
     }
 
     setIsPaying(true);
-    cardFieldsForm.submit({ billingAddress }).catch((err) => {
+    cardFieldsForm.submit().catch((err) => {
       setIsPaying(false);
       console.error("Error submitting PayPal card fields:", err);
     });
@@ -251,7 +250,7 @@ const SubmitPaymentButton: React.FC<{
       className={`mt-6 w-full p-3 bg-blue-600 text-white rounded-lg ${isPaying ? "opacity-50" : ""}`}
       onClick={handleClick}
       disabled={isPaying} >
-      {isPaying ? "Processing..." : "Confirm booking"}
+      {isPaying ? "Processing..." : "Confirm Booking"}
     </button>
   );
 };

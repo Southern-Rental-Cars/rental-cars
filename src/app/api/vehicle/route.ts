@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma'; // Prisma client import
 
-// POST Request: Create new Vehicle
+// POST Request: Create vehicle
 //--------------------------------------------------------------
 export async function POST(req: Request) {
   try {
-    const data = await req.json();
+    const body = await req.json();
 
     const {
-      mpg, make, model, year, type, short_description, long_description,
-      features, extras, guidelines, faqs, price, turo_url, gas_type, num_doors, num_seats, image_url,
-    } = data;
+      make, model, year, type, short_description,
+      features, extras, guidelines, faqs, price, gas_type, mpg, num_doors, num_seats, thumbnail,
+    } = body;
 
     const vehicle = await prisma.vehicle.create({
       data: {
@@ -20,19 +20,15 @@ export async function POST(req: Request) {
         year,
         type,
         short_description,
-        long_description,
         features,
         extras,
         guidelines,
         faqs,
         price: parseFloat(price), // Store price as a float
-        turo_url,
         gas_type,
         num_doors,
         num_seats,
-        vehicleImages: {
-          create: { image_url }, // Link car images to the car
-        },
+        thumbnail,
       },
     });
 
@@ -44,7 +40,7 @@ export async function POST(req: Request) {
   }
 }
 
-// GET Request: Fetch All or Available Vehicles
+// GET Request: Fetch all vehicles or available vehicles
 //--------------------------------------------------------------
 export async function GET(req: Request) {
   try {
@@ -88,7 +84,7 @@ async function fetchAllVehicles() {
 // Fetch vehicles with date
 async function fetchAvailableVehicles(startDate: string, endDate: string) {
   try {
-    const availableVehicles = await prisma.vehicle.findMany({
+    const vehicles = await prisma.vehicle.findMany({
       where: {
         bookings: {
           none: {
@@ -103,7 +99,7 @@ async function fetchAvailableVehicles(startDate: string, endDate: string) {
       },
       select: vehicleSelectionFields(), // Use utility for selecting fields
     });
-    return NextResponse.json(formatVehicleData(availableVehicles), { status: 200 });
+    return NextResponse.json(formatVehicleData(vehicles), { status: 200 });
   } catch (error) {
     console.error('Error fetching available vehicles:', error);
     return NextResponse.json({ error: 'Error fetching vehicles' }, { status: 500 });
@@ -122,27 +118,25 @@ function vehicleSelectionFields() {
     year: true,
     type: true,
     short_description: true,
-    long_description: true,
     features: true,
     extras: true,
     guidelines: true,
     faqs: true,
     price: true,
-    turo_url: true,
     num_doors: true,
     num_seats: true,
     gas_type: true,
-    vehicleImages: {
-      select: { image_url: true }, // Select image URL for each car
-    },
+    thumbnail: true
   };
 }
 
-// Utility to format car data by converting price to float and fetching first image URL.
+// Utility to format vehicle data by converting price to float and transforming `faqs` to an array
 const formatVehicleData = (vehicles: any[]) => {
   return vehicles.map((vehicle) => ({
     ...vehicle,
     price: parseFloat(vehicle.price.toString()), // Ensure price is returned as a float
-    image_url: vehicle.vehicleImages[0]?.image_url || '', // Use first image or fallback to an empty string
+    faqs: vehicle.faqs
+      ? Object.entries(vehicle.faqs).map(([question, answer]) => ({ question, answer }))
+      : [], // Transform `faqs` object to array, or return empty array if `faqs` is undefined
   }));
 };

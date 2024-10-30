@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     await validateBooking(vehicle_id, start_date, end_date);
 
     // Create the booking in the database
-    const newBooking = await createBooking({
+    const booking = await createBooking({
       vehicle_id: parseInt(vehicle_id),
       user_id: parseInt(user_id),
       start_date,
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       is_paid,
     });
 
-    return NextResponse.json(newBooking, { status: 201 });
+    return NextResponse.json(booking, { status: 201 });
   } catch (error: any) {
     console.error('Error creating booking:', error);
     return NextResponse.json({ error: error.message }, { status: 400 });
@@ -70,7 +70,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const bookings = await getBookingsFromUser(parseInt(user_id));
+    const bookings = await getBookingsForUser(parseInt(user_id));
 
     if (bookings.length === 0) {
       return NextResponse.json(
@@ -97,17 +97,16 @@ async function validateBooking(vehicle_id: number, start_date: string, end_date:
     throw new Error('Invalid start or end date provided.');
   }
 
-  const existingBooking = await prisma.booking.findFirst({
+  const bookingExists = await prisma.booking.findFirst({
     where: {
       vehicle_id,
-      status: 'active',
       OR: [
         { start_date: { lte: endDateObj }, end_date: { gte: startDateObj } },
       ],
     },
   });
 
-  if (existingBooking) {
+  if (bookingExists) {
     throw new Error('This vehicle is already booked for the selected dates.');
   }
 }
@@ -143,7 +142,6 @@ async function createBooking({
       start_date: new Date(start_date),
       end_date: new Date(end_date),
       total_price,
-      status: 'active',
       paypal_order_id,
       paypal_transaction_id,
       is_paid,
@@ -164,7 +162,7 @@ async function createBooking({
 /**
  * Helper function to retrieve bookings for a specific user
  */
-async function getBookingsFromUser(user_id: number) {
+async function getBookingsForUser(user_id: number) {
   return await prisma.booking.findMany({
     where: { user_id },
     include: {

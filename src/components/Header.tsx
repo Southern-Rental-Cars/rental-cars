@@ -60,7 +60,7 @@ function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLo
               Profile <ChevronDownIcon className="h-5 w-5 ml-2" />
             </button>
             {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+              <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
                 <ul className="py-1">
                   <li>
                     <Link
@@ -86,7 +86,7 @@ function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLo
         ) : (
           <Link
             href="/login"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+            className="px-4 py-2 text-white rounded-md transition"
           >
             Login
           </Link>
@@ -108,6 +108,23 @@ function MobileNavigation({
   onLogout: () => void;
 }) {
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  const menuOptions = [
+    { label: 'Book', value: '/book' },
+    { label: 'Business Solutions', value: '/business-solutions' },
+    { label: 'Contact', value: '/contact' },
+    ...(isLoggedIn ? [{ label: 'Dashboard', value: '/dashboard' }, { label: 'Logout', value: 'logout' }] : [{ label: 'Login', value: '/login' }])
+  ];
+
+  const handleMenuSelect = (value: string) => {
+    if (value === 'logout') {
+      onLogout();
+    } else {
+      router.push(value);
+    }
+    onClose();
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -130,40 +147,26 @@ function MobileNavigation({
   return (
     <div
       ref={menuRef}
-      className={`absolute top-16 right-0 mt-2 w-48 bg-[#19223E] rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition transform ${
+      className={`absolute top-16 right-0 mt-5 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-20 transition-transform ${
         isOpen ? 'block' : 'hidden'
       }`}
     >
-      <ul className="py-1 text-white list-none m-0 p-0">
-        <NavItem href="/book" onClick={onClose}>Book</NavItem>
-        <NavItem href="/business-solutions" onClick={onClose}>Business Solutions</NavItem>
-        <NavItem href="/contact" onClick={onClose}>Contact</NavItem>
-        {isLoggedIn ? (
-          <>
-            <NavItem href="/dashboard" onClick={onClose}>Dashboard</NavItem>
+      <ul className="py-1 text-gray-800 list-none m-0 p-0">
+        {menuOptions.map((option) => (
+          <li key={option.value}>
             <button
-              onClick={() => {
-                onLogout();
-                onClose();
-              }}
-              className="block w-full px-4 py-2 text-left text-white hover:bg-red-600 hover:text-white transition"
+              onClick={() => handleMenuSelect(option.value)}
+              className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
             >
-              Logout
+              {option.label}
             </button>
-          </>
-        ) : (
-          <Link
-            href="/login"
-            className="block px-4 py-2 text-white hover:bg-blue-600 hover:text-white transition"
-            onClick={onClose}
-          >
-            Login
-          </Link>
-        )}
+          </li>
+        ))}
       </ul>
     </div>
   );
 }
+
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -179,7 +182,7 @@ export function Header() {
   };
 
   const handleLogout = () => {
-    setUser(null);
+    setUser(null, null);
     router.push('/');
   };
 

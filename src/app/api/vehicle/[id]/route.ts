@@ -11,7 +11,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
   try {
     // Prisma query to fetch car details and associated images
-    const car = await prisma.vehicle.findUnique({
+    const vehicle = await prisma.vehicle.findUnique({
       where: { id: parseInt(id) },
       select: {
         id: true,
@@ -23,38 +23,31 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         gas_type: true,
         num_doors: true,
         num_seats: true,
-        long_description: true,
         short_description: true,
         features: true,
         extras: true,
         guidelines: true,
         faqs: true, // This will be parsed if it's a string
         price: true,
-        turo_url: true,
-        vehicleImages: {
-          select: {
-            image_url: true,
-          },
-        },
+        thumbnail: true,
       },
     });
 
-    if (!car) {
-      return NextResponse.json({ error: 'Car not found' }, { status: 404 });
+    if (!vehicle) {
+      return NextResponse.json({ error: 'Vehicle not found' }, { status: 404 });
     }
 
     // Parse the `faqs` field if it's a string
-    const parsedFAQs = typeof car.faqs === 'string' ? JSON.parse(car.faqs) : car.faqs;
+    const parsedFAQs = typeof vehicle.faqs === 'string' ? JSON.parse(vehicle.faqs) : vehicle.faqs;
 
     // Format the response
     const response = {
-      ...car,
+      ...vehicle,
       faqs: parsedFAQs,
-      image_url: car.vehicleImages.map((img) => img.image_url),
     };
     return NextResponse.json(response, { status: 200 });
   } catch (err) {
-    console.error('Error fetching car details:', err);
+    console.error('Error fetching vehicle details:', err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -67,12 +60,71 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   }
   try {
     // Prisma query to delete the car by ID
-    const deletedCar = await prisma.vehicle.delete({
+    const vehicle = await prisma.vehicle.delete({
       where: { id: parseInt(id) },
     });
-    return NextResponse.json(deletedCar, { status: 200 });
+    return NextResponse.json(vehicle, { status: 200 });
   } catch (err) {
     console.error('Error deleting car:', err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+// put /api/vehicle/:id - Update a vehicle by ID
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+  const { id } = params;
+
+  if (isNaN(Number(id))) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+  }
+
+  try {
+    // Check if the vehicle exists
+    const existingVehicle = await prisma.vehicle.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!existingVehicle) {
+      return NextResponse.json({ error: 'Vehicle not found' }, { status: 404 });
+    }
+    
+    const body = await req.json();
+
+    // Construct the `data` object dynamically
+    const data: any = {};
+
+    // Optional updates based on the fields present in the request body
+    if (body.short_description) data.short_description = body.short_description;
+    if (body.make) data.make = body.make;
+    if (body.model) data.model = body.model;
+    if (body.year) data.year = body.year;
+    if (body.type) data.type = body.type;
+    if (body.features) data.features = body.features;
+    if (body.guidelines) data.guidelines = body.guidelines;
+    if (body.price) data.price = parseFloat(body.price);
+    if (body.gas_type) data.gas_type = body.gas_type;
+    if (body.mpg) data.mpg = body.mpg;
+    if (body.num_doors) data.num_doors = body.num_doors;
+    if (body.num_seats) data.num_seats = body.num_seats;
+    if (body.thumbnail) data.thumbnail = body.thumbnail;
+    if (body.faqs) data.faqs = body.faqs;
+
+    // For extras, handle separately to avoid overwriting other fields
+    if (body.extras && Array.isArray(body.extras) && body.extras.every(Number.isInteger)) {
+      data.extras = {
+        connect: body.extras.map((extraId: number) => ({ id: extraId })), // Connect extras without removing existing ones
+      };
+    }
+
+    // Update the vehicle with the constructed data object
+    const updatedVehicle = await prisma.vehicle.update({
+      where: { id: parseInt(id) },
+      data,
+    });
+
+    return NextResponse.json(updatedVehicle, { status: 200 });
+  } catch (err) {
+    console.error('Error updating vehicle:', err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

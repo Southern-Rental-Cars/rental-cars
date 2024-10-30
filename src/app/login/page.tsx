@@ -1,104 +1,45 @@
 'use client';
+
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useUser } from '@/components/contexts/UserContext';
+import Login from './login';
+import Register from './register';
 
-export default function LoginPage() {
-  const router = useRouter();
-  const { setUser } = useUser();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export default function AuthPage() {
+  // Set `isRegister` to `false` initially to show the login page by default
+  const [isRegister, setIsRegister] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Set the user data and token in the context
-        setUser({
-          id: data.user.id,
-          full_name: data.user.full_name,
-          email: data.user.email,
-        }, data.token); // Store the JWT token as well
-
-        router.push('/'); // Redirect to homepage or dashboard after successful login
-      } else {
-        const data = await response.json();
-        setError(data.message || 'Login failed. Please try again.');
-      }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // Function to toggle between Login and Register views
+  const toggleAuthForm = () => setIsRegister(!isRegister);
 
   return (
-    <div className="flex justify-center mt-10">
-      <div className="w-full max-w-sm p-8">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
-        {error && (
-          <div className="mb-4 text-red-600 text-center">
-            {error}
+    <div className="flex items-center justify-center px-4 pt-12">
+      <div className="bg-white rounded-lg max-w-md w-full p-6 border border-gray-200">
+        {/* Header */}
+        <div className="text-center mb-4">
+          <h3 className="text-sm font-semibold text-gray-500">
+            {isRegister ? 'Create an Account' : 'Log in to Your Account'}
+          </h3>
+          <hr className="my-2" />
+        </div>
+      {/* Welcome Message */}
+      <h2 className="text-xl font-semibold text-center text-gray-800 mb-3">Welcome to Southern Rental Cars</h2>
+        {/* Conditionally Render Login or Register Component */}
+        {isRegister ? <Register /> : <Login />}
+        {/* Divider */}
+        <div className="relative p-2">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
           </div>
-        )}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-gray-700 mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="you@example.com"
-            />
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">or</span>
           </div>
-          <div>
-            <label htmlFor="password" className="block text-gray-700 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="Your password"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
-          >
-            {isSubmitting ? 'Logging in...' : 'Login'}
+        </div>
+        {/* Toggle Link */}
+        <p className="mt-2 text-center text-gray-600">
+          {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
+          <button onClick={toggleAuthForm} className="text-blue-600 hover:underline font-medium">
+            {isRegister ? 'Log in' : 'Sign up'}
           </button>
-        </form>
-        <p className="mt-4 text-center text-gray-600">
-          Don't have an account?{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">
-            Sign up
-          </Link>
         </p>
       </div>
     </div>

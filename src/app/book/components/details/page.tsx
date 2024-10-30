@@ -1,0 +1,229 @@
+import React, { useState } from 'react';
+import Image from 'next/image';
+import { Vehicle, VehicleImages } from '@/types';
+import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
+import { format, differenceInDays } from 'date-fns';
+
+interface DetailsProps {
+  vehicle: Vehicle;
+  images: VehicleImages[];
+  onBack: () => void;
+  onProceedToPayment: () => void;
+  startDateTime: string;
+  endDateTime: string;
+}
+
+const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTime, endDateTime, onProceedToPayment }) => {
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Date and pricing calculations
+  const startDate = new Date(startDateTime);
+  const endDate = new Date(endDateTime);
+  const rentalDays = differenceInDays(endDate, startDate) + 1;
+  const subTotal = vehicle.price * rentalDays;
+  const tax = subTotal * 0.0825;
+  const totalPrice = subTotal + tax;
+  const formattedStartDate = format(startDate, 'EEE MMM do, hh:mm a');
+  const formattedEndDate = format(endDate, 'EEE MMM do, hh:mm a');
+
+  const handleNextImage = () => setActiveImageIndex((prev) => (prev + 1) % images.length);
+  const handlePrevImage = () => setActiveImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const toggleShowAllFeatures = () => setShowAllFeatures(!showAllFeatures);
+
+  // Modal controls
+  const openModal = (index: number) => {
+    setActiveImageIndex(index);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => setIsModalOpen(false);
+
+  return (
+    <div className="mt-3 flex flex-col items-center p-6">
+      <div className="max-w-4xl w-full space-y-8">
+        {/* Back Button */}
+        <button onClick={onBack} className="flex items-center text-blue-600 font-semibold mb-3">
+          <FaArrowLeft className="mr-2" /> Back
+        </button>
+        {/* Vehicle Carousel */}
+        <div className="relative w-full h-[300px] rounded-lg overflow-hidden"> {/* Reduced height */}
+          <Image
+            src={images[activeImageIndex].image_url}
+            alt={`Image of ${vehicle.make} ${vehicle.model}`}
+            layout="fill"
+            objectFit="cover"
+            className="rounded-lg cursor-pointer"
+            onClick={() => openModal(activeImageIndex)}
+          />
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevImage();
+                }}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2 hover:bg-gray-700 transition"
+              >
+                <FaArrowLeft />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextImage();
+                }}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2 hover:bg-gray-700 transition"
+              >
+                <FaArrowRight />
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Thumbnail Images - Horizontal Scrollable Container */}
+        <div className="overflow-x-auto w-full mt-4">
+          <div className="flex space-x-2">
+            {images.map((img, idx) => (
+              <Image
+                key={idx}
+                src={img.image_url}
+                alt={`Thumbnail ${idx + 1}`}
+                width={60}  // Adjusted width
+                height={60} // Adjusted height for a more compact display
+                className={`cursor-pointer rounded-lg ${activeImageIndex === idx ? 'ring-2 ring-blue-500' : ''}`}
+                onClick={() => openModal(idx)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Modal for Image View */}
+        {isModalOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
+            onClick={closeModal}
+          >
+            <div
+              className="relative w-[90%] md:w-[60%] lg:w-[50%] h-[80%] bg-white rounded-lg overflow-hidden flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside modal
+            >
+              <Image
+                src={images[activeImageIndex].image_url}
+                alt={`Image of ${vehicle.make} ${vehicle.model}`}
+                layout="fill"
+                objectFit="contain"
+              />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevImage();
+                }}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-70 text-white rounded-full p-3 hover:bg-gray-700 transition"
+              >
+                <FaArrowLeft />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextImage();
+                }}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-70 text-white rounded-full p-3 hover:bg-gray-700 transition"
+              >
+                <FaArrowRight />
+              </button>
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 bg-gray-800 bg-opacity-70 text-white rounded-full p-2 hover:bg-gray-700 transition"
+              >
+                <FaTimes />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Information and Booking Details */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Vehicle Information Card */}
+          <div className="bg-white border border-gray-200 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold">{vehicle.year} {vehicle.make} {vehicle.model}</h2>
+            <div className="grid grid-cols-2 text-sm text-gray-700 mt-2">
+              <p><strong>Type:</strong> {vehicle.gas_type || 'N/A'}</p>
+              <p><strong>Seats:</strong> {vehicle.num_seats || 'N/A'}</p>
+              <p><strong>Doors:</strong> {vehicle.num_doors || 'N/A'}</p>
+              <p><strong>MPG:</strong> {vehicle.mpg || 'N/A'}</p>
+            </div>
+            <p className="mt-5 text-gray-700">{vehicle.short_description || ''}</p>
+          </div>
+
+          {/* Booking Details Card */}
+          <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold">Booking Summary</h2>
+            <p className="text-sm text-gray-700 mt-2">From: <strong>{formattedStartDate}</strong></p>
+            <p className="text-sm text-gray-700">To: <strong>{formattedEndDate}</strong></p>
+            <div className="flex justify-between text-gray-700 text-sm mt-3">
+              <p>Daily rate:</p>
+              <p>${vehicle.price}</p>
+            </div>
+            <div className="flex justify-between text-gray-700 text-sm">
+              <p>Subtotal:</p>
+              <p>${subTotal.toFixed(2)}</p>
+            </div>
+            <div className="flex justify-between text-gray-700 mb-3 text-sm">
+              <p>Tax (8.25%):</p>
+              <p>+ ${tax.toFixed(2)}</p>
+            </div>
+            <div className="flex justify-between items-center border-t-2 pt-3">
+              <p className="font-bold text-lg">Total:</p>
+              <p className="text-xl font-bold text-gray-800">${totalPrice.toFixed(2)}</p>
+            </div>
+            <button
+              onClick={onProceedToPayment}
+              className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center hover:bg-blue-700 transition"
+            >
+              Checkout <FaArrowRight className="ml-2" />
+            </button>
+          </div>
+        </div>
+
+        {/* Additional Information */}
+        <div className="space-y-4">
+          {/* Guidelines */}
+          <div className="bg-white border border-gray-200 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold">Guidelines</h2>
+            <p className="text-sm text-gray-700 mt-2">{vehicle.guidelines || 'No guidelines provided'}</p>
+          </div>
+
+          {/* Features */}
+          <div className="bg-white border border-gray-200 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold">Features</h2>
+            <ul className="text-sm list-disc pl-5 mt-2">
+              {vehicle.features?.split(',').slice(0, showAllFeatures ? vehicle.features.length : 3).map((feature, index) => (
+                <li key={index}>{feature.trim()}</li>
+              ))}
+            </ul>
+            {vehicle.features && vehicle.features.split(',').length > 3 && (
+              <button onClick={toggleShowAllFeatures} className="text-blue-600 text-sm mt-2">
+                {showAllFeatures ? 'Show Less' : 'Show More'}
+              </button>
+            )}
+          </div>
+
+          {/* FAQs */}
+          <div className="bg-white border border-gray-200 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold">FAQs</h2>
+            <ul className="text-sm space-y-2 mt-2">
+              {vehicle.faqs?.map((faq, index) => (
+                <li key={index}>
+                  <p className="font-semibold">{faq.question}</p>
+                  <p>{faq.answer}</p>
+                </li>
+              )) || <p>No FAQs available</p>}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Details;

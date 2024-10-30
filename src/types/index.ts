@@ -3,17 +3,11 @@ export interface FAQ {
     answer: string;
   }
   
-  export interface VehicleImage {
-    id: number;
-    vehicle_id: number;
-    image_url: string;
-  }
-  
   export interface Vehicle {
     id: number;
     short_description: string;
     image_url: string;
-    turo_url: string;
+    thumbnail: string;
     make: string;
     model: string;
     year: number;
@@ -22,17 +16,17 @@ export interface FAQ {
     price: number;
     num_seats: number;
     num_doors: number;
-    long_description: string;
     gas_type: string;
     features: string;
-    extras: string;
+    extras: Extra[];
     guidelines: string;
     faqs: FAQ[];
-    vehicleImages: VehicleImage[]; // Include the array of images here
   }
-  
-  export interface GridProps {
-    vehicles: Vehicle[];  // List of cars to display in the grid
+
+  export interface VehicleImages {
+    id: number,
+    image_url: string,
+    vehicle_id: number 
   }
 
   export interface BookingExtras {
@@ -71,3 +65,20 @@ export interface FAQ {
     license_expiration?: string;
   }
   
+  export interface Extra {
+    id: number;
+    name: string;
+    price_amount: number;
+    price_type: 'DAILY' | 'TRIP';
+    description?: string;
+    quantity?: number;
+  }
+  
+  
+  export interface GridProps {
+    vehicles: Vehicle[];  // List of cars to display in the grid
+  }
+
+  export interface ConfirmationProps {
+    params: { id: string };
+  }

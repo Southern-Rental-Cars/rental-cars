@@ -47,7 +47,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-// DELETE handler to cancel a booking
+// DELETE handler to cancel a booking (NOT USED)
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id);
 
@@ -62,21 +62,16 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
 
-    if (booking.status === 'CANCEL') {
-      return NextResponse.json({ error: 'Booking is already canceled' }, { status: 400 });
-    }
-
     // Increment available quantity for each extra in the booking
     await prisma.$transaction(async (transaction) => {
       await incrementAvailableQuantity(transaction, booking.bookingExtras);
       
-      await transaction.booking.update({
+      await transaction.booking.delete({
         where: { id },
-        data: { status: 'CANCEL' },
       });
     });
 
-    return NextResponse.json({ message: 'Booking cancelled successfully' }, { status: 200 });
+    return NextResponse.json({ message: 'Booking deleted successfully' }, { status: 200 });
   } catch (error) {
     return handlePrismaError(error, 'Error cancelling booking');
   } finally {

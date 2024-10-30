@@ -18,9 +18,13 @@ export async function GET(request: Request, { params }: { params: { id: string }
         street_address: true,
         zip_code: true,
         country: true,
-        license_number: true,
+        license_city: true,
         license_state: true,
+        license_country: true,
+        license_number: true,
         license_expiration: true,
+        license_front_img: true,
+        license_back_img: true,
       }
     });
 
@@ -57,13 +61,13 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 // DELETE /api/user/:id - Deletes a user and returns the deleted userId
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
-
+  console.log("DELETE: " + id);
   try {
-    const deletedUser = await prisma.user.delete({
+    const user = await prisma.user.delete({
       where: { id: parseInt(id, 10) },
     });
 
-    return NextResponse.json({ userId: deletedUser.id });
+    return NextResponse.json({ userId: user.id });
   } catch (error) {
     console.error('Error deleting user:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

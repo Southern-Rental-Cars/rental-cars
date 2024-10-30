@@ -1,4 +1,4 @@
-import { Vehicle } from "@/types";
+import { Vehicle, VehicleImages } from "@/types";
 import Cookies from 'js-cookie';  // Import the library to access cookies
 
 // Helper function to get the JWT token from cookies
@@ -6,7 +6,7 @@ function getToken() {
   return Cookies.get('token'); // Assuming the token is stored in a cookie named 'token'
 }
 
-export async function fetchAvailableVehicles(): Promise<Vehicle[]> {
+export async function fetchVehicles(): Promise<Vehicle[]> {
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL; // Ensure this is set correctly
     if (!baseURL) {
       console.error('NEXT_PUBLIC_API_BASE_URL is not set');
@@ -168,11 +168,41 @@ export async function fetchUserById(id: number) {
     }
     
     // Parse and return the response JSON data
-    const userData = await response.json();
-    return userData;
+    const data = await response.json();
+    return data;
   } catch (error: any) {
     // Catch and throw a more specific error message if an error occurs
     throw new Error(`An error occurred while fetching the user: ${error.message}`);
   }
 }
 
+export async function fetchImagesByVehicleId(vehicle_id: number): Promise<VehicleImages[] | null> {
+  const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!baseURL) {
+    throw new Error('API base URL is not set in the environment variables');
+  }
+
+  const token = getToken(); // Get the JWT token
+
+  try {
+    const response = await fetch(`${baseURL}/api/vehicle_images/${vehicle_id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (!response.ok) {
+      // Log and throw a descriptive error message if the request fails
+      const errorMessage = await response.text();
+      throw new Error(`Failed to fetch user: ${errorMessage}`);
+    }
+    
+    // Parse and return the response JSON data
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    // Catch and throw a more specific error message if an error occurs
+    throw new Error(`An error occurred while fetching the user: ${error.message}`);
+  }
+}

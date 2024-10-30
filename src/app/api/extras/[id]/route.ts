@@ -97,7 +97,6 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     return NextResponse.json({ id: extraId }, { status: 200 });
   } catch (error) {
     console.error('Error deleting extra:', error);
-
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2025') {
         return NextResponse.json({ error: 'Extra not found' }, { status: 404 });

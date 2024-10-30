@@ -3,20 +3,10 @@ import React from 'react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import southernLogo from '@/images/transparent_southern_logo_3.png';
-
-interface Extra {
-  id: number;
-  booking_id: number;
-  extra_id: number;
-  extra_name: string | null;
-  quantity: number;
-}
-
-interface ConfirmationProps {
-  params: { id: string };
-}
+import {Extra, ConfirmationProps} from '@/types/index';
 
 const Confirmation = async ({ params }: ConfirmationProps) => {
+  /* Fetch booking information */
   const bookingId = params.id;
   const booking = await fetchBookingById(bookingId);
 
@@ -24,6 +14,7 @@ const Confirmation = async ({ params }: ConfirmationProps) => {
     return <div className="text-center text-lg mt-10">Booking not found</div>;
   }
 
+  /* Fetch customer profile information */
   const userId = booking.user_id;
   const user = await fetchUserById(userId);
   if (!user) {

@@ -8,23 +8,41 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model VehicleImage {
-  id            Int    @id @default(autoincrement())
-  vehicle_id    Int?
-  image_url     String
-  vehicle       Vehicle?   @relation("VehicleToVehicleImages", fields: [vehicle_id], references: [id], onDelete: Cascade)
+model Booking {
+  id                    Int            @id @default(autoincrement())
+  user_id               Int?
+  vehicle_id            Int?
+  start_date            DateTime       @db.Timestamp(6)
+  end_date              DateTime       @db.Timestamp(6)
+  total_price           Decimal?       @db.Decimal(10, 2)
+  currency              String         @default("USD") @db.VarChar(3)
+  is_paid               Boolean        @default(false)
 
-  @@map("car_images")
+  payment_provider      String?        @default("paypal") @db.VarChar(50)
+  paypal_order_id       String?        @db.VarChar(100)
+  paypal_transaction_id String?        @db.VarChar(100)
+
+  vehicle               Vehicle?       @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+
+  bookingExtras         BookingExtra[]
+
+  created_at            DateTime?      @default(now()) @db.Timestamp(6)
+  updated_at            DateTime?      @default(now()) @updatedAt @db.Timestamp(6)
+
+  @@index([start_date, end_date])
 }
 
 model Extra {
   id             Int            @id @default(autoincrement())
   name           String         @db.VarChar(100)
-  total_quantity Int // Total quantity of the extra
   description    String?
-  price_type     String?        @db.VarChar(50) // e.g., "per day", "per booking"
-  price_amount   Int? // Amount charged for the extra
-  bookingExtras  BookingExtra[] // Relation to BookingExtras
+  price_type     String?        @db.VarChar(50)
+  price_amount   Int?
+  total_quantity Int?
+  bookingExtras  BookingExtra[]
+  
+  // Many-to-many relationship with Vehicle
+  vehicles       Vehicle[]      @relation("VehicleExtras")
 
   @@map("extras")
 }
@@ -33,73 +51,57 @@ model BookingExtra {
   id         Int     @id @default(autoincrement())
   booking_id Int
   extra_id   Int
+  quantity   Int
   extra_name String?
-  quantity   Int // Quantity of extras booked for the given period
+
   booking    Booking @relation(fields: [booking_id], references: [id], onDelete: Cascade)
   extra      Extra   @relation(fields: [extra_id], references: [id], onDelete: Cascade)
 
-  @@unique([booking_id, extra_id]) // Ensure no duplicate extras per booking
-}
-
-model Booking {
-  id                   Int            @id @default(autoincrement())
-  vehicle_id           Int?
-  user_id              Int?
-  start_date           DateTime       @db.Timestamp(6)
-  end_date             DateTime       @db.Timestamp(6)
-  status               String?        @default("active") @db.VarChar(20) // Booking status (e.g., "active", "cancelled")
-  total_price          Decimal?       @db.Decimal(10, 2)
-  
-  // PayPal-related fields
-  paypal_order_id      String?        @db.VarChar(100) // PayPal Order ID
-  paypal_transaction_id String?       @db.VarChar(100) // PayPal Transaction ID
-  payment_provider     String?        @default("paypal") @db.VarChar(50) // Payment provider
-  currency             String         @default("USD") @db.VarChar(3) // Currency used in the transaction
-  is_paid              Boolean        @default(false) // Whether the booking has been fully paid
-  
-  created_at           DateTime?      @default(now()) @db.Timestamp(6)
-  updated_at           DateTime?      @default(now()) @updatedAt @db.Timestamp(6)
-
-  // Relations
-  bookingExtras        BookingExtra[]
-  vehicle              Vehicle?        @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
-  user                 User?          @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([start_date, end_date]) // Index for optimizing availability checks
+  @@unique([booking_id, extra_id])
 }
 
 model Vehicle {
-  id                Int        @id @default(autoincrement())
-  mpg               Decimal?   @db.Decimal(5, 2)
-  gas_type          String?    @db.VarChar(50)
+  id                Int            @id @default(autoincrement())
+  make              String?        @db.VarChar(100)
+  model             String?        @db.VarChar(100)
+  mpg               Decimal?       @db.Decimal(5, 2)
+  gas_type          String?        @db.VarChar(50)
   num_doors         Int?
   num_seats         Int?
   short_description String?
-  long_description  String?
-  features          String?
-  extras            String?
+  year              Int?
+  type              String?        @db.VarChar(50)
   guidelines        String?
   faqs              Json?
-  price             Decimal    @db.Decimal(10, 2)
-  turo_url          String?
-  make              String?    @db.VarChar(100)
-  model             String?    @db.VarChar(100)
-  year              Int?
-  type              String?    @db.VarChar(50)
+  features          String?
+  thumbnail         String         @db.Text
+  price             Decimal        @db.Decimal(10, 2)
+
+  // Relations
   bookings          Booking[]
-  vehicleImages     VehicleImage[] @relation("VehicleToVehicleImages")
-  deleted_at        DateTime? // Soft delete field
+  extras            Extra[]        @relation("VehicleExtras") // Many-to-many relationship with Extra
+
+  deleted_at        DateTime?
 
   @@map("cars")
 }
 
+model VehicleImage {
+  id         Int     @id @default(autoincrement())
+  vehicle_id Int    // Stores the ID of the related vehicle
+  image_url  String
+
+  @@map("car_images")
+}
+
 model User {
+  // User Information
   id                   Int       @id @default(autoincrement())
+  role_access          String?   @db.VarChar(10)
   email                String    @unique @db.VarChar(100)
   password_hash        String    @db.VarChar(100)
   full_name            String?   @db.VarChar(100)
   date_of_birth        DateTime?
-  role_access          String?   @db.VarChar(10)
   phone                String?   @db.VarChar(20)
   street_address       String?   @db.Text
   zip_code             String?   @db.VarChar(10)
@@ -109,9 +111,6 @@ model User {
   license_number       String    @db.VarChar(25)
   license_state        String    @db.VarChar(25)
   license_city         String    @db.VarChar(25)
-  license_street_address  String    @db.VarChar(50)
-  license_zip          String    @db.VarChar(25)
-  license_dob          DateTime  
   license_expiration   DateTime
   license_country      String    @db.VarChar(25)
   license_front_img    String    @db.Text
@@ -123,22 +122,18 @@ model User {
   paypal_payment_token String?   @db.VarChar(100) // Token used for recurring payments or stored payment methods
 
   // Billing Information
-  billing_full_name      String? @db.VarChar(100)
   billing_street_address String? @db.Text
   billing_city           String? @db.VarChar(50)
   billing_state          String? @db.VarChar(50)
-  billing_country        String? @db.VarChar(3)
   billing_postal_code    String? @db.VarChar(10)
+  billing_country        String? @db.VarChar(3)
 
   // Optionally, if tax data is required
   tax_id        String? @db.VarChar(50)
-  billing_email String? @db.VarChar(100)
 
-  bookings       Booking[]
   created_at     DateTime? @default(now()) @db.Timestamp(6)
   updated_at     DateTime? @updatedAt @db.Timestamp(6)
   deleted_at     DateTime? // Soft delete field
 
   @@map("users")
 }
-

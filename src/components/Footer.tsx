@@ -31,6 +31,9 @@ export function Footer() {
                 <NavLink href="/vehicles">Book</NavLink>
                 <NavLink href="/business-solutions">Business Solutions</NavLink>
                 <NavLink href="/contact">Contact</NavLink>
+                <NavLink href="/privacy-policy">Privacy</NavLink>
+                <NavLink href="/terms-and-conditions">Terms & Conditions</NavLink>
+
               </div>
               <div className="flex gap-6">
                 <Link href="https://www.instagram.com/southernrentalcars/" target="_blank">

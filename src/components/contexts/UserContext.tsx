@@ -33,6 +33,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   // Helper to store user and token in both state and cookies
   const setUser = (user: { id: number; full_name: string; email: string } | null, token: string | null) => {
+    console.log(user + " " + token);
+
     setUserState(user);
     setTokenState(token);
     if (user && token) {
@@ -48,6 +50,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   // Load the user and token from cookies when the app starts
   useEffect(() => {
+
     const cookieUser = Cookies.get('user');
     const cookieToken = Cookies.get('token');
     if (cookieUser && cookieToken) {

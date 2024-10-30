@@ -5,8 +5,6 @@ import prisma from '@/lib/prisma'; // Adjust the path to your prisma client
 export async function POST(req: Request) {
   try {
     const { start_date, end_date, extras } = await req.json();
-    console.log("Availability for start_date:", start_date); // Log start_date
-    console.log("End_date:", end_date); // Log end_date
     // Validate request body
     if (!start_date || !end_date || !extras) {
       return NextResponse.json({ error: 'Missing required parameters.' }, { status: 400 });
@@ -45,7 +43,7 @@ async function checkExtrasAvailability(
   for (const extra of extras) {
     const { id } = extra;
 
-    // Fetch the total available quantity and price_type of the extra
+    // Fetch the total quantity and price_type of the extra
     const extraDetails = await prisma.extra.findUnique({
       where: { id: id },
       select: { name: true, total_quantity: true, price_type: true }, // Fetch price_type
@@ -58,7 +56,7 @@ async function checkExtrasAvailability(
     // If the extra is a non-tangible type (TRIP), it's always available
     if (extraDetails.price_type === 'TRIP') {
       availabilityQuantity[id] = {
-        available_quantity: 999, // Use a string to represent always available
+        available_quantity: 999, // 999 represents always available
       };
       continue; // Skip the rest of the loop for non-tangible extras
     }
@@ -78,7 +76,6 @@ async function checkExtrasAvailability(
             OR: [
               { start_date: { lte: currentDate }, end_date: { gte: currentDate } },
             ],
-            status: 'active',
           },
         },
       });

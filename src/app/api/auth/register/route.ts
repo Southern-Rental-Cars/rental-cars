@@ -1,9 +1,8 @@
 import bcrypt from 'bcryptjs';
-import prisma from '@/lib/prisma'; // Update the path for your Prisma client
+import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import validator from 'validator';
 
-// Define types for better clarity and maintainability
 interface RegistrationData {
   email: string;
   password: string;
@@ -16,47 +15,52 @@ interface RegistrationData {
   country: string;
   license_number: string;
   license_state: string;
+  license_city: string;
+  license_expiration: string;
+  license_country: string;
   license_front_img: string;
   license_back_img: string;
-  license_expiration: string;
-  billing_full_name: string;
   billing_street_address: string;
   billing_city: string;
   billing_state: string;
   billing_country: string;
   billing_postal_code: string;
   tax_id: string;
-  billing_email: string;
 }
 
-// Main POST handler function for registration
 export async function POST(req: Request) {
   try {
+    const data: RegistrationData = await req.json();
     const {
       email, password, full_name, date_of_birth, role_access, phone, street_address, zip_code, country,
-      license_number, license_state, license_front_img, license_back_img, license_expiration,
-      billing_full_name, billing_street_address, billing_city, billing_state, billing_country, billing_postal_code, tax_id, billing_email
-    }: RegistrationData = await req.json();
+      license_number, license_state, license_city, license_country, license_front_img, license_back_img, license_expiration,
+      billing_street_address, billing_city, billing_state, billing_country, billing_postal_code, tax_id
+    } = data;
 
-    // Validate required fields
-    if (!email || !password || !license_number || !license_state || !license_expiration) {
-      return NextResponse.json(
-        { message: 'Email, password, license number, license state, and license expiration are required.' },
-        { status: 400 }
-      );
+    // Check required fields and validate email format
+    if (!email || !password || !license_number || !license_state || !license_expiration || !validator.isEmail(email)) {
+      return NextResponse.json({ message: 'Invalid input data provided.' }, { status: 400 });
     }
 
-    // Check if the user already exists
+    // Check if user already exists
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json({ message: 'User with this email already exists.' }, { status: 400 });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the new user in the database
-    const newUser = await prisma.user.create({
+    // Set default values for billing if not provided
+    const billingInfo = {
+      billing_street_address: billing_street_address || street_address,
+      billing_city: billing_city || null,
+      billing_state: billing_state || null,
+      billing_country: billing_country || country,
+      billing_postal_code: billing_postal_code || zip_code,
+    };
+
+    // Create new user
+    const user = await prisma.user.create({
       data: {
         email,
         password_hash: hashedPassword,
@@ -69,50 +73,34 @@ export async function POST(req: Request) {
         country,
         license_number,
         license_state,
+        license_city,
+        license_country,
         license_front_img: license_front_img || '',
         license_back_img: license_back_img || '',
         license_expiration: new Date(license_expiration),
-        billing_full_name: billing_full_name || full_name,
-        billing_street_address: billing_street_address || street_address,
-        billing_city: billing_city || null,
-        billing_state: billing_state || null,
-        billing_country: billing_country || country,
-        billing_postal_code: billing_postal_code || zip_code,
+        ...billingInfo,
         tax_id: tax_id || null,
-        billing_email: billing_email || email,
       },
     });
 
-    // Generate a JWT token for the user (to be used for authentication)
-    const token = jwt.sign(
-      {
-        id: newUser.id,
-        email: newUser.email,
-      },
-      process.env.JWT_SECRET || 'your_jwt_secret', // Use environment variable for secret
-      { expiresIn: '7d' } // Token expiration time (7 days in this case)
-    );
-
-    // Return success response with the token
     return NextResponse.json(
-      {
-        message: 'User registered successfully!',
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          token,
-        },
-      },
+      { message: 'User registered successfully', user: { id: user.id, email: user.email, full_name: user.full_name } },
       { status: 201 }
     );
   } catch (error) {
     console.error('Error registering user:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    return NextResponse.json({ message: 'Internal Server Error', error: errorMessage }, { status: 500 });
+    return NextResponse.json({ message: 'Internal Server Error', error: error.message }, { status: 500 });
   }
 }
 
-// This handles unsupported methods like GET, DELETE, etc.
-export function GET() {
+export async function GET() {
   return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 });
+}
+
+export async function PATCH() {
+  return GET();
+}
+
+export async function DELETE() {
+  return GET();
 }
