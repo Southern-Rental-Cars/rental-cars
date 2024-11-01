@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     };
 
     // Only add total_quantity if price_type is not "TRIP"
-    if (price_type !== "TRIP") {
+    if (extraData.price_type != "TRIP") {
       extraData.total_quantity = total_quantity;
     }
 

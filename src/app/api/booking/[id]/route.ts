@@ -24,7 +24,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       }
 
       // If the status is 'completed', increment the available quantity for extras
-      if (status === 'completed' && booking.status !== 'completed') {
+      if (status === 'completed') {
         await incrementAvailableQuantity(transaction, booking.bookingExtras);
       }
 

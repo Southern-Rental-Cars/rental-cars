@@ -23,10 +23,7 @@ export default function TermsAndConditions() {
 
       <h3 className="text-xl font-semibold mt-4">Auto Liability Insurance and Legal Liability Protection</h3>
       <p>
-        Southern Rental Cars cannot offer liability insurance.
-      </p>
-      <p>
-        If the guest has their own personal auto policy, it will be primary over the auto liability insurance or protection provided with each trip, depending on various factors such as applicable laws, where the guest books the vehicle, and/or where the accident or damages occur. If the guest is using the vehicle for professional use, the auto liability insurance or protection provided with each trip will be excess to any other personal or commercial policy.
+        Southern Rental Cars cannot offer liability insurance. If the guest has their own personal auto policy, it will be primary over the auto liability insurance or protection provided with each trip, depending on various factors such as applicable laws, where the guest books the vehicle, and/or where the accident or damages occur. If the guest is using the vehicle for professional use, the auto liability insurance or protection provided with each trip will be excess to any other personal or commercial policy.
       </p>
 
       <h3 className="text-xl font-semibold mt-4">Use of the Vehicle</h3>

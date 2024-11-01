@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Vehicle, VehicleImages } from '@/types';
 import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
-import { format, differenceInDays } from 'date-fns';
+import { format, differenceInDays, sub } from 'date-fns';
 
 interface DetailsProps {
   vehicle: Vehicle;
@@ -21,10 +21,10 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
   // Date and pricing calculations
   const startDate = new Date(startDateTime);
   const endDate = new Date(endDateTime);
-  const rentalDays = differenceInDays(endDate, startDate) + 1;
-  const subTotal = vehicle.price * rentalDays;
-  const tax = subTotal * 0.0825;
-  const totalPrice = subTotal + tax;
+  const days = differenceInDays(endDate, startDate) + 1;
+  const subtotal = vehicle.price * days;
+  const tax = subtotal * 0.0825;
+  const totalPrice = subtotal + tax;
   const formattedStartDate = format(startDate, 'EEE MMM do, hh:mm a');
   const formattedEndDate = format(endDate, 'EEE MMM do, hh:mm a');
 
@@ -157,33 +157,57 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
 
           {/* Booking Details Card */}
           <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold">Booking Summary</h2>
-            <p className="text-sm text-gray-700 mt-2">From: <strong>{formattedStartDate}</strong></p>
-            <p className="text-sm text-gray-700">To: <strong>{formattedEndDate}</strong></p>
-            <div className="flex justify-between text-gray-700 text-sm mt-3">
-              <p>Daily rate:</p>
-              <p>${vehicle.price}</p>
+            <h2 className="text-xl font-semibold mb-3">Booking Summary</h2>
+            {/* Dates */}
+            <div className="flex justify-between text-gray-700 text-sm">
+              <span> From:</span>
+              <span className="font-medium">{formattedStartDate}</span>
             </div>
             <div className="flex justify-between text-gray-700 text-sm">
-              <p>Subtotal:</p>
-              <p>${subTotal.toFixed(2)}</p>
+              <span> To: </span>
+              <span className="font-medium">{formattedEndDate}</span>
             </div>
-            <div className="flex justify-between text-gray-700 mb-3 text-sm">
-              <p>Tax (8.25%):</p>
-              <p>+ ${tax.toFixed(2)}</p>
+            
+  
+            {/* Divider */}
+            <hr className="my-3" />
+
+            {/* Daily Rate */}
+            <div className="flex justify-between text-gray-700 text-sm">
+              <span>Daily rate:</span>
+              <span className="font-medium">${vehicle.price}</span>
             </div>
-            <div className="flex justify-between items-center border-t-2 pt-3">
+            
+            {/* Total Days */}
+            <div className="flex justify-between text-gray-700 text-sm">
+              <span>Total days:</span>
+              <span className="font-medium">x {days} {days > 1 ? 'days' : 'day'}</span>
+            </div>
+
+            {/* Tax */}
+            <div className="flex justify-between text-gray-700 text-sm">
+              <span>Tax (8.25%):</span>
+              <span className="font-medium">+ ${tax.toFixed(2)}</span>
+            </div>
+
+            {/* Divider */}
+            <hr className="my-3" />
+
+            {/* Total Price */}
+            <div className="flex justify-between items-center">
               <p className="font-bold text-lg">Total:</p>
               <p className="text-xl font-bold text-gray-800">${totalPrice.toFixed(2)}</p>
             </div>
+
+            {/* Checkout Button */}
             <button
               onClick={onProceedToPayment}
               className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center hover:bg-blue-700 transition"
             >
               Checkout <FaArrowRight className="ml-2" />
             </button>
+            </div>
           </div>
-        </div>
 
         {/* Additional Information */}
         <div className="space-y-4">

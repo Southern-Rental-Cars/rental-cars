@@ -1,73 +1,48 @@
-import bcrypt from 'bcryptjs';
-import prisma from '@/lib/prisma'; // Ensure this path points to your Prisma client instance
-import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import prisma from '@/lib/prisma';
+import bcrypt from 'bcryptjs';
 
 const jwtSecret = process.env.JWT_SECRET;
 if (!jwtSecret) {
     throw new Error("JWT_SECRET is not defined in environment variables.");
 }
+const jwtExpiry = process.env.JWT_EXPIRY;
+if (!jwtExpiry) {
+    throw new Error("JWT_EXPIRY is not defined in environment variables.");
+}
 
 export async function POST(req: Request) {
     try {
         const { email, password } = await req.json();
-        // Validate input
-        if (!email || !password) {
-            return NextResponse.json({ message: 'Email and password are required.' }, { status: 400 });
-        }
 
-        // Find the user by email
+        // Find the user and validate password
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) {
-            return NextResponse.json({ message: 'User with this email does not exist.' }, { status: 401 });
+        if (!user || !(await bcrypt.compare(password, user.password_hash))) {
+            return NextResponse.json({ message: 'Invalid email or password.' }, { status: 401 });
         }
 
-        // Compare the provided password with the stored hashed password
-        const passwordMatch = await bcrypt.compare(password, user.password_hash);
-        if (!passwordMatch) {
-            return NextResponse.json({ message: 'Incorrect password.' }, { status: 401 });
-        }
-        
-        // Generate JWT token if password matches
+        // Generate the token
         const token = jwt.sign(
-            { 
-                id: user.id, 
-                email: user.email 
-            }, 
-            jwtSecret as string, // Ensure this is set in your environment variables
-            { expiresIn: '1d' } // Token expires in 1 day
+            { id: user.id, email: user.email },
+            jwtSecret,
+            { expiresIn: jwtExpiry }
         );
-        console.log("dog: " + token);
 
-        // Return success response with JWT token
-        return NextResponse.json({
-            message: 'Login successful',
-            data: {
-                token,
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    full_name: user.full_name || 'N/A',
-                }
-            }
-        }, { status: 200 });
+        // Set the httpOnly cookie with the token, configuring it differently for dev vs. prod
+        const response = NextResponse.json({ message: 'Login successful', user: { id: user.id, email: user.email, full_name: user.full_name } });
+        response.cookies.set('token', token, {
+            httpOnly: true,
+            sameSite: 'strict',
+            path: '/',
+            maxAge: 86400, // 1 day in seconds
+            secure: process.env.NODE_ENV === 'production', // Use HTTPS in production only
+        });
+
+        return response;
 
     } catch (error) {
         console.error('Error during login:', error);
-        const errorMessage = (error as Error).message || 'Unknown error occurred';
-        return NextResponse.json({ message: 'An error occurred.', error: errorMessage }, { status: 500 });
+        return NextResponse.json({ message: 'Server error occurred. Contact company or try again.', error: error.message }, { status: 500 });
     }
 }
-
-export async function GET() {
-    return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 });
-}
-  
-  export async function PATCH() {
-    return GET();
-  }
-  
-  export async function DELETE() {
-    return GET();
-  }
-  

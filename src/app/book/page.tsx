@@ -7,7 +7,6 @@ import Details from './components/details/page';
 import PaymentDataProvider from './components/payment/DataProvider';
 import Loader from '@/components/Loader';
 import { Vehicle, VehicleImages } from '@/types';
-import { differenceInDays } from 'date-fns';
 import { fetchImagesByVehicleId } from '@/lib/db/db';
 
 export default function Book() {
@@ -39,10 +38,22 @@ export default function Book() {
     }
   };
 
+  const handleBack = () => {
+    if (isProceedingToPayment) {
+      setIsProceedingToPayment(false);
+    } else {
+      setSelectedVehicle(null);
+    }
+  };
+
   const handleDateChange = (start: string, end: string) => {
     setDateRange({ startDateTime: start, endDateTime: end });
     setSearchCompleted(false);
     fetchAvailableVehicles(start, end);
+  };
+
+  const handleProceedToPayment = () => {
+    setIsProceedingToPayment(true);
   };
 
   // Select a vehicle and fetch its images
@@ -64,23 +75,6 @@ export default function Book() {
     }
 };
 
-  const handleBack = () => {
-    if (isProceedingToPayment) {
-      setIsProceedingToPayment(false);
-    } else {
-      setSelectedVehicle(null);
-    }
-  };
-
-  const handleProceedToPayment = () => {
-    setIsProceedingToPayment(true);
-  };
-
-  /* Date range calculation */
-  const startDate = new Date(dateRange.startDateTime);
-  const endDate = new Date(dateRange.endDateTime);
-  const bookedDays = differenceInDays(endDate, startDate) + 1;
-
   // Render Payments page
   if (isProceedingToPayment && selectedVehicle) {
     return (
@@ -88,7 +82,6 @@ export default function Book() {
         vehicle={selectedVehicle}
         startDateTime={dateRange.startDateTime}
         endDateTime={dateRange.endDateTime}
-        subTotal={selectedVehicle.price * bookedDays}
         onBackToDetails={handleBack}
       />
     );
@@ -99,12 +92,12 @@ export default function Book() {
     return (
       <div className="flex flex-col items-center justify-center">
         <Details
+          onBack={handleBack}
           vehicle={selectedVehicle}
           images={images || []} // Ensure images is an array (fallback to empty array)
-          onBack={handleBack}
-          onProceedToPayment={handleProceedToPayment}
           startDateTime={dateRange.startDateTime}
           endDateTime={dateRange.endDateTime}
+          onProceedToPayment={handleProceedToPayment}
         />
       </div>
     );

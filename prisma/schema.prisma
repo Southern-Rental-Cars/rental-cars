@@ -39,6 +39,7 @@ model Extra {
   price_type     String?        @db.VarChar(50)
   price_amount   Int?
   total_quantity Int?
+  
   bookingExtras  BookingExtra[]
   
   // Many-to-many relationship with Vehicle
@@ -94,10 +95,15 @@ model VehicleImage {
   @@map("car_images")
 }
 
+enum Role {
+  customer
+  admin
+}
+
 model User {
   // User Information
   id                   Int       @id @default(autoincrement())
-  role_access          String?   @db.VarChar(10)
+  role_access          Role      @default(customer) // Enum for role_access
   email                String    @unique @db.VarChar(100)
   password_hash        String    @db.VarChar(100)
   full_name            String?   @db.VarChar(100)

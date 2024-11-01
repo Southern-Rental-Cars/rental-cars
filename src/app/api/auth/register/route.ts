@@ -3,12 +3,15 @@ import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import validator from 'validator';
 
+// Define allowed roles based on the enum in your Prisma schema
+type Role = 'customer' | 'admin';
+
 interface RegistrationData {
   email: string;
   password: string;
   full_name: string;
   date_of_birth: string;
-  role_access: string;
+  role_access?: Role; // Updated to optional Role type
   phone: string;
   street_address: string;
   zip_code: string;
@@ -39,16 +42,19 @@ export async function POST(req: Request) {
 
     // Check required fields and validate email format
     if (!email || !password || !license_number || !license_state || !license_expiration || !validator.isEmail(email)) {
-      return NextResponse.json({ message: 'Invalid input data provided.' }, { status: 400 });
+      return NextResponse.json({ message: 'Missing required input fields' }, { status: 400 });
     }
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      return NextResponse.json({ message: 'User with this email already exists.' }, { status: 400 });
+      return NextResponse.json({ message: 'User with this email already exists' }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Validate or set default for role_access
+    const userRole: Role = role_access === 'admin' ? 'admin' : 'customer';
 
     // Set default values for billing if not provided
     const billingInfo = {
@@ -66,7 +72,7 @@ export async function POST(req: Request) {
         password_hash: hashedPassword,
         full_name,
         date_of_birth: date_of_birth ? new Date(date_of_birth) : null,
-        role_access: role_access || 'user',
+        role_access: userRole, // Assign role using validated userRole variable
         phone,
         street_address,
         zip_code,
@@ -84,12 +90,12 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(
-      { message: 'User registered successfully', user: { id: user.id, email: user.email, full_name: user.full_name } },
+      { message: 'Registered successfully', user: { id: user.id, email: user.email, full_name: user.full_name } },
       { status: 201 }
     );
   } catch (error) {
     console.error('Error registering user:', error);
-    return NextResponse.json({ message: 'Internal Server Error', error: error.message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal Server Error', error: (error as Error).message }, { status: 500 });
   }
 }
 

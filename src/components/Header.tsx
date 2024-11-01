@@ -181,6 +181,7 @@ export function Header() {
     setIsMobileMenuOpen(false);
   };
 
+  /** Remove cookies and redirect for logout **/
   const handleLogout = () => {
     setUser(null, null);
     router.push('/');

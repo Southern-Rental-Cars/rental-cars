@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import Extras from '../extras/box';
 import { createBooking } from '../../../../lib/db/db';
 import { useRouter } from 'next/navigation';
 import PaypalButtons from './PaypalButtons';
 import { useUser } from '@/components/contexts/UserContext';
 import { Vehicle } from '@/types';
-import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
-import {Extra} from '@/types/index';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { Extra } from '@/types/index';
+import { differenceInDays, format } from 'date-fns';
 
 interface PaypalData {
   paypal_order_id: string;
@@ -20,7 +21,6 @@ interface PaymentPageProps {
   vehicle: Vehicle;
   startDate: string;
   endDate: string;
-  subTotal: number;
   extras: Extra[];
   availability: any;
   onBackToDetails: () => void;
@@ -30,7 +30,6 @@ const Payment: React.FC<PaymentPageProps> = ({
   vehicle,
   startDate,
   endDate,
-  subTotal,
   extras,
   availability,
   onBackToDetails,
@@ -38,33 +37,40 @@ const Payment: React.FC<PaymentPageProps> = ({
   const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [taxAmount, setTaxAmount] = useState<number>(0);
-
+  const [subtotal, setSubtotal] = useState<number>(0);
+  const [days, setDays] = useState<number>(0);
   const { user } = useUser();
   const userId = user?.id;
   const router = useRouter();
 
-  useEffect(() => {
-    updateTotalPrice();
-  }, [selectedExtras]);
+  const calculateDays = () => differenceInDays(new Date(endDate), new Date(startDate)) + 1;
 
-  const updateTotalPrice = () => {
-    const days = Math.ceil(
-      (new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)
-    );
+  const calculateTotals = () => {
+    const calculatedDays = calculateDays();
+    setDays(calculatedDays);
 
+    const vehicleSubtotal = vehicle.price * calculatedDays;
     const extrasCost = selectedExtras.reduce((total, extra) => {
       const cost =
         extra.price_type === 'DAILY'
-          ? extra.price_amount * (extra.quantity || 1) * days
+          ? extra.price_amount * (extra.quantity || 1) * calculatedDays
           : extra.price_amount * (extra.quantity || 1);
       return total + cost;
     }, 0);
 
-    const subtotal = subTotal + extrasCost;
-    const calculatedTax = parseFloat((subtotal * 0.0825).toFixed(2));
-    setTaxAmount(calculatedTax);
-    setTotalPrice(parseFloat((subtotal + calculatedTax).toFixed(2)));
+    const updatedSubtotal = vehicleSubtotal + extrasCost;
+    setSubtotal(updatedSubtotal);
+
+    const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
+    setTaxAmount(updatedTax);
+
+    const updatedTotalPrice = updatedSubtotal + updatedTax;
+    setTotalPrice(parseFloat(updatedTotalPrice.toFixed(2)));
   };
+
+  useEffect(() => {
+    calculateTotals();
+  }, [startDate, endDate, selectedExtras]);
 
   const handleAddToCart = (extra: Extra, quantity: number) => {
     setSelectedExtras((prev) => {
@@ -104,55 +110,80 @@ const Payment: React.FC<PaymentPageProps> = ({
     }
   };
 
+  const formattedStartDate = format(new Date(startDate), 'MMM dd, yyyy');
+  const formattedEndDate = format(new Date(endDate), 'MMM dd, yyyy');
+
   return (
     <div className="max-w-3xl w-full mx-auto p-6 rounded-lg space-y-6 mt-3">
       <button onClick={onBackToDetails} className="flex items-center text-blue-600 font-semibold mb-3">
         <FaArrowLeft className="mr-2" /> Back
       </button>
+
       {/* Unified Card */}
-      <div className="bg-white border border-gray-200 p-6 rounded-lg space-y-8">
-        {/* Extras */}
+      <div className="bg-white border border-gray-200 p-6 rounded-lg">
         <Extras extras={extras} availability={availability} onAddToCart={handleAddToCart} />
       </div>
-      <div className="bg-white border border-gray-200 p-6 rounded-lg space-y-8">
-        {/* Price Summary */}
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-3"> Price Summary</h2>
-          <div className="flex justify-between text-gray-700 mb-1">
-            <span>Subtotal:</span>
-            <span>${subTotal.toFixed(2)}</span>
-          </div>
-          {selectedExtras.length > 0 && (
-            <div className="text-gray-700 mb-1">
-              <ul>
-                {selectedExtras.map((extra) => {
-                  const quantity = extra.quantity ?? 1;
-                  const days = Math.ceil(
-                    (new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)
-                  );
-                  const extraCost =
-                    extra.price_type === 'DAILY'
-                      ? extra.price_amount * quantity * days
-                      : extra.price_amount * quantity;
 
-                  return (
-                    <li key={extra.id} className="flex justify-between">
-                      <span>{extra.name} ({extra.price_type === 'DAILY' ? `x ${days} days` : 'one-time'}):</span>
-                      <span>${extraCost.toFixed(2)}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-          <div className="flex justify-between text-gray-700 mb-3">
-            <span>Tax (8.25%):</span>
-            <span>+ ${taxAmount.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between items-center border-t-2 pt-3 mt-3">
-            <span className="font-bold text-lg">Total:</span>
-            <span className="text-xl font-bold text-gray-800">${totalPrice.toFixed(2)}</span>
-          </div>
+      {/* Booking Summary Card */}
+      <div className="bg-white border border-gray-200 p-6 rounded-lg">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Booking Summary</h2>
+
+        {/* Date Information */}
+        <div className="flex justify-between text-sm text-gray-700">
+          <p>From:</p>
+          <p className="font-medium">{formattedStartDate}</p>
+        </div>
+        <div className="flex justify-between text-sm text-gray-700">
+          <p>To:</p>
+          <p className="font-medium">{formattedEndDate}</p>
+        </div>
+
+        {/* Divider */}
+        <hr className="my-2 border-gray-300" />
+
+        {/* Booking Details */}
+        <div className="flex justify-between text-sm text-gray-700">
+          <p>Daily rate:</p>
+          <p className="font-medium">${vehicle.price.toFixed(2)}</p>
+        </div>
+        <div className="flex justify-between text-sm text-gray-700">
+          <p>Total days:</p>
+          <p className="font-medium">x {days} {days === 1 ? 'day' : 'days'}</p>
+        </div>
+        <div className="flex justify-between text-sm text-gray-700">
+          <p>Tax (8.25%):</p>
+          <p className="font-medium">+ ${taxAmount.toFixed(2)}</p>
+        </div>
+        {/* Extras Section */}
+        {selectedExtras.length > 0 && (
+          <>
+            <hr className="my-4 border-gray-300" />
+            <ul className="space-y-1">
+              {selectedExtras.map((extra) => {
+                const quantity = extra.quantity ?? 1;
+                const extraCost =
+                  extra.price_type === 'DAILY'
+                    ? extra.price_amount * quantity * days
+                    : extra.price_amount * quantity;
+
+                return (
+                  <li key={extra.id} className="flex justify-between text-sm text-gray-700">
+                    <span>{extra.name} ({extra.price_type === 'DAILY' ? `x ${days} days` : 'one-time'}):</span>
+                    <span className="font-medium">+ ${extraCost.toFixed(2)}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+
+        {/* Final Divider */}
+        <hr className="my-4 border-gray-300" />
+
+        {/* Total */}
+        <div className="flex justify-between items-center">
+          <span className="font-bold text-lg text-gray-800">Total:</span>
+          <span className="text-xl font-bold text-gray-900">${totalPrice.toFixed(2)}</span>
         </div>
       </div>
 

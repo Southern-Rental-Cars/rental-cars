@@ -13,6 +13,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'vehicle_id and image_url are required' }, { status: 400 });
     }
 
+    const vehicleExists = await prisma.vehicle.findUnique({where : {id: vehicle_id}});
+    if (!vehicleExists) {
+      return NextResponse.json({message: "Vehicle not found. Invalid vehicle_id"}, {status: 404});
+    }
+    
     // Create the new VehicleImage in the database
     const newImage = await prisma.vehicleImage.create({
       data: {

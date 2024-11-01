@@ -23,76 +23,63 @@ export async function POST(req: Request) {
     }
 
     // Check the extras availability
-    const availabilityResults = await checkExtrasAvailability(extras, startDateObj, endDateObj);
+    const data = await checkExtrasAvailability(extras, startDateObj, endDateObj);
     
-    return NextResponse.json(availabilityResults, { status: 200 });
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error('Error checking availability:', error);
     return NextResponse.json({ error: 'An error occurred while checking availability.' }, { status: 500 });
   }
 }
 
-// Helper function to check extras availability
+// Helper function to check availability of extras
 async function checkExtrasAvailability(
   extras: { id: number; quantity: number }[],
-  start_date: Date,
-  end_date: Date
+  startDate: Date,
+  endDate: Date
 ) {
-  const availabilityQuantity: { [key: number]: { available_quantity: number | string } } = {};
+  console.log(extras);
+  const availability: { [extraId: number]: { available_quantity: number | string } } = {};
 
   for (const extra of extras) {
-    const { id } = extra;
+    const { id: extraId } = extra;
 
-    // Fetch the total quantity and price_type of the extra
-    const extraDetails = await prisma.extra.findUnique({
-      where: { id: id },
-      select: { name: true, total_quantity: true, price_type: true }, // Fetch price_type
+    // Retrieve extra details
+    const extraInfo = await prisma.extra.findUnique({
+      where: { id: extraId },
+      select: { total_quantity: true },
     });
 
-    if (!extraDetails) {
-      return NextResponse.json({ error: `Extra with ID ${id} not found.` }, { status: 404 });
+    if (!extraInfo) {
+      return NextResponse.json({ error: `Extra with ID ${extraId} not found.` }, { status: 404 });
     }
 
-    // If the extra is a non-tangible type (TRIP), it's always available
-    if (extraDetails.price_type === 'TRIP') {
-      availabilityQuantity[id] = {
-        available_quantity: 999, // 999 represents always available
-      };
-      continue; // Skip the rest of the loop for non-tangible extras
+    // If the extra is non-tangible (TRIP), it's always available
+    if (extraInfo.total_quantity === null) {
+      availability[extraId] = { available_quantity: 999 }; // 999 = always available
+      continue;
     }
 
-    // For tangible extras (e.g., DAILY), check availability
-    let totalBookedQuantity = 0;
-    let currentDate = new Date(start_date);
-    const endDateObject = new Date(end_date);
-
-    // Check availability for each day in the range
-    while (currentDate <= endDateObject) {
-      const bookedQuantityResult = await prisma.bookingExtra.aggregate({
-        _sum: { quantity: true },
-        where: {
-          extra_id: id,
-          booking: {
-            OR: [
-              { start_date: { lte: currentDate }, end_date: { gte: currentDate } },
-            ],
-          },
+    // Calculate total quantity booked within the date range
+    const totalBooked = await prisma.bookingExtra.aggregate({
+      _sum: { quantity: true },
+      where: {
+        extra_id: extraId,
+        booking: {
+          start_date: { lte: endDate },
+          end_date: { gte: startDate },
         },
-      });
+      },
+    });
 
-      const bookedQuantity = bookedQuantityResult._sum.quantity || 0;
-      totalBookedQuantity = Math.max(totalBookedQuantity, bookedQuantity);
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+    const bookedQuantity = totalBooked._sum.quantity || 0;
+    const availableQuantity = Math.max(extraInfo.total_quantity - bookedQuantity, 0);
 
-    // Calculate the available quantity
-    const availableQuantity = extraDetails.total_quantity - totalBookedQuantity;
-    availabilityQuantity[id] = {
-      available_quantity: availableQuantity,
-    };
+    // Set available quantity for the extra
+    availability[extraId] = { available_quantity: availableQuantity };
   }
 
-  return availabilityQuantity;
+  return availability;
 }
 
 

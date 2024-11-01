@@ -58,14 +58,18 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   if (isNaN(Number(id))) {
     return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
   }
+
   try {
-    // Prisma query to delete the car by ID
+    // Attempt to delete the vehicle by ID
     const vehicle = await prisma.vehicle.delete({
       where: { id: parseInt(id) },
     });
     return NextResponse.json(vehicle, { status: 200 });
-  } catch (err) {
-    console.error('Error deleting car:', err);
+  } catch (err: any) {
+    if (err.code === 'P2025') { // Prisma error code for record not found
+      return NextResponse.json({ error: 'Vehicle not found' }, { status: 404 });
+    }
+    console.error('Error deleting vehicle:', err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -117,12 +121,12 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 
     // Update the vehicle with the constructed data object
-    const updatedVehicle = await prisma.vehicle.update({
+    await prisma.vehicle.update({
       where: { id: parseInt(id) },
       data,
     });
 
-    return NextResponse.json(updatedVehicle, { status: 200 });
+    return NextResponse.json(null, { status: 204 });
   } catch (err) {
     console.error('Error updating vehicle:', err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
