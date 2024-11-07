@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // Prisma client import
+import prisma from '@/utils/prisma'; // Prisma client import
 
 // POST Request: Create vehicle
 //--------------------------------------------------------------

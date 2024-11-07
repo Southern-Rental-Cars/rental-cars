@@ -1,130 +1,57 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/components/contexts/UserContext';
+import { FiMail, FiLock } from 'react-icons/fi';
 import Toast from '@/components/Toast';
-import { FiMail, FiLock, FiUser, FiPhone, FiHome } from 'react-icons/fi';
+import { useUser } from '@/components/contexts/UserContext';
 
 export default function RegisterPage() {
   const router = useRouter();
   const { setUser } = useUser();
-  const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastType, setToastType] = useState<'success' | 'error'>('success');
-  const [nextDisabled, setNextDisabled] = useState(true);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
+  const [verificationCode, setVerificationCode] = useState(new Array(6).fill(''));
 
-  // Form state
-  const [personalInfo, setPersonalInfo] = useState({
+  const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
-    fullName: '',
-    dob: '',
-    phone: '',
-    address: '',
-    zipCode: '',
   });
 
-  const [billingInfo, setBillingInfo] = useState({
-    billingStreet: '',
-    billingCity: '',
-    billingState: '',
-    billingZipCode: '',
-    billingCountry: '',
-  });
+  const isFormValid = formData.email && formData.password && formData.password === formData.confirmPassword;
 
-  const [licenseInfo, setLicenseInfo] = useState({
-    licenseNumber: '',
-    country: '',
-    state: '',
-    city: '',
-    expirationDate: '',
-    frontPhotoUrl: '',
-    backPhotoUrl: '',
-  });
-
-  // Input validation for each step
-  useEffect(() => {
-    if (step === 1) {
-      setNextDisabled(
-        !personalInfo.email ||
-        !personalInfo.password ||
-        personalInfo.password !== personalInfo.confirmPassword
-      );
-    } else if (step === 2) {
-      setNextDisabled(
-        !personalInfo.fullName ||
-        !personalInfo.dob ||
-        !personalInfo.phone ||
-        !personalInfo.address ||
-        !personalInfo.zipCode ||
-        !billingInfo.billingStreet ||
-        !billingInfo.billingCity ||
-        !billingInfo.billingState ||
-        !billingInfo.billingZipCode ||
-        !billingInfo.billingCountry
-      );
-    } else if (step === 3) {
-      setNextDisabled(
-        !licenseInfo.licenseNumber ||
-        !licenseInfo.country ||
-        !licenseInfo.state ||
-        !licenseInfo.city ||
-        !licenseInfo.expirationDate ||
-        !licenseInfo.frontPhotoUrl ||
-        !licenseInfo.backPhotoUrl
-      );
-    }
-  }, [step, personalInfo, billingInfo, licenseInfo]);
-
-  const handleNextStep = () => setStep((prev) => prev + 1);
-  const handlePrevStep = () => setStep((prev) => (prev > 1 ? prev - 1 : prev));
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, stateSetter: Function) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    stateSetter((prevState: any) => ({ ...prevState, [id]: value }));
+    setFormData((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, id: 'frontPhotoUrl' | 'backPhotoUrl') => {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) {
-      setLicenseInfo((prev) => ({
-        ...prev,
-        [id]: URL.createObjectURL(file),
-      }));
+  const handleCodeChange = (index: number, value: string) => {
+    if (!/^\d$/.test(value) && value !== '') return; // Allow only digits
+    const newCode = [...verificationCode];
+    newCode[index] = value;
+    setVerificationCode(newCode);
+
+    if (value !== '' && index < 5) {
+      document.getElementById(`code-input-${index + 1}`)?.focus();
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     setIsSubmitting(true);
+    setError(null);
 
     try {
-      const payload = {
-        email: personalInfo.email,
-        password: personalInfo.password,
-        full_name: personalInfo.fullName,
-        date_of_birth: personalInfo.dob,
-        phone: personalInfo.phone,
-        street_address: personalInfo.address,
-        zip_code: personalInfo.zipCode,
-        license_number: licenseInfo.licenseNumber,
-        license_country: licenseInfo.country,
-        license_state: licenseInfo.state,
-        license_city: licenseInfo.city,
-        license_expiration: licenseInfo.expirationDate,
-        country: licenseInfo.country,
-        billing_street_address: billingInfo.billingStreet,
-        billing_city: billingInfo.billingCity,
-        billing_state: billingInfo.billingState,
-        billing_postal_code: billingInfo.billingZipCode,
-        billing_country: billingInfo.billingCountry,
-      };
-
+      const { email, password } = formData;
+      const payload = { email, password };
+      
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -132,126 +59,188 @@ export default function RegisterPage() {
       });
 
       if (response.ok) {
-        await loginUser(personalInfo.email, personalInfo.password);
+        setShowVerificationModal(true);
       } else {
         const data = await response.json();
-        setToastType('error');
-        setToastMessage(data.message || 'Registration failed. Please try again.');
+        setError(data.message || 'Registration failed. Please try again.');
       }
-    } catch {
-      setToastType('error');
-      setToastMessage('An unexpected error occurred during registration.');
+    } catch (error) {
+      console.error('Registration error:', error);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const loginUser = async (email: string, password: string) => {
+  const verifyCode = async () => {
+    const code = verificationCode.join('');
+    const payload = { email: formData.email, code, password: formData.password };
+
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/auth/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setUser(
-          {
-            id: data.user.id,
-            full_name: data.user.full_name,
-            email: data.user.email,
-          },
-          data.token
-        );
-        setToastType('success');
-        setToastMessage('Registration successful! Redirecting...');
-        router.push('/');
+        // Automatically log the user in
+        const loginResponse = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: formData.email, password: formData.password }),
+        });
+
+        if (loginResponse.ok) {
+          const { user } = await loginResponse.json();
+          if (user) {
+            setUser({
+              id: user.id,
+              email: user.email,
+            });
+            setShowVerificationModal(false);
+            setToastMessage('Verification successful! You are now logged in.');
+            router.push('/'); // Redirect to home page after login
+          }
+        } else {
+          const loginData = await loginResponse.json();
+          setError(loginData.message || 'Auto-login failed. Please log in manually.');
+        }
       } else {
-        setToastType('error');
-        setToastMessage('Login failed after registration. Please log in manually.');
+        const data = await response.json();
+        setVerificationError(data.message || 'Invalid verification code. Please try again.');
       }
-    } catch {
-      setToastType('error');
-      setToastMessage('An unexpected error occurred during login.');
+    } catch (error) {
+      console.error('Verification error:', error);
+      setVerificationError('An unexpected error occurred. Please try again.');
     }
   };
 
   return (
     <div className="p-2">
-      {error && (
-        <div className="mb-4 text-red-600 text-center rounded-md p-2 bg-red-50">
-          {error}
-        </div>
-      )}
+      {error && <div className="mb-4 text-red-600 text-center border border-red-200 rounded-md p-2 bg-red-50">{error}</div>}
 
-      {/* Step 1: Account Credentials */}
-      {step === 1 && (
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-          <div className="relative">
-            <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input type="email" id="email" value={personalInfo.email} onChange={(e) => handleChange(e, setPersonalInfo)} 
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <div className="relative">
+          <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="email"
+            id="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
-            placeholder="Email" />
-          </div>
-          <div className="relative">
-            <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input type="password" id="password" value={personalInfo.password} onChange={(e) => handleChange(e, setPersonalInfo)} className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
-            placeholder="Password" />
-          </div>
-          <div className="relative">
-            <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input type="password" id="confirmPassword" value={personalInfo.confirmPassword} onChange={(e) => handleChange(e, setPersonalInfo)} className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
-            placeholder="Confirm Password" />
-          </div>
-          <div className="flex justify-end">
-            <button onClick={handleNextStep} disabled={nextDisabled} className={`btn-primary ${nextDisabled ? 'cursor-not-allowed' : ''}`}>Next</button>
-          </div>
-        </form>
+          />
+        </div>
+        <div className="relative">
+          <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="password"
+            id="password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
+          />
+        </div>
+        <div className="relative">
+          <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="password"
+            id="confirmPassword"
+            required
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Confirm Password"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
+          />
+        </div>
+        
+        <button
+          type="submit"
+          disabled={!isFormValid || isSubmitting}
+          className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+        >
+          {isSubmitting ? 'Registering...' : 'Register'}
+        </button>
+      </form>
+
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          onClose={() => setToastMessage(null)}
+          style={{ backgroundColor: '#007bff', color: '#ffffff' }}
+        />
       )}
 
-      {/* Step 2: Personal & Billing Information */}
-      {step === 2 && (
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-          <input type="text" id="fullName" value={personalInfo.fullName} onChange={(e) => handleChange(e, setPersonalInfo)} placeholder="Full Name" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="date" id="dob" value={personalInfo.dob} onChange={(e) => handleChange(e, setPersonalInfo)} placeholder="Date of Birth" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="phone" value={personalInfo.phone} onChange={(e) => handleChange(e, setPersonalInfo)} placeholder="Phone Number" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="address" value={personalInfo.address} onChange={(e) => handleChange(e, setPersonalInfo)} placeholder="Address" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="zipCode" value={personalInfo.zipCode} onChange={(e) => handleChange(e, setPersonalInfo)} placeholder="ZIP Code" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="billingStreet" value={billingInfo.billingStreet} onChange={(e) => handleChange(e, setBillingInfo)} placeholder="Billing Street Address" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="billingCity" value={billingInfo.billingCity} onChange={(e) => handleChange(e, setBillingInfo)} placeholder="Billing City" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="billingState" value={billingInfo.billingState} onChange={(e) => handleChange(e, setBillingInfo)} placeholder="Billing State" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="billingZipCode" value={billingInfo.billingZipCode} onChange={(e) => handleChange(e, setBillingInfo)} placeholder="Billing Postal Code" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="billingCountry" value={billingInfo.billingCountry} onChange={(e) => handleChange(e, setBillingInfo)} placeholder="Billing Country" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <div className="flex justify-between">
-            <button onClick={handlePrevStep} className="btn-secondary">Previous</button>
-            <button onClick={handleNextStep} disabled={nextDisabled} className={`btn-primary ${nextDisabled ? 'cursor-not-allowed' : ''}`}>Next</button>
-          </div>
-        </form>
+      {showVerificationModal && (
+        <VerificationModal
+          verificationCode={verificationCode}
+          setVerificationCode={handleCodeChange}
+          onClose={() => setShowVerificationModal(false)}
+          onVerify={verifyCode}
+          errorMessage={verificationError || ''}
+        />
       )}
+    </div>
+  );
+}
 
-      {/* Step 3: License Information */}
-      {step === 3 && (
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <h2 className="text-xl font-semibold mb-4 text-center">License Information</h2>
-          <input type="text" id="licenseNumber" value={licenseInfo.licenseNumber} onChange={(e) => handleChange(e, setLicenseInfo)} placeholder="Driver's License Number" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="country" value={licenseInfo.country} onChange={(e) => handleChange(e, setLicenseInfo)} placeholder="Country of Issue" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="state" value={licenseInfo.state} onChange={(e) => handleChange(e, setLicenseInfo)} placeholder="State of Issue" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="text" id="city" value={licenseInfo.city} onChange={(e) => handleChange(e, setLicenseInfo)} placeholder="City of Issue" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <input type="date" id="expirationDate" value={licenseInfo.expirationDate} onChange={(e) => handleChange(e, setLicenseInfo)} placeholder="License Expiration Date" className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"/>
-          <label>Front of License</label>
-          <input type="file" onChange={(e) => handleFileChange(e, 'frontPhotoUrl')} className="input"/>
-          <label>Back of License</label>
-          <input type="file" onChange={(e) => handleFileChange(e, 'backPhotoUrl')} className="input"/>
-          <div className="flex justify-between">
-            <button onClick={handlePrevStep} className="btn-secondary">Previous</button>
-            <button type="submit" disabled={nextDisabled} className={`btn-primary ${nextDisabled ? 'bg-gray-400 cursor-not-allowed' : ''}`}>
-              {isSubmitting ? 'Submitting...' : 'Submit'}
-            </button>
-          </div>
-        </form>
-      )}
-      {toastMessage && <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage(null)} />}
+interface VerificationModalProps {
+  verificationCode: string[];
+  setVerificationCode: (idx: number, value: string) => void;
+  onClose: () => void;
+  onVerify: () => void;
+  errorMessage?: string;
+}
+
+function VerificationModal({
+  verificationCode,
+  setVerificationCode,
+  onClose,
+  onVerify,
+  errorMessage
+}: VerificationModalProps) {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full text-center shadow-lg">
+        <h2 className="text-xl font-semibold mb-2">Verify Your Email</h2>
+        <p className="mb-4 text-gray-600">We’ve sent a code to your email. Enter it below:</p>
+
+        <div className="flex justify-center space-x-2 mb-4">
+          {verificationCode.map((digit, idx) => (
+            <input
+              key={idx}
+              type="text"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => setVerificationCode(idx, e.target.value)}
+              className="w-12 h-12 border border-gray-300 rounded text-center text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ boxShadow: errorMessage ? '0 0 0 2px red' : '' }}
+            />
+          ))}
+        </div>
+
+        {errorMessage && (
+          <p className="text-sm text-red-500 mb-4">{errorMessage}</p>
+        )}
+
+        <button
+          onClick={onVerify}
+          className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+        >
+          Verify
+        </button>
+
+        <button
+          onClick={onClose}
+          className="mt-4 text-sm text-gray-500 underline"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 }

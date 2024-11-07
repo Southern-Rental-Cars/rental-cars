@@ -31,6 +31,8 @@ const captureOrder = async (orderID: string) => {
     const payload = { id: orderID, prefer: 'return=minimal'};
     try {
         const { body, ...httpResponse } = await ordersController.ordersCapture(payload);
+        console.log("BODY: " + body);
+
         return { 
             jsonResponse: JSON.parse(body.toString()), 
             httpStatusCode: httpResponse.statusCode 
@@ -43,6 +45,8 @@ const captureOrder = async (orderID: string) => {
             httpStatusCode: error.statusCode || 500 
         };
         }
+        //console.log(error);
+
         return { 
             jsonResponse: { error: "Unknown error occurred during order capture." }, 
             httpStatusCode: 500

@@ -14,17 +14,17 @@ export default function PrivacyPolicy() {
         </p>
         <h3 className="text-md font-semibold mt-4">Account data</h3>
         <p>
-          When you register for an account with us, we require certain personal information to open your account, such as your name, email address, a password, personal information such as license, billing, phone number, and DOB.
-          Your personal information is encrypted in our database. Information such as password, date of birth, and license and billing details.
+          When you register for an account with us, we require certain personal information to open your account, such as your name, email address, a password, personal information such as license, billing, phone number, and date of birth.
+          Your personal information is encrypted in our database. Information such as: password, date of birth, license and billing.
         </p>
 
         <h3 className="text-md font-semibold mt-4">Profile data</h3>
         <p>
-          We may also ask you to provide additional profile information to use certain features of the Services which may include street addresses, phone numbers, driver’s license number, date of issuance and issuing country and/or state, profile photos, and date of birth. Certain parts of your profile (like your profile photos, employer, city, school, and biography) are part of your public profile page and will be publicly visible to others.
+          We may also ask you to provide additional profile information to use certain features of the services which may include street addresses, phone numbers, driver’s license number, date of issuance and issuing country and/or state, profile photos, and date of birth. Certain parts of your profile (like your profile photos, employer, city, school, and biography) are part of your public profile page and will be publicly visible to others.
         </p>
-        <h2 className="text-lg font-semibold mb-2">Cookies</h2>
+        <h3 className="text-md font-semibold mt-4">Cookies</h3>
         <p>
-          The only time cookies are stored on your device is when you log in to our Site. These cookies store an authentication token to allow persistence of your logged-in state. Once you log out, these cookies are deleted.
+          The only time cookies are stored on your device is when you log in to our site. These cookies store an authentication token to allow persistence of your logged-in state and authentication to access company data. Once you log out, these cookies are deleted.
         </p>
         <h3 className="text-md font-semibold mt-4">Payment data</h3>
         <p>
@@ -44,7 +44,7 @@ export default function PrivacyPolicy() {
           We use, store, and process your personal information to provide and improve the Services and for security and safety purposes. For example, we may use your information:
         </p>
         <ul className="list-disc list-inside space-y-2 mt-2">
-          <li>To provide and operate the Services</li>
+          <li>To provide and operate the services</li>
           <li>To provide customer support</li>
           <li>To send you service, support, and administrative messages, reminders, technical notices, updates, security alerts, and information requested by you at any telephone number, by placing a voice call or through text (SMS) or email messaging</li>
           <li>To facilitate your login to the Services via third-party identity and access management providers, such as Google and Apple</li>

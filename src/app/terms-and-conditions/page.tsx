@@ -15,10 +15,7 @@ export default function TermsAndConditions() {
 
       <h3 className="text-xl font-semibold mt-4">Guest Financial Responsibility for Physical Damage to the Vehicle</h3>
       <p>
-        The guest that booked the trip is financially responsible for all physical damage to or theft of a booked vehicle that occurs during a trip, plus any additional costs and fees resulting from damage of any kind to the vehicle, regardless of who is found to be at fault. This responsibility applies whether the primary guest has their own auto insurance or not.
-      </p>
-      <p>
-        Primary guests may be insured against damage to the booked vehicle under their own automobile policies. When you book a vehicle, you agree that if any damage occurs to the booked vehicle during the booked trip, you will work with Southern Rental Cars to make a claim for coverage under any policy of insurance that applies to the loss.
+        The guest that booked the trip is financially responsible for all physical damage to or theft of a booked vehicle that occurs during a trip, plus any additional costs and fees resulting from damage of any kind to the vehicle, regardless of who is found to be at fault. This responsibility applies whether the primary guest has their own auto insurance or not.         Primary guests may be insured against damage to the booked vehicle under their own automobile policies. When you book a vehicle, you agree that if any damage occurs to the booked vehicle during the booked trip, you will work with Southern Rental Cars to make a claim for coverage under any policy of insurance that applies to the loss.
       </p>
 
       <h3 className="text-xl font-semibold mt-4">Auto Liability Insurance and Legal Liability Protection</h3>

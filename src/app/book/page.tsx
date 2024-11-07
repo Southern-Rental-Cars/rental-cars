@@ -7,7 +7,7 @@ import Details from './components/details/page';
 import PaymentDataProvider from './components/payment/DataProvider';
 import Loader from '@/components/Loader';
 import { Vehicle, VehicleImages } from '@/types';
-import { fetchImagesByVehicleId } from '@/lib/db/db';
+import { fetchAvailableVehicles, fetchImagesByVehicleId } from '@/utils/db/db';
 
 export default function Book() {
   const [dateRange, setDateRange] = useState({
@@ -23,11 +23,11 @@ export default function Book() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Fetch vehicles based on the date range
-  const fetchAvailableVehicles = async (start: string, end: string) => {
+  const fetchVehicles = async (start: string, end: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/vehicle?start=${start}&end=${end}`);
-      const data = await response.json();
+      const data = await fetchAvailableVehicles(start, end);
+      console.log(data)
       setAvailableVehicles(data);
       setSearchCompleted(true);
     } catch (error) {
@@ -49,7 +49,7 @@ export default function Book() {
   const handleDateChange = (start: string, end: string) => {
     setDateRange({ startDateTime: start, endDateTime: end });
     setSearchCompleted(false);
-    fetchAvailableVehicles(start, end);
+    fetchVehicles(start, end);
   };
 
   const handleProceedToPayment = () => {
@@ -93,11 +93,11 @@ export default function Book() {
       <div className="flex flex-col items-center justify-center">
         <Details
           onBack={handleBack}
+          onProceedToPayment={handleProceedToPayment}
           vehicle={selectedVehicle}
           images={images || []} // Ensure images is an array (fallback to empty array)
           startDateTime={dateRange.startDateTime}
           endDateTime={dateRange.endDateTime}
-          onProceedToPayment={handleProceedToPayment}
         />
       </div>
     );
@@ -112,7 +112,7 @@ export default function Book() {
           <Loader />
         </div>
       ) : searchCompleted && availableVehicles.length === 0 ? (
-        <p className="mt-8 text-red-600 text-lg font-semibold">Sorry, our fleet is booked for these dates</p>
+        <p className="mt-8 text-red-600 text-lg font-semibold">Fleet is booked for these dates</p>
       ) : (
         <div className="mt-8 w-full max-w-6xl">
           <Grid vehicles={availableVehicles} onSelectVehicle={handleSelectVehicle} />

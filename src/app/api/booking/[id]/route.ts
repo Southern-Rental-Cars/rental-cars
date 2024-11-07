@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import prisma from '@/utils/prisma';
 import { Prisma } from '@prisma/client';
 
 // PUT handler to update a booking
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const { start_date, end_date, status } = await req.json();
-  const id = parseInt(params.id);
+  const id = params.id;
 
   if (!start_date && !end_date && !status) {
     return NextResponse.json({ error: 'No update fields provided' }, { status: 400 });
@@ -49,7 +49,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
 // DELETE handler to cancel a booking (NOT USED)
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id);
+  const id = params.id;
 
   try {
     // Find the booking with associated extras
@@ -81,7 +81,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
 // GET handler to retrieve a Booking by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id);
+  const id = params.id;
 
   try {
     // Fetch the booking with vehicle and extras details

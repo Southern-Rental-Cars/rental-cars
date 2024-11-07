@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // Ensure prisma client is set up correctly
+import prisma from '@/utils/prisma'; // Ensure prisma client is set up correctly
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
   // Validate the ID
-  const bookingExtraId = parseInt(id, 10);
-  if (isNaN(bookingExtraId)) {
-    return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 });
-  }
+  const bookingExtraId = id;
 
   try {
     // Fetch the BookingExtra by ID, excluding the `Booking` relation

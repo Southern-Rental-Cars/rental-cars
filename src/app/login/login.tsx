@@ -34,7 +34,6 @@ export default function LoginPage() {
           setUser({
             id: user.id,
             email: user.email,
-            full_name: user.full_name,
           });
 
           // Clear form and redirect after successful login

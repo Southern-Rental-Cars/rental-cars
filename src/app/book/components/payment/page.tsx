@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Extras from '../extras/box';
-import { createBooking } from '../../../../lib/db/db';
 import { useRouter } from 'next/navigation';
 import PaypalButtons from './PaypalButtons';
 import { useUser } from '@/components/contexts/UserContext';
@@ -37,7 +36,6 @@ const Payment: React.FC<PaymentPageProps> = ({
   const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [taxAmount, setTaxAmount] = useState<number>(0);
-  const [subtotal, setSubtotal] = useState<number>(0);
   const [days, setDays] = useState<number>(0);
   const { user } = useUser();
   const userId = user?.id;
@@ -59,8 +57,6 @@ const Payment: React.FC<PaymentPageProps> = ({
     }, 0);
 
     const updatedSubtotal = vehicleSubtotal + extrasCost;
-    setSubtotal(updatedSubtotal);
-
     const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
     setTaxAmount(updatedTax);
 
@@ -81,11 +77,6 @@ const Payment: React.FC<PaymentPageProps> = ({
   };
 
   const handlePaymentSuccess = async (paypalData: PaypalData) => {
-    if (!userId) {
-      router.push('/login');
-      return;
-    }
-
     const payload = {
       vehicle_id: vehicle.id,
       user_id: userId,
@@ -97,11 +88,21 @@ const Payment: React.FC<PaymentPageProps> = ({
       paypal_transaction_id: paypalData.paypal_transaction_id,
       is_paid: paypalData.is_paid,
     };
-
     try {
-      const response = await createBooking(payload);
-      if (response?.id) {
-        router.push(`/confirmation/${response.id}`);
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload), 
+        credentials: 'include', // Ensures cookies are sent with the request
+      });
+
+      // Parse JSON response
+      const responseData = await response.json();
+
+      if (responseData?.id) {
+        router.push(`/book/${responseData.id}`);
       } else {
         console.error('Booking could not be confirmed.');
       }
@@ -126,7 +127,7 @@ const Payment: React.FC<PaymentPageProps> = ({
 
       {/* Booking Summary Card */}
       <div className="bg-white border border-gray-200 p-6 rounded-lg">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Booking Summary</h2>
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">Booking Summary</h2>
 
         {/* Date Information */}
         <div className="flex justify-between text-sm text-gray-700">
@@ -136,23 +137,6 @@ const Payment: React.FC<PaymentPageProps> = ({
         <div className="flex justify-between text-sm text-gray-700">
           <p>To:</p>
           <p className="font-medium">{formattedEndDate}</p>
-        </div>
-
-        {/* Divider */}
-        <hr className="my-2 border-gray-300" />
-
-        {/* Booking Details */}
-        <div className="flex justify-between text-sm text-gray-700">
-          <p>Daily rate:</p>
-          <p className="font-medium">${vehicle.price.toFixed(2)}</p>
-        </div>
-        <div className="flex justify-between text-sm text-gray-700">
-          <p>Total days:</p>
-          <p className="font-medium">x {days} {days === 1 ? 'day' : 'days'}</p>
-        </div>
-        <div className="flex justify-between text-sm text-gray-700">
-          <p>Tax (8.25%):</p>
-          <p className="font-medium">+ ${taxAmount.toFixed(2)}</p>
         </div>
         {/* Extras Section */}
         {selectedExtras.length > 0 && (
@@ -176,6 +160,23 @@ const Payment: React.FC<PaymentPageProps> = ({
             </ul>
           </>
         )}
+        {/* Divider */}
+        <hr className="my-4 border-gray-300" />
+
+        {/* Booking Details */}
+        <div className="flex justify-between text-sm text-gray-700">
+          <p>Daily rate:</p>
+          <p className="font-medium">${vehicle.price.toFixed(2)}</p>
+        </div>
+        <div className="flex justify-between text-sm text-gray-700">
+          <p>Total days:</p>
+          <p className="font-medium">x {days} {days === 1 ? 'day' : 'days'}</p>
+        </div>
+        <div className="flex justify-between text-sm text-gray-700">
+          <p>Tax (8.25%):</p>
+          <p className="font-medium">+ ${taxAmount.toFixed(2)}</p>
+        </div>
+        
 
         {/* Final Divider */}
         <hr className="my-4 border-gray-300" />

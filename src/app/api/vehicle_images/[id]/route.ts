@@ -1,6 +1,6 @@
 // app/api/vehicle-images/[imageId]/route.ts
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import prisma from '@/utils/prisma';
 
 interface Params {
   imageId: string;

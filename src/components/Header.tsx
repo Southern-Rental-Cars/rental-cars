@@ -1,6 +1,6 @@
-'use client'; // Ensures this is a client component
+'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ReactNode, MouseEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -9,9 +9,16 @@ import logo from '@/images/transparent_southern_logo_3.png';
 import { useUser } from '@/components/contexts/UserContext';
 import { Container } from '@/components/Container';
 
-function NavItem({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
-  const isActive = usePathname() === href;
+// Props for NavItem
+interface NavItemProps {
+  href: string;
+  children: ReactNode;
+  onClick?: (e: MouseEvent) => void;
+}
 
+// Nav Item Component
+function NavItem({ href, children, onClick }: NavItemProps) {
+  const isActive = usePathname() === href;
   return (
     <li onClick={onClick} className="inline-block">
       <Link
@@ -29,25 +36,31 @@ function NavItem({ href, children, onClick }: { href: string; children: React.Re
   );
 }
 
-function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLogout: () => void }) {
+// Props for DesktopNavigation
+interface DesktopNavigationProps {
+  isLoggedIn: boolean;
+  onLogout: () => void;
+}
+
+// Desktop Navigation Component
+function DesktopNavigation({ isLoggedIn, onLogout }: DesktopNavigationProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close the profile dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: Event) => {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setIsProfileOpen(false);
       }
     };
-
+  
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, []);  
 
   return (
     <nav className="hidden md:flex">
-      <ul className="flex items-center space-x-8 text-md font-semibold text-white list-none m-0 p-0">
+      <ul className="flex items-center space-x-8 text-md font-semibold text-white">
         <NavItem href="/book">Book</NavItem>
         <NavItem href="/business-solutions">Business Solutions</NavItem>
         <NavItem href="/contact">Contact</NavItem>
@@ -55,7 +68,7 @@ function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLo
           <div className="relative inline-block" ref={profileRef}>
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center px-4 py-2 text-white transition"
+              className="flex items-center px-4 py-2 text-white"
             >
               Profile <ChevronDownIcon className="h-5 w-5 ml-2" />
             </button>
@@ -84,10 +97,7 @@ function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLo
             )}
           </div>
         ) : (
-          <Link
-            href="/login"
-            className="px-4 py-2 text-white rounded-md transition"
-          >
+          <Link href="/login" className="px-4 py-2 text-white rounded-md">
             Login
           </Link>
         )}
@@ -96,62 +106,52 @@ function DesktopNavigation({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLo
   );
 }
 
-function MobileNavigation({
-  isOpen,
-  onClose,
-  isLoggedIn,
-  onLogout,
-}: {
+// Props for MobileNavigation
+interface MobileNavigationProps {
   isOpen: boolean;
   onClose: () => void;
   isLoggedIn: boolean;
   onLogout: () => void;
-}) {
+}
+
+// Mobile Navigation Component
+function MobileNavigation({ isOpen, onClose, isLoggedIn, onLogout }: MobileNavigationProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
   const menuOptions = [
     { label: 'Book', value: '/book' },
     { label: 'Business Solutions', value: '/business-solutions' },
     { label: 'Contact', value: '/contact' },
-    ...(isLoggedIn ? [{ label: 'Dashboard', value: '/dashboard' }, { label: 'Logout', value: 'logout' }] : [{ label: 'Login', value: '/login' }])
+    ...(isLoggedIn
+      ? [{ label: 'Dashboard', value: '/dashboard' }, { label: 'Logout', value: 'logout' }]
+      : [{ label: 'Login', value: '/login' }]),
   ];
 
   const handleMenuSelect = (value: string) => {
-    if (value === 'logout') {
-      onLogout();
-    } else {
-      router.push(value);
-    }
+    if (value === 'logout') onLogout();
+    else router.push(value);
     onClose();
   };
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: Event) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         onClose();
       }
-    }
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen, onClose]);
-
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+  
   return (
     <div
       ref={menuRef}
-      className={`absolute top-16 right-0 mt-5 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-20 transition-transform ${
+      className={`absolute top-16 right-0 mt-5 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-20 ${
         isOpen ? 'block' : 'hidden'
       }`}
     >
-      <ul className="py-1 text-gray-800 list-none m-0 p-0">
+      <ul className="py-1 text-gray-800">
         {menuOptions.map((option) => (
           <li key={option.value}>
             <button
@@ -167,50 +167,36 @@ function MobileNavigation({
   );
 }
 
-
+// Header Component
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, setUser } = useUser();
-  const router = useRouter();
+  const { user, logout } = useUser();
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen((prev) => !prev);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  /** Remove cookies and redirect for logout **/
-  const handleLogout = () => {
-    setUser(null, null);
-    router.push('/');
-  };
+  const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
     <header className="sticky top-0 z-50 bg-[#19223E] shadow-md">
       <Container className="flex justify-between items-center">
         <div className="flex items-center py-4 md:py-8 space-x-8">
-          <Link href="/" passHref>
+          <Link href="/">
             <div className="relative w-44 md:w-80 h-24 cursor-pointer">
               <Image src={logo} alt="Southern Rental Cars Logo" layout="fill" objectFit="contain" priority />
             </div>
           </Link>
-          <DesktopNavigation isLoggedIn={!!user} onLogout={handleLogout} />
+          <DesktopNavigation isLoggedIn={!!user} onLogout={logout} />
         </div>
-
         <button
           onClick={toggleMobileMenu}
           className="md:hidden ml-auto text-white absolute top-12 right-4"
         >
           <Bars3Icon className="h-8 w-8" />
         </button>
-
         <MobileNavigation
           isOpen={isMobileMenuOpen}
           onClose={closeMobileMenu}
           isLoggedIn={!!user}
-          onLogout={handleLogout}
+          onLogout={logout}
         />
       </Container>
     </header>

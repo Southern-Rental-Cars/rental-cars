@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Payments from './page';
-import { fetchExtrasAvailability } from '@/lib/db/db';
 import { Vehicle } from '@/types/index'; // Adjusted to use the correct Vehicle type
 import Loader from '@/components/Loader';
-import { Extra } from '@prisma/client';
+import { useUser } from '@/components/contexts/UserContext';
 
 interface PaymentDataProviderProps {
   vehicle: Vehicle;
@@ -21,13 +20,30 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
   const [availability, setAvailability] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { logout } = useUser();
 
   useEffect(() => {
     // Fetch data if authenticated
     const fetchData = async () => {
       try {
-        const extrasAvailability = await fetchExtrasAvailability(startDateTime, endDateTime, vehicle.extras);
-        setAvailability(extrasAvailability);
+        const response = await fetch('/api/extras/availability', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            start_date: startDateTime,
+            end_date: endDateTime,
+            extras: vehicle.extras,
+          }),
+          credentials: 'include', // Ensures cookies are sent with the request
+          cache: 'no-store',
+        });
+        if (response.status == 401) {
+          logout();
+        }
+        const data = await response.json();
+        setAvailability(data);
       } catch (err: any) {
         console.error("Error fetching extras or availability: ", err);
         setError('Failed to load booking data. Please try again.');

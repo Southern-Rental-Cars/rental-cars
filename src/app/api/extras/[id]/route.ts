@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // Adjust the path to your prisma client import
+import prisma from '@/utils/prisma'; // Adjust the path to your prisma client import
 import { Prisma } from '@prisma/client';
 
 // Utility function to parse and validate the ID

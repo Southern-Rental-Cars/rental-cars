@@ -1,6 +1,6 @@
 // app/api/vehicle-images/route.ts
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // Ensure the path is correct for your Prisma client
+import prisma from '@/utils/prisma'; // Ensure the path is correct for your Prisma client
 
 // POST handler for adding a new vehicle image
 export async function POST(request: Request) {

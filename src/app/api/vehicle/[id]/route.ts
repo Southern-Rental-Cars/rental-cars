@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // Adjust the path to your prisma client
+import prisma from '@/utils/prisma'; // Adjust the path to your prisma client
+import { Prisma } from '@prisma/client';
 
 // GET /api/vehicles/:id - Fetch car details by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
@@ -74,7 +75,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   }
 }
 
-// put /api/vehicle/:id - Update a vehicle by ID
+// PUT /api/vehicle/:id - Update a vehicle by ID
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
@@ -91,7 +92,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     if (!existingVehicle) {
       return NextResponse.json({ error: 'Vehicle not found' }, { status: 404 });
     }
-    
+
     const body = await req.json();
 
     // Construct the `data` object dynamically
@@ -113,10 +114,11 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     if (body.thumbnail) data.thumbnail = body.thumbnail;
     if (body.faqs) data.faqs = body.faqs;
 
-    // For extras, handle separately to avoid overwriting other fields
-    if (body.extras && Array.isArray(body.extras) && body.extras.every(Number.isInteger)) {
+    // Handle `extras` field to overwrite existing relationships
+    if (Array.isArray(body.extras)) {
       data.extras = {
-        connect: body.extras.map((extraId: number) => ({ id: extraId })), // Connect extras without removing existing ones
+        // Disconnect all current extras
+        set: body.extras.map((extraId: number) => ({ id: extraId }))
       };
     }
 
@@ -126,9 +128,13 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       data,
     });
 
-    return NextResponse.json(null, { status: 204 });
-  } catch (err) {
-    console.error('Error updating vehicle:', err);
+    return new NextResponse(null, { status: 204 });
+  } catch (err: any) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      console.error('Prisma error:', err.message);
+    } else {
+      console.error('Unexpected error:', err);
+    }
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

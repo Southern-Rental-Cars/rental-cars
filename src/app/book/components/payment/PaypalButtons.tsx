@@ -98,7 +98,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
 
   // Handle PayPal payment approval
   const onApprove = async (data: any) => {
-    console.log("data: " + totalPrice);
     try {
       const response = await fetch(`/api/orders/${data.orderID}/capture`, {
         method: "POST",

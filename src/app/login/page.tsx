@@ -17,7 +17,7 @@ export default function AuthPage() {
         {/* Header */}
         <div className="text-center mb-4">
           <h3 className="text-sm font-semibold text-gray-500">
-            {isRegister ? 'Create an Account' : 'Log in to Your Account'}
+            {isRegister ? 'Create account' : 'Login'}
           </h3>
           <hr className="my-2" />
         </div>
@@ -36,9 +36,9 @@ export default function AuthPage() {
         </div>
         {/* Toggle Link */}
         <p className="mt-2 text-center text-gray-600">
-          {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
+          {isRegister ? 'Already have a account?' : "Don't have a account?"}{' '}
           <button onClick={toggleAuthForm} className="text-blue-600 hover:underline font-medium">
-            {isRegister ? 'Log in' : 'Sign up'}
+            {isRegister ? 'Login' : 'Create account'}
           </button>
         </p>
       </div>

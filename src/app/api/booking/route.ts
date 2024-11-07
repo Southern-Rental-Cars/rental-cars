@@ -1,14 +1,19 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // Adjust the path to your Prisma client if needed
+import prisma from '@/utils/prisma';
 
 /**
- * Handler for POST: Create a new booking
+ * Handler for POST: Create booking
  */
-export async function POST(req: Request) { 
+export async function POST(req: Request) {
   try {
+    // Retrieve user_id and role from custom headers set by middleware
+    const user_id = req.headers.get('x-user-id');
+    if (!user_id) {
+      return NextResponse.json({ message: 'Unauthorized: Missing user information' }, { status: 401 });
+    }
+
     const {
       vehicle_id,
-      user_id,
       start_date,
       end_date,
       total_price,
@@ -21,9 +26,9 @@ export async function POST(req: Request) {
     // Collect missing fields for validation
     const missingFields = getMissingFields({
       vehicle_id,
-      user_id,
       start_date,
       end_date,
+      total_price,
       paypal_order_id,
       paypal_transaction_id,
     });
@@ -41,7 +46,7 @@ export async function POST(req: Request) {
     // Create the booking in the database
     const booking = await createBooking({
       vehicle_id: parseInt(vehicle_id),
-      user_id: parseInt(user_id),
+      user_id: user_id,
       start_date,
       end_date,
       total_price: parseFloat(total_price),
@@ -62,15 +67,14 @@ export async function POST(req: Request) {
  * Handler for GET: Retrieve bookings for a specific user
  */
 export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const user_id = searchParams.get('user_id');
-
+  // Retrieve user_id from custom headers set by middleware
+  const user_id = req.headers.get('x-user-id');
   if (!user_id) {
-    return NextResponse.json({ error: 'Missing user_id' }, { status: 400 });
+    return NextResponse.json({ message: 'Unauthorized: Missing user information' }, { status: 401 });
   }
 
   try {
-    const bookings = await getBookingsForUser(parseInt(user_id));
+    const bookings = await getBookingsForUser(user_id);
 
     if (bookings.length === 0) {
       return NextResponse.json(
@@ -126,7 +130,7 @@ async function createBooking({
   is_paid
 }: {
   vehicle_id: number,
-  user_id: number,
+  user_id: string,
   start_date: string,
   end_date: string,
   total_price: number,
@@ -162,7 +166,7 @@ async function createBooking({
 /**
  * Helper function to retrieve bookings for a specific user
  */
-async function getBookingsForUser(user_id: number) {
+async function getBookingsForUser(user_id: string) {
   return await prisma.booking.findMany({
     where: { user_id },
     include: {
