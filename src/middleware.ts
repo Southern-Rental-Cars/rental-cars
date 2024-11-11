@@ -26,7 +26,6 @@ const customerAllowedRoutes = [
   { method: 'GET', path: /^\/api\/user(\/[^/]+)?\/?$/ },
   { method: 'DELETE', path: /^\/api\/user/ },
   { method: 'GET', path: /^\/dashboard\/?$/ },
-
 ];
 
 // Define public routes (accessible without authentication)
@@ -108,7 +107,6 @@ export async function middleware(request: NextRequest) {
 
   } catch (error: any) {
     console.log("TOKEN ERROR:", error);
-
     if (error.code === 'ERR_JWT_EXPIRED') {
       console.log("TOKEN EXPIRED");
       const refreshResponse = await fetch(GENERATE_NEW_TOKEN, {
