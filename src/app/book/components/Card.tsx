@@ -1,3 +1,5 @@
+// Card.tsx
+
 import Link from 'next/link'
 import clsx from 'clsx'
 
@@ -11,7 +13,7 @@ function ChevronRightIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }
 
 export function Card<T extends React.ElementType = 'div'>({
@@ -19,18 +21,16 @@ export function Card<T extends React.ElementType = 'div'>({
   className,
   children,
 }: Omit<React.ComponentPropsWithoutRef<T>, 'as' | 'className'> & {
-  as?: T
-  className?: string
+  as?: T;
+  className?: string;
 }) {
-  let Component = as ?? 'div'
+  const Component = as ?? 'div';
 
   return (
-    <Component
-      className={clsx(className, 'group relative flex flex-col items-start')}
-    >
+    <Component className={clsx(className, 'group relative flex flex-col items-start')}>
       {children}
     </Component>
-  )
+  );
 }
 
 Card.Link = function CardLink({
@@ -38,17 +38,10 @@ Card.Link = function CardLink({
   ...props
 }: React.ComponentPropsWithoutRef<typeof Link>) {
   return (
-    <>
-      <Link {...props} rel="noopener noreferrer" target="_blank">
-        <span
-          className="relative z-10 hover:text-blue-500
-        "
-        >
-          {children}
-        </span>
-      </Link>
-    </>
-  )
+    <Link {...props} rel="noopener noreferrer" target="_blank">
+      <span className="relative z-10 hover:text-blue-500">{children}</span>
+    </Link>
+  );
 }
 
 Card.Title = function CardTitle<T extends React.ElementType = 'h2'>({
@@ -56,38 +49,35 @@ Card.Title = function CardTitle<T extends React.ElementType = 'h2'>({
   href,
   children,
 }: Omit<React.ComponentPropsWithoutRef<T>, 'as' | 'href'> & {
-  as?: T
-  href?: string
+  as?: T;
+  href?: string;
 }) {
-  let Component = as ?? 'h2'
+  const Component = as ?? 'h2';
 
   return (
-    <Component className="text-base font-semibold tracking-tight text-zinc-800 dark:text-zinc-100">
+    <Component className="text-lg font-semibold tracking-tight text-zinc-800 dark:text-zinc-100">
       {href ? <Card.Link href={href}>{children}</Card.Link> : children}
     </Component>
-  )
+  );
 }
 
 Card.Description = function CardDescription({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <p className="relative z-10 text-sm text-zinc-600 dark:text-zinc-400">
+    <p className="text-sm text-gray-600 dark:text-gray-400">
       {children}
     </p>
-  )
+  );
 }
 
 Card.Cta = function CardCta({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      aria-hidden="true"
-      className="relative z-10 flex items-center text-sm font-medium text-blue-500"
-    >
+    <div className="text-blue-600 flex items-center text-sm font-semibold">
       {children}
-      <ChevronRightIcon className="ml-1 h-4 w-4 stroke-current" />
+      <ChevronRightIcon className="ml-1 h-4 w-4" />
     </div>
-  )
+  );
 }

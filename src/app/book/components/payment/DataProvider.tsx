@@ -23,14 +23,11 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
   const { logout } = useUser();
 
   useEffect(() => {
-    // Fetch data if authenticated
     const fetchData = async () => {
       try {
         const response = await fetch('/api/extras/availability', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             start_date: startDateTime,
             end_date: endDateTime,
@@ -39,21 +36,25 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
           credentials: 'include', // Ensures cookies are sent with the request
           cache: 'no-store',
         });
-        if (response.status == 401) {
-          logout();
+        
+        if (response.ok) {
+          const data = await response.json();
+          setAvailability(data);
+        } else if (response.status === 401) {
+          // Optionally, you could add a secondary check here to re-fetch data
+          setError('Authentication issue, please try again later.');
         }
-        const data = await response.json();
-        setAvailability(data);
-      } catch (err: any) {
-        console.error("Error fetching extras or availability: ", err);
+      } catch (err) {
+        console.error("Error fetching extras or availability:", err);
         setError('Failed to load booking data. Please try again.');
       } finally {
         setLoading(false);
       }
     };
-    
+  
     fetchData();
   }, [startDateTime, endDateTime, vehicle.extras]);
+  
 
   if (loading) {
     return <Loader />;

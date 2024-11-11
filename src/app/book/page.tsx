@@ -106,13 +106,12 @@ export default function Book() {
   return (
     <div className="flex flex-col items-center justify-center">
       <Dates onDateChange={handleDateChange} defaultStartDateTime={dateRange.startDateTime} defaultEndDateTime={dateRange.endDateTime} />
-      {/* Show loading spinner when fetching results */}
       {isLoading ? (
         <div className="mt-8">
           <Loader />
         </div>
       ) : searchCompleted && availableVehicles.length === 0 ? (
-        <p className="mt-8 text-red-600 text-lg font-semibold">Fleet is booked for these dates</p>
+        <p className="mt-8 text-red-600 text-lg font-semibold">Sorry, fleet is booked. Soon we will expand our fleet capacity.</p>
       ) : (
         <div className="mt-8 w-full max-w-6xl">
           <Grid vehicles={availableVehicles} onSelectVehicle={handleSelectVehicle} />

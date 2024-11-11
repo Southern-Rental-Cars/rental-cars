@@ -1,17 +1,21 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma';
+import { sendBookingConfirmationEmail } from '@/utils/verification/sendVerificationEmail';
 
 /**
  * Handler for POST: Create booking
  */
 export async function POST(req: Request) {
   try {
-    // Retrieve user_id and role from custom headers set by middleware
+    // Retrieve user_id from headers
     const user_id = req.headers.get('x-user-id');
+    const user_email = req.headers.get('x-user-email');  // If email is passed as a custom header
+
     if (!user_id) {
       return NextResponse.json({ message: 'Unauthorized: Missing user information' }, { status: 401 });
     }
 
+    // Extract body data
     const {
       vehicle_id,
       start_date,
@@ -23,7 +27,7 @@ export async function POST(req: Request) {
       is_paid
     } = await req.json();
 
-    // Collect missing fields for validation
+    // Validate required fields
     const missingFields = getMissingFields({
       vehicle_id,
       start_date,
@@ -34,21 +38,25 @@ export async function POST(req: Request) {
     });
 
     if (missingFields.length > 0) {
-      return NextResponse.json(
-        { error: `Missing required fields: ${missingFields.join(', ')}` },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: `Missing required fields: ${missingFields.join(', ')}` }, { status: 400 });
     }
 
-    // Validate booking dates
-    await validateBooking(vehicle_id, start_date, end_date);
+    // Validate and parse dates
+    const parsedStartDate = new Date(start_date);
+    const parsedEndDate = new Date(end_date);
+    if (isNaN(parsedStartDate.getTime()) || isNaN(parsedEndDate.getTime())) {
+      return NextResponse.json({ error: 'Invalid date format for start_date or end_date' }, { status: 400 });
+    }
 
-    // Create the booking in the database
+    // Check for booking conflicts
+    await validateBooking(vehicle_id, parsedStartDate, parsedEndDate);
+
+    // Create the booking
     const booking = await createBooking({
       vehicle_id: parseInt(vehicle_id),
-      user_id: user_id,
-      start_date,
-      end_date,
+      user_id,
+      start_date: parsedStartDate,
+      end_date: parsedEndDate,
       total_price: parseFloat(total_price),
       extras,
       paypal_order_id,
@@ -56,56 +64,36 @@ export async function POST(req: Request) {
       is_paid,
     });
 
+    // Send booking confirmation email
+    if (user_email) {
+      console.log("INSIDE user_email");
+      await sendBookingConfirmationEmail({
+        email: user_email,
+        startDate: parsedStartDate,
+        endDate: parsedEndDate,
+        vehicle: booking.vehicle,
+        extras: booking.bookingExtras,
+        totalPayment: total_price,
+        bookingId: booking.id,
+      });
+    }
+
     return NextResponse.json(booking, { status: 201 });
   } catch (error: any) {
     console.error('Error creating booking:', error);
-    return NextResponse.json({ error: error.message }, { status: 400 });
-  }
-}
-
-/**
- * Handler for GET: Retrieve bookings for a specific user
- */
-export async function GET(req: Request) {
-  // Retrieve user_id from custom headers set by middleware
-  const user_id = req.headers.get('x-user-id');
-  if (!user_id) {
-    return NextResponse.json({ message: 'Unauthorized: Missing user information' }, { status: 401 });
-  }
-
-  try {
-    const bookings = await getBookingsForUser(user_id);
-
-    if (bookings.length === 0) {
-      return NextResponse.json(
-        { message: 'No bookings found for this user.', bookings: [] },
-        { status: 200 }
-      );
-    }
-
-    return NextResponse.json(bookings, { status: 200 });
-  } catch (error: any) {
-    console.error('Error retrieving bookings:', error);
-    return NextResponse.json({ error: 'Failed to retrieve bookings' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create booking. Please try again later.' }, { status: 500 });
   }
 }
 
 /**
  * Helper function to validate booking dates and check for overlap
  */
-async function validateBooking(vehicle_id: number, start_date: string, end_date: string) {
-  const startDateObj = new Date(start_date);
-  const endDateObj = new Date(end_date);
-
-  if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
-    throw new Error('Invalid start or end date provided.');
-  }
-
+async function validateBooking(vehicle_id: number, start_date: Date, end_date: Date) {
   const bookingExists = await prisma.booking.findFirst({
     where: {
       vehicle_id,
       OR: [
-        { start_date: { lte: endDateObj }, end_date: { gte: startDateObj } },
+        { start_date: { lte: end_date }, end_date: { gte: start_date } },
       ],
     },
   });
@@ -129,22 +117,22 @@ async function createBooking({
   paypal_transaction_id,
   is_paid
 }: {
-  vehicle_id: number,
-  user_id: string,
-  start_date: string,
-  end_date: string,
-  total_price: number,
-  extras: any[],
-  paypal_order_id: string,
-  paypal_transaction_id: string,
-  is_paid: boolean,
+  vehicle_id: number;
+  user_id: string;
+  start_date: Date;
+  end_date: Date;
+  total_price: number;
+  extras: any[];
+  paypal_order_id: string;
+  paypal_transaction_id: string;
+  is_paid: boolean;
 }) {
   return await prisma.booking.create({
     data: {
       vehicle_id,
       user_id,
-      start_date: new Date(start_date),
-      end_date: new Date(end_date),
+      start_date,
+      end_date,
       total_price,
       paypal_order_id,
       paypal_transaction_id,
@@ -158,9 +146,28 @@ async function createBooking({
       },
     },
     include: {
+      vehicle: true,
       bookingExtras: true,
     },
   });
+}
+
+/**
+ * Handler for GET: Retrieve bookings for a specific user
+ */
+export async function GET(req: Request) {
+  const user_id = req.headers.get('x-user-id');
+  if (!user_id) {
+    return NextResponse.json({ message: 'Unauthorized: Missing user information' }, { status: 401 });
+  }
+
+  try {
+    const bookings = await getBookingsForUser(user_id);
+    return NextResponse.json(bookings.length ? bookings : [], { status: 200 });
+  } catch (error: any) {
+    console.error('Error retrieving bookings:', error);
+    return NextResponse.json({ error: 'Failed to retrieve bookings' }, { status: 500 });
+  }
 }
 
 /**

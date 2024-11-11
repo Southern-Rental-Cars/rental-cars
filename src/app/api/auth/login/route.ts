@@ -47,7 +47,6 @@ export async function POST(req: Request) {
             httpOnly: true,
             sameSite: 'strict',
             path: '/',
-            maxAge: 86400, // 1 day in seconds
             secure: process.env.NODE_ENV === 'production', // Use HTTPS in production only
         });
 

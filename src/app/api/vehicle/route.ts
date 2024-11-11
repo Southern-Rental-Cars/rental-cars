@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma'; // Prisma client import
 
-// POST Request: Create vehicle
+// Create vehicle
 //--------------------------------------------------------------
 export async function POST(req: Request) {
   try {
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
   }
 }
 
-// GET Request: Fetch all vehicles or available vehicles
+// Fetch all or available vehicles
 //--------------------------------------------------------------
 export async function GET(req: Request) {
   try {
@@ -65,10 +65,9 @@ export async function GET(req: Request) {
   }
 }
 
-// Services: Fetch Vehicles from Database
+// Fetch Vehicles
 //--------------------------------------------------------------
 
-// Fetch all (no date filter)
 async function fetchAllVehicles() {
   try {
     const vehicles = await prisma.vehicle.findMany({
@@ -81,7 +80,7 @@ async function fetchAllVehicles() {
   }
 }
 
-// Fetch vehicles with date
+// Fetch vehicles filtering by booking date
 async function fetchAvailableVehicles(startDate: string, endDate: string) {
   try {
     const vehicles = await prisma.vehicle.findMany({
@@ -106,9 +105,8 @@ async function fetchAvailableVehicles(startDate: string, endDate: string) {
   }
 }
 
-// Utility Function
-//--------------------------------------------------------------
 // Utility to centralize car field selection for consistency
+//--------------------------------------------------------------
 function vehicleSelectionFields() {
   return {
     id: true,

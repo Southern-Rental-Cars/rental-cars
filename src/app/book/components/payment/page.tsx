@@ -130,11 +130,11 @@ const Payment: React.FC<PaymentPageProps> = ({
         <h2 className="text-xl font-semibold text-gray-800 mb-2">Booking Summary</h2>
 
         {/* Date Information */}
-        <div className="flex justify-between text-sm text-gray-700">
+        <div className="flex justify-between text-md text-gray-700">
           <p>From:</p>
           <p className="font-medium">{formattedStartDate}</p>
         </div>
-        <div className="flex justify-between text-sm text-gray-700">
+        <div className="flex justify-between text-md text-gray-700">
           <p>To:</p>
           <p className="font-medium">{formattedEndDate}</p>
         </div>
@@ -151,7 +151,7 @@ const Payment: React.FC<PaymentPageProps> = ({
                     : extra.price_amount * quantity;
 
                 return (
-                  <li key={extra.id} className="flex justify-between text-sm text-gray-700">
+                  <li key={extra.id} className="flex justify-between text-md text-gray-700">
                     <span>{extra.name} ({extra.price_type === 'DAILY' ? `x ${days} days` : 'one-time'}):</span>
                     <span className="font-medium">+ ${extraCost.toFixed(2)}</span>
                   </li>
@@ -164,15 +164,15 @@ const Payment: React.FC<PaymentPageProps> = ({
         <hr className="my-4 border-gray-300" />
 
         {/* Booking Details */}
-        <div className="flex justify-between text-sm text-gray-700">
+        <div className="flex justify-between text-md text-gray-700">
           <p>Daily rate:</p>
           <p className="font-medium">${vehicle.price.toFixed(2)}</p>
         </div>
-        <div className="flex justify-between text-sm text-gray-700">
+        <div className="flex justify-between text-md text-gray-700">
           <p>Total days:</p>
           <p className="font-medium">x {days} {days === 1 ? 'day' : 'days'}</p>
         </div>
-        <div className="flex justify-between text-sm text-gray-700">
+        <div className="flex justify-between text-md text-gray-700">
           <p>Tax (8.25%):</p>
           <p className="font-medium">+ ${taxAmount.toFixed(2)}</p>
         </div>
@@ -183,7 +183,7 @@ const Payment: React.FC<PaymentPageProps> = ({
 
         {/* Total */}
         <div className="flex justify-between items-center">
-          <span className="font-bold text-lg text-gray-800">Total:</span>
+          <span className="font-bold text-lg">Total:</span>
           <span className="text-xl font-bold text-gray-900">${totalPrice.toFixed(2)}</span>
         </div>
       </div>

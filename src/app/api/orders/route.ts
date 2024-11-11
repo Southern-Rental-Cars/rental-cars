@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Client, Environment, LogLevel, OrdersController, ApiError, CheckoutPaymentIntent } from '@paypal/paypal-server-sdk';
 
-const PAYPAL_API = process.env.PAYPAL_API_URL || 'https://api-m.sandbox.paypal.com';
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || '';
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || '';
 
@@ -37,7 +36,6 @@ const createOrder = async (totalCost: string) => {
   };
 
   try {
-    // Making the API call and getting response from PayPal SDK
     const { body, ...httpResponse } = await ordersController.ordersCreate(payload);
     const jsonResponse = JSON.parse(body.toString());
 
@@ -50,15 +48,12 @@ const createOrder = async (totalCost: string) => {
     if (error instanceof ApiError) {
       throw new Error(error.message);
     }
-    // Handle unknown errors
     return {
       jsonResponse: { error: 'Unknown error occurred' },
       httpStatusCode: 500,
     };
   }
 };
-
-
 
 export async function POST(req: NextRequest) {
     const {totalCost} = await req.json();

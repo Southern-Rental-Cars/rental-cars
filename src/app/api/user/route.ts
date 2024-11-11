@@ -2,10 +2,9 @@ import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma';
 import { Role } from '@prisma/client';
 
-// GET /api/user - Returns the user based on the user_id in the headers
+// Get logged in user
 export async function GET(request: Request) {
   const user_id = request.headers.get('x-user-id');
-  console.log("user: "+ user_id);
   if (!user_id) {
     return NextResponse.json({ error: 'Unauthorized: Missing user information' }, { status: 401 });
   }
@@ -16,17 +15,7 @@ export async function GET(request: Request) {
       select: {
         id: true,
         email: true,
-        full_name: true,
-        date_of_birth: true,
-        role_access: true,
         phone: true,
-        street_address: true,
-        zip_code: true,
-        license_city: true,
-        license_state: true,
-        license_country: true,
-        license_number: true,
-        license_expiration: true,
         license_front_img: true,
         license_back_img: true,
       },
@@ -42,7 +31,7 @@ export async function GET(request: Request) {
   }
 }
 
-// PUT /api/user - Updates a user's fields based on the user_id in the headers
+// Updates logged in user profile data
 export async function PUT(req: Request) {
   const user_id = req.headers.get('x-user-id');
   if (!user_id) {
@@ -51,7 +40,7 @@ export async function PUT(req: Request) {
 
   try {
     const data = await req.json();
-    // Ensure role_access is in the correct format
+
     if (data.role_access) {
       data.role_access = data.role_access === 'admin' ? Role.admin : Role.customer;
     }
@@ -69,7 +58,7 @@ export async function PUT(req: Request) {
   }
 }
 
-// DELETE /api/user - Deletes a user based on the user_id in the headers
+// Deletes logged in user
 export async function DELETE(req: Request) {
   const user_id = req.headers.get('x-user-id');
   if (!user_id) {

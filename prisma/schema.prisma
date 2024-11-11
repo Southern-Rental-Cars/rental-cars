@@ -52,8 +52,8 @@ model BookingExtra {
   id         String    @id @default(uuid())
   booking_id String
   extra_id   Int
-  quantity   Int
   extra_name String?
+  quantity   Int
 
   booking    Booking @relation(fields: [booking_id], references: [id], onDelete: Cascade)
   extra      Extra   @relation(fields: [extra_id], references: [id], onDelete: Cascade)

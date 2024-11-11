@@ -46,8 +46,9 @@ export interface Booking {
   start_date: string;
   end_date: string;
   status: string;
-  total_cost: number;
+  total_price: number;
   booking_extras: BookingExtras[];
+  currency: string;
 }
 
 // Define a role access type with only "customer" and "admin" as possible values
@@ -57,15 +58,18 @@ export interface User {
   id: number;
   full_name: string;
   email: string;
-  date_of_birth?: string;
+  date_of_birth?: Date;
   role_access?: RoleAccess;  // Updated to use RoleAccess type
   phone?: string;
   street_address?: string;
   zip_code?: string;
-  country?: string | null;
   license_number?: string;
   license_state?: string;
-  license_expiration?: string;
+  license_city?: string;
+  license_country?: string;
+  license_expiration?: Date;
+  license_front_img?: string;
+  license_back_img?: string;
 }
 
 export interface Extra {

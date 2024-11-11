@@ -159,11 +159,11 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
           <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-3">Booking Summary</h2>
             {/* Dates */}
-            <div className="flex justify-between text-gray-700 text-sm">
+            <div className="flex justify-between text-gray-700 text-md">
               <span> From:</span>
               <span className="font-medium">{formattedStartDate}</span>
             </div>
-            <div className="flex justify-between text-gray-700 text-sm">
+            <div className="flex justify-between text-gray-700 text-md">
               <span> To: </span>
               <span className="font-medium">{formattedEndDate}</span>
             </div>
@@ -173,19 +173,19 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
             <hr className="my-3" />
 
             {/* Daily Rate */}
-            <div className="flex justify-between text-gray-700 text-sm">
+            <div className="flex justify-between text-gray-700 text-md">
               <span>Daily rate:</span>
               <span className="font-medium">${vehicle.price}</span>
             </div>
             
             {/* Total Days */}
-            <div className="flex justify-between text-gray-700 text-sm">
+            <div className="flex justify-between text-gray-700 text-md">
               <span>Total days:</span>
               <span className="font-medium">x {days} {days > 1 ? 'days' : 'day'}</span>
             </div>
 
             {/* Tax */}
-            <div className="flex justify-between text-gray-700 text-sm">
+            <div className="flex justify-between text-gray-700 text-md">
               <span>Tax (8.25%):</span>
               <span className="font-medium">+ ${tax.toFixed(2)}</span>
             </div>

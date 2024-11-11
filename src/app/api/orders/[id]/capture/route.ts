@@ -45,8 +45,6 @@ const captureOrder = async (orderID: string) => {
             httpStatusCode: error.statusCode || 500 
         };
         }
-        //console.log(error);
-
         return { 
             jsonResponse: { error: "Unknown error occurred during order capture." }, 
             httpStatusCode: 500

@@ -47,10 +47,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-// DELETE handler to cancel a booking (NOT USED)
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const id = params.id;
-
   try {
     // Find the booking with associated extras
     const booking = await prisma.booking.findUnique({
@@ -63,12 +61,15 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     // Increment available quantity for each extra in the booking
-    await prisma.$transaction(async (transaction) => {
+    /*await prisma.$transaction(async (transaction) => {
       await incrementAvailableQuantity(transaction, booking.bookingExtras);
-      
       await transaction.booking.delete({
         where: { id },
       });
+    });*/
+
+    await prisma.booking.delete({
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Booking deleted successfully' }, { status: 200 });
