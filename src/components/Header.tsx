@@ -13,27 +13,37 @@ function NavItem({
   href,
   children,
   onClick,
+  disabled = false,
 }: {
   href: string
   children: React.ReactNode
   onClick?: () => void
+  disabled?: boolean
 }) {
-  let isActive = usePathname() === href
+  const isActive = usePathname() === href
 
   return (
-    <li onClick={onClick}>
+    <li onClick={onClick} className="relative group">
       <Link
-        href={href}
+        href={disabled ? "#" : href}
         className={clsx(
           'relative block px-3 py-2 transition',
           isActive ? 'text-blue-600' : 'hover:text-blue-600',
+          disabled && 'text-gray-400 cursor-not-allowed'
         )}
+        onClick={(e) => disabled && e.preventDefault()}
       >
         {children}
         {isActive && (
           <span className="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-blue-500/0 via-blue-500/40 to-blue-500/0" />
         )}
       </Link>
+      {/* Tooltip for 'Coming Soon' */}
+      {disabled && (
+        <span className="absolute left-0 -bottom-6 w-full text-center text-xs font-semibold text-white bg-gray-700 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+          Coming Soon
+        </span>
+      )}
     </li>
   )
 }
@@ -42,7 +52,7 @@ function DesktopNavigation() {
   return (
     <nav className="hidden md:flex">
       <ul className="text-md flex space-x-6 font-semibold text-white">
-        {/* <NavItem href="/vehicles"> Book Vehicle </NavItem> */}
+        <NavItem href="/vehicles" disabled>Book Vehicle</NavItem>
         <NavItem href="/business-solutions">Business Solutions</NavItem>
         <NavItem href="/contact">Contact</NavItem>
       </ul>
@@ -85,13 +95,9 @@ function MobileNavigation({
       }`}
     >
       <ul className="py-1 text-white">
-        {/* <NavItem href="/vehicles" onClick={onClose}>Book Vehicle</NavItem> */}
-        <NavItem href="/business-solutions" onClick={onClose}>
-          Business Solutions
-        </NavItem>
-        <NavItem href="/contact" onClick={onClose}>
-          Contact
-        </NavItem>
+        <NavItem href="/vehicles" onClick={onClose} disabled>Book Vehicle</NavItem>
+        <NavItem href="/business-solutions" onClick={onClose}>Business Solutions</NavItem>
+        <NavItem href="/contact" onClick={onClose}>Contact</NavItem>
       </ul>
     </div>
   )
@@ -116,14 +122,12 @@ export function Header() {
           {/* Clickable Logo Image */}
           <Link href="/" passHref>
             <div className="relative h-24 w-44 cursor-pointer md:w-80">
-              {' '}
-              {/* Added cursor-pointer for better UX */}
               <Image
-                src={logo} // Adjusted the path based on your directory structure
+                src={logo}
                 alt="Southern Rental Cars Logo"
                 layout="fill"
                 objectFit="contain"
-                priority // Prioritize loading for branding
+                priority
               />
             </div>
           </Link>
