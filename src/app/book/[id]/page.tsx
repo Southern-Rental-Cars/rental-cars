@@ -31,18 +31,27 @@ const Confirmation = async ({ params }: ConfirmationProps) => {
   const formattedStartDate = format(new Date(booking.start_date), 'EEE MMM do, hh:mm a');
   const formattedEndDate = format(new Date(booking.end_date), 'EEE MMM do, hh:mm a');
 
+  // Delivery Information
+  const isDelivery = booking.delivery_required;
+  const deliveryInfo = isDelivery
+    ? booking.delivery_type === 'local'
+      ? { type: 'Local Delivery', address: booking.delivery_address }
+      : { type: 'IAH Airport Delivery', address: 'George Bush Intercontinental Airport, 2800 N Terminal Rd, Houston, TX 77032' }
+    : null;
+
   return (
-    <div className="flex justify-center bg-gray-50 px-4 pt-8 pb-4 md:px-6 lg:pt-12 lg:pb-6 lg:px-12 min-h-screen">
-      <div className="w-full max-w-lg md:max-w-2xl space-y-6">
+    <div className="flex flex-col items-center bg-gray-50 px-4 pt-10 pb-6 md:px-8 lg:px-12 min-h-screen">
+      <div className="w-full max-w-2xl space-y-8">
         {/* Header with Logo */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mt-4 md:mt-0">Booking Confirmed!</h1>
-          <Image src={southernLogo} alt="Southern Car Rentals Logo" width={80} height={24} />
+        <div className="text-center">
+          <h1 className="text-3xl font-extrabold text-gray-800">Booking Confirmed!</h1>
+          <p className="text-gray-600 mt-2">Thank you for choosing Southern Rental Cars.</p>
+          <Image src={southernLogo} alt="Southern Car Rentals Logo" width={100} height={30} className="mx-auto mt-4" />
         </div>
 
         {/* Vehicle Card */}
         <Card title="Vehicle">
-          <div className="w-full h-48 md:h-60 rounded-lg overflow-hidden mb-4">
+          <div className="w-full h-56 md:h-64 rounded-lg overflow-hidden mb-4">
             <Image
               src={vehicle.thumbnail}
               alt={`${vehicleName} Image`}
@@ -52,32 +61,43 @@ const Confirmation = async ({ params }: ConfirmationProps) => {
               className="object-cover rounded-lg"
             />
           </div>
-          <p className="text-lg font-semibold text-gray-900">{vehicleName}</p>
-          <p className="text-gray-700 mb-4">{vehicle.short_description}</p>
-          <ul className="text-gray-700 space-y-1">
-            <li><span className="font-semibold">Doors:</span> {vehicle.num_doors}</li>
-            <li><span className="font-semibold">Seats:</span> {vehicle.num_seats}</li>
-            <li><span className="font-semibold">Gas Type:</span> {vehicle.gas_type}</li>
-            <li><span className="font-semibold">MPG:</span> {vehicle.mpg}</li>
-          </ul>
+          <p className="text-lg font-semibold text-gray-900 mb-2">{vehicleName}</p>
+          <div className="grid grid-cols-2 gap-y-1 text-gray-700">
+            <div><span className="font-semibold">Doors:</span> {vehicle.num_doors}</div>
+            <div><span className="font-semibold">Seats:</span> {vehicle.num_seats}</div>
+            <div><span className="font-semibold">Gas Type:</span> {vehicle.gas_type}</div>
+            <div><span className="font-semibold">MPG:</span> {vehicle.mpg}</div>
+          </div>
         </Card>
 
         {/* Dates Card */}
-        <Card title="Dates">
-          <p className="text-gray-700">
-            <span className="font-semibold">Start:</span> {formattedStartDate}
-          </p>
-          <p className="text-gray-700">
-            <span className="font-semibold">End:</span> {formattedEndDate}
-          </p>
+        <Card title="Rental Dates">
+          <div className="flex flex-col space-y-1 text-gray-700">
+            <p><span className="font-semibold">Start:</span> {formattedStartDate}</p>
+            <p><span className="font-semibold">End:</span> {formattedEndDate}</p>
+          </div>
         </Card>
 
         {/* Driver Card */}
-        <Card title="Driver">
+        <Card title="Driver Information">
           <p className="text-gray-700">
             <span className="font-semibold">Email:</span> {user.email}
           </p>
         </Card>
+
+        {/* Delivery Information Card */}
+        {isDelivery && (
+          <Card title="Delivery Details">
+            <p className="text-gray-700 mb-2">
+              <span className="font-semibold">Delivery Type:</span> {deliveryInfo?.type}
+            </p>
+            {deliveryInfo?.address && (
+              <p className="text-gray-700">
+                <span className="font-semibold">Delivery Address:</span> {deliveryInfo.address}
+              </p>
+            )}
+          </Card>
+        )}
 
         {/* Extras Card */}
         <Card title="Extras">
@@ -102,9 +122,9 @@ const Confirmation = async ({ params }: ConfirmationProps) => {
               <span className="font-semibold">Transaction ID:</span> {booking.paypal_transaction_id}
             </p>
           )}
-          <div className="flex justify-between">
-            <span className="font-semibold text-lg text-gray-900">Total paid:</span>
-            <span className="text-lg font-bold text-gray-900">${parseFloat(booking.total_price).toFixed(2)}</span>
+          <div className="flex justify-between text-lg font-semibold text-gray-900 mt-2">
+            <span>Total Paid:</span>
+            <span className="text-lg font-bold">${parseFloat(booking.total_price).toFixed(2)}</span>
           </div>
         </Card>
       </div>
@@ -112,9 +132,9 @@ const Confirmation = async ({ params }: ConfirmationProps) => {
   );
 };
 
-// Reusable Card component for each section with gray border
+// Reusable Card component
 const Card = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
+  <div className="bg-white border border-gray-200 rounded-lg p-6">
     <h2 className="text-lg font-semibold text-gray-800 mb-3">{title}</h2>
     <div className="border-t border-gray-300 mb-4"></div>
     {children}

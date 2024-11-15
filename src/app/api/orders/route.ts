@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Client, Environment, LogLevel, OrdersController, ApiError, CheckoutPaymentIntent } from '@paypal/paypal-server-sdk';
+import { Client, Environment, LogLevel, OrdersController, ApiError, CheckoutPaymentIntent, StoreInVaultInstruction, CardVerificationMethod } from '@paypal/paypal-server-sdk';
 
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || '';
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || '';
@@ -19,18 +19,30 @@ const client = new Client({
 
 const ordersController = new OrdersController(client);
 
-const createOrder = async (totalCost: string) => {
+const createOrder = async (totalCost: string, saveCard: boolean) => {
   const payload = {
     body: {
       intent: CheckoutPaymentIntent.CAPTURE,
       purchaseUnits: [
         {
           amount: {
-            currencyCode: 'USD', // Corrected format
+            currencyCode: 'USD',
             value: totalCost,
           },
         },
       ],
+      paymentSource: {
+        card: {
+          attributes: {
+            vault: {
+              storeInVault: StoreInVaultInstruction.ONSUCCESS
+            },
+            verification: {
+              method: CardVerificationMethod.SCAALWAYS
+            }
+          }
+        },
+      },
     },
     prefer: 'return=minimal',
   };
@@ -43,7 +55,6 @@ const createOrder = async (totalCost: string) => {
       jsonResponse,
       httpStatusCode: httpResponse.statusCode,
     };
-
   } catch (error) {
     if (error instanceof ApiError) {
       throw new Error(error.message);
@@ -55,10 +66,13 @@ const createOrder = async (totalCost: string) => {
   }
 };
 
+
 export async function POST(req: NextRequest) {
-    const {totalCost} = await req.json();
+    const {totalCost, saveCard} = await req.json();
     try {
-        const { jsonResponse, httpStatusCode } = await createOrder(totalCost);
+        const { jsonResponse, httpStatusCode } = await createOrder(totalCost, saveCard);
+        console.log("Response JSON:", JSON.stringify(jsonResponse, null, 2));
+
         return NextResponse.json(jsonResponse, { status: httpStatusCode });
     } catch (error) {
         console.error('Failed to create order:', error);

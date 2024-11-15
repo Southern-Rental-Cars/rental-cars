@@ -41,8 +41,8 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
           const data = await response.json();
           setAvailability(data);
         } else if (response.status === 401) {
-          // Optionally, you could add a secondary check here to re-fetch data
-          setError('Authentication issue, please try again later.');
+          // TODO Optionally, you could add a secondary check here to re-fetch data
+          logout();
         }
       } catch (err) {
         console.error("Error fetching extras or availability:", err);

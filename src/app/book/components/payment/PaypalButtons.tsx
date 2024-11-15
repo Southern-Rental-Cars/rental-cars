@@ -11,15 +11,14 @@ import {
 } from "@paypal/react-paypal-js";
 
 interface PaypalButtonsProps {
-    totalPrice: number; // Define the totalPrice prop
-    onPaymentSuccess: (paypalData: {
-      paypal_order_id: string;
-      paypal_transaction_id: string;
-      is_paid: boolean;
-    }) => void;
+  totalPrice: number;
+  onPaymentSuccess: (paypalData: {
+    paypal_order_id: string;
+    paypal_transaction_id: string;
+    is_paid: boolean;
+  }) => void;
 }
 
-// PayPal configuration
 const paypalConfig = {
   clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
   components: "buttons,card-fields",
@@ -30,26 +29,26 @@ const paypalConfig = {
   "data-sdk-integration-source": "developer-studio",
 };
 
-// Custom style for card fields
 const cardFieldStyle = {
-    input: {
-      "font-size": "16px", // This corresponds to text-base in Tailwind
-      color: "#333", // Corresponds to text-gray-800 in Tailwind
-      padding: "8px", // p-2 in Tailwind
-      "border-radius": "8px", // rounded-lg in Tailwind
-    },
-    ".invalid": {
-      color: "red", // text-red-500 in Tailwind
-    },
-    ".paypal-number-field": {
-      "font-size": "18px", // text-lg in Tailwind
-      color: "#111", // text-gray-800 in Tailwind
-    },
-  };
+  input: {
+    "font-size": "16px",
+    color: "#333",
+    padding: "8px",
+    "border-radius": "8px",
+  },
+  ".invalid": {
+    color: "red",
+  },
+  ".paypal-number-field": {
+    "font-size": "18px",
+    color: "#111",
+  },
+};
 
 const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSuccess }) => {
   const [isPaying, setIsPaying] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Credit/Debit");
+  const [saveCard, setSaveCard] = useState(false); // State for the save card checkbox
   const [billingAddress, setBillingAddress] = useState({
     addressLine1: "",
     addressLine2: "",
@@ -59,7 +58,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
     postalCode: "",
   });
 
-  // Handle billing address changes
   const handleBillingAddressChange = (field: string, value: string) => {
     setBillingAddress((prevAddress) => ({
       ...prevAddress,
@@ -67,7 +65,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
     }));
   };
 
-  // Create PayPal order
   const createOrder = async () => {
     try {
       const response = await fetch("/api/orders", {
@@ -77,10 +74,12 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
         },
         body: JSON.stringify({
           totalCost: totalPrice.toFixed(2),
+          saveCard, // Pass the checkbox value to the server
         }),
       });
 
       const orderData = await response.json();
+      console.log(orderData);
       if (orderData.id) {
         return orderData.id;
       } else {
@@ -96,7 +95,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
     }
   };
 
-  // Handle PayPal payment approval
   const onApprove = async (data: any) => {
     try {
       const response = await fetch(`/api/orders/${data.orderID}/capture`, {
@@ -106,6 +104,7 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
         },
       });
       const orderData = await response.json();
+      console.log(orderData);
       const transaction =
         orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
         orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
@@ -113,29 +112,24 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
         const errorMessage = `Transaction ${transaction?.status}: ${transaction?.id}`;
         throw new Error(errorMessage);
       }
-      // Collect PayPal transaction data
       const paypalData = {
         paypal_order_id: data.orderID,
         paypal_transaction_id: transaction.id,
         is_paid: transaction.status === "COMPLETED",
       };
-      // Call the callback to notify the parent component of payment success
       onPaymentSuccess(paypalData);
     } catch (error) {
       console.error("Transaction approval error:", error);
     }
   };
-  
-  // Handle PayPal errors
+
   const onError = (error: any) => {
     console.error("PayPal error:", error);
   };
 
   return (
     <PayPalScriptProvider options={paypalConfig}>
-      {/* Container with consistent width */}
       <div className="bg-white rounded-lg">
-        {/* Payment Method Selection */}
         <div className="flex mb-3 space-x-6">
           <PaymentRadioOption
             label="Credit/Debit"
@@ -150,7 +144,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
             onChange={setPaymentMethod}
           />
         </div>
-        {/* Consistent width for Credit Card and PayPal */}
         <div className="w-full">
           {paymentMethod === "Credit/Debit" && (
             <PayPalCardFieldsProvider createOrder={createOrder} onApprove={onApprove} onError={onError} style={cardFieldStyle}>
@@ -161,27 +154,34 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
                   <PayPalCVVField/>
                 </div>
                 <PayPalNameField />
-                {/* Billing Address */}
                 <div className="grid grid-cols-2 gap-4">
-                <input
-                  className="border border-gray-400 rounded-lg p-2 ml-1 placeholder-gray-600"
-                  type="text"
-                  placeholder="Address line"
-                  onChange={(e) => handleBillingAddressChange("addressLine1", e.target.value)}
+                  <input
+                    className="border border-gray-400 rounded-lg p-2 ml-1 placeholder-gray-600"
+                    type="text"
+                    placeholder="Address line"
+                    onChange={(e) => handleBillingAddressChange("addressLine1", e.target.value)}
                   />
-                <input
-                  className="border border-gray-400 rounded-lg p-2 mr-1 placeholder-gray-600"
-                  type="text"
-                  placeholder="Postal code"
-                  onChange={(e) => handleBillingAddressChange("postalCode", e.target.value)}
-                />
+                  <input
+                    className="border border-gray-400 rounded-lg p-2 mr-1 placeholder-gray-600"
+                    type="text"
+                    placeholder="Postal code"
+                    onChange={(e) => handleBillingAddressChange("postalCode", e.target.value)}
+                  />
+                </div>
+                <div className="mt-4">
+                  <input
+                    type="checkbox"
+                    id="save"
+                    name="save"
+                    checked={saveCard}
+                    onChange={() => setSaveCard(!saveCard)}
+                  />
+                  <label htmlFor="save" className="ml-2">Save your card</label>
                 </div>
               </div>
-              {/* Submit Payment Button */}
               <SubmitPaymentButton isPaying={isPaying} setIsPaying={setIsPaying} billingAddress={billingAddress} />
             </PayPalCardFieldsProvider>
           )}
-          {/* PayPal Payment Buttons */}
           {paymentMethod === "PayPal" && (
             <div className="mt-6">
               <PayPalButtons
@@ -198,7 +198,6 @@ const PaypalButtons: React.FC<PaypalButtonsProps> = ({ totalPrice, onPaymentSucc
   );
 };
 
-// Payment Radio Option Component
 const PaymentRadioOption: React.FC<{ label: string; value: string; selectedValue: string; onChange: (value: string) => void; }> = ({ label, value, selectedValue, onChange }) => (
   <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
     <input
@@ -213,7 +212,6 @@ const PaymentRadioOption: React.FC<{ label: string; value: string; selectedValue
   </label>
 );
 
-// Submit Payment Button Component
 const SubmitPaymentButton: React.FC<{
   isPaying: boolean;
   setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
@@ -237,12 +235,13 @@ const SubmitPaymentButton: React.FC<{
       console.error("Error submitting PayPal card fields:", err);
     });
   };
-  
+
   return (
     <button
       className={`mt-6 w-full p-3 bg-blue-600 text-white rounded-lg ${isPaying ? "opacity-50" : ""}`}
       onClick={handleClick}
-      disabled={isPaying} >
+      disabled={isPaying}
+    >
       {isPaying ? "Processing..." : "Confirm Booking"}
     </button>
   );

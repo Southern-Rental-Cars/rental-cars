@@ -56,7 +56,7 @@ export async function POST(req: Request) {
         console.error('Error during login:', error);
         return NextResponse.json(
             {
-                message: 'Server error occurred. Contact company or try again.'
+                message: 'Server error occurred. Please try again.'
             },
             { status: 500 }
         );

@@ -1,5 +1,3 @@
-// utils/sendEmail.ts
-
 import { BookingExtra, Vehicle } from '@prisma/client';
 import sgMail from '@sendgrid/mail';
 
@@ -28,26 +26,32 @@ export async function sendBookingConfirmationEmail({
   extras,
   totalPayment,
   bookingId,
+  delivery_required,
+  delivery_type,
+  delivery_address,
 }: {
   email: string;
   startDate: Date;
   endDate: Date;
-  vehicle: Vehicle;
-  extras: BookingExtra[];
+  vehicle: any;
+  extras: any[];
   totalPayment: number;
   bookingId: string;
+  delivery_required: boolean;
+  delivery_type: string | null;
+  delivery_address?: string | null;
 }) {
-  // Generate extras list HTML
   const extrasHtml = extras.length
-    ? extras
-        .map(
-          (extra) => `<li>${extra.extra_name} (x${extra.quantity})</li>`
-        )
-        .join('')
+    ? extras.map(extra => `<li>${extra.extra_name} (x${extra.quantity})</li>`).join('')
     : 'No extras added';
 
-  // Construct the logo URL dynamically
-  const logoUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/transparent_southern_logo_3.png`;
+  const deliveryInfo = delivery_required
+    ? delivery_type === 'local'
+      ? `<p><strong>Delivery Type:</strong> Local Delivery (within 10 miles)</p>
+         <p><strong>Delivery Address:</strong> ${delivery_address}</p>`
+      : `<p><strong>Delivery Type:</strong> Delivery to IAH Airport</p>
+         <p><strong>Delivery Address:</strong> George Bush Intercontinental Airport, 2800 N Terminal Rd, Houston, TX 77032</p>`
+    : `<p>Pickup Location: 16753 Donwick Dr Suite A12, The Woodlands, TX 77385</p>`;
 
   const msg = {
     to: email,
@@ -73,6 +77,8 @@ export async function sendBookingConfirmationEmail({
             <h3>Total Payment:</h3>
             <p><strong>$${totalPayment}</strong></p>
 
+            ${deliveryInfo}
+
             <p style="margin-top: 20px;">We look forward to serving you!</p>
             <a href="${process.env.API_BASE_URL}/book/${bookingId}" style="display: inline-block; padding: 10px 20px; color: #ffffff; background-color: #24364D; border-radius: 5px; text-decoration: none; margin-top: 20px;">View Booking Confirmation</a>
           </div>
@@ -81,6 +87,7 @@ export async function sendBookingConfirmationEmail({
     `,
   };
 
-  console.log("SENDING EMAIL");
   await sgMail.send(msg);
 }
+
+

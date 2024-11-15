@@ -1,13 +1,10 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import Extras from '../extras/box';
 import { useRouter } from 'next/navigation';
 import PaypalButtons from './PaypalButtons';
 import { useUser } from '@/components/contexts/UserContext';
-import { Vehicle } from '@/types';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import { Extra } from '@/types/index';
+import { Vehicle, Extra } from '@/types';
+import { FaArrowLeft } from 'react-icons/fa';
 import { differenceInDays, format } from 'date-fns';
 
 interface PaypalData {
@@ -37,6 +34,18 @@ const Payment: React.FC<PaymentPageProps> = ({
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [taxAmount, setTaxAmount] = useState<number>(0);
   const [days, setDays] = useState<number>(0);
+
+  const [deliverySelected, setDeliverySelected] = useState(false);
+  const [deliveryOption, setDeliveryOption] = useState<'local' | 'IAH' | null>(null);
+
+  // Address Fields
+  const [streetAddress, setStreetAddress] = useState('');
+  const [apartment, setApartment] = useState('');
+  const [city, setCity] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [isAddressSaved, setIsAddressSaved] = useState(false);
+  const [formattedAddress, setFormattedAddress] = useState('');
+
   const { user } = useUser();
   const userId = user?.id;
   const router = useRouter();
@@ -49,32 +58,59 @@ const Payment: React.FC<PaymentPageProps> = ({
 
     const vehicleSubtotal = vehicle.price * calculatedDays;
     const extrasCost = selectedExtras.reduce((total, extra) => {
-      const cost =
-        extra.price_type === 'DAILY'
-          ? extra.price_amount * (extra.quantity || 1) * calculatedDays
-          : extra.price_amount * (extra.quantity || 1);
+      const cost = extra.price_type === 'DAILY'
+        ? extra.price_amount * (extra.quantity || 1) * calculatedDays
+        : extra.price_amount * (extra.quantity || 1);
       return total + cost;
     }, 0);
 
-    const updatedSubtotal = vehicleSubtotal + extrasCost;
+    const deliveryCost = deliverySelected
+      ? (deliveryOption === 'local' ? 20 : deliveryOption === 'IAH' ? 120 : 0)
+      : 0;
+
+    const updatedSubtotal = vehicleSubtotal + extrasCost + deliveryCost;
     const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
     setTaxAmount(updatedTax);
 
-    const updatedTotalPrice = updatedSubtotal + updatedTax;
-    setTotalPrice(parseFloat(updatedTotalPrice.toFixed(2)));
+    setTotalPrice(parseFloat((updatedSubtotal + updatedTax).toFixed(2)));
   };
 
   useEffect(() => {
     calculateTotals();
-  }, [startDate, endDate, selectedExtras]);
+  }, [startDate, endDate, selectedExtras, deliveryOption, deliverySelected, isAddressSaved]);
 
   const handleAddToCart = (extra: Extra, quantity: number) => {
-    setSelectedExtras((prev) => {
-      const updatedExtras = prev.filter((item) => item.id !== extra.id);
-      if (quantity > 0) updatedExtras.push({ ...extra, quantity });
+    setSelectedExtras((prevExtras) => {
+      const updatedExtras = prevExtras.filter((item) => item.id !== extra.id);
+      if (quantity > 0) {
+        updatedExtras.push({ ...extra, quantity });
+      }
       return updatedExtras;
     });
   };
+
+  const handleDeliveryChange = (option: 'local' | 'IAH' | null) => {
+    setDeliveryOption(option);
+    setStreetAddress('');
+    setApartment('');
+    setCity('');
+    setZipCode('');
+    setIsAddressSaved(false);
+    setFormattedAddress('');
+  };
+
+  const handleSaveAddress = () => {
+    if (streetAddress && city && zipCode) {
+      const address = `${streetAddress}${apartment ? ', ' + apartment : ''}, ${city}, TX ${zipCode}`;
+      setFormattedAddress(address);
+      setIsAddressSaved(true);
+    }
+  };
+
+  const isPaymentEnabled = !(
+    deliveryOption === 'local' &&
+    (!isAddressSaved)
+  );
 
   const handlePaymentSuccess = async (paypalData: PaypalData) => {
     const payload = {
@@ -87,20 +123,23 @@ const Payment: React.FC<PaymentPageProps> = ({
       paypal_order_id: paypalData.paypal_order_id,
       paypal_transaction_id: paypalData.paypal_transaction_id,
       is_paid: paypalData.is_paid,
+      delivery_required: deliverySelected,
+      delivery_type: deliveryOption,
+      delivery_cost: deliveryOption === 'local' ? 20 : deliveryOption === 'IAH' ? 120 : 0,
+      delivery_address: deliveryOption === 'local' && isAddressSaved ? formattedAddress : null,
     };
+
     try {
       const response = await fetch('/api/booking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload), 
-        credentials: 'include', // Ensures cookies are sent with the request
+        body: JSON.stringify(payload),
+        credentials: 'include',
       });
 
-      // Parse JSON response
       const responseData = await response.json();
-
       if (responseData?.id) {
         router.push(`/book/${responseData.id}`);
       } else {
@@ -138,6 +177,122 @@ const Payment: React.FC<PaymentPageProps> = ({
           <p>To:</p>
           <p className="font-medium">{formattedEndDate}</p>
         </div>
+
+        {/* Delivery Option */}
+        <div className="my-4">
+          <label className="flex items-center text-md text-gray-700">
+            <input
+              type="checkbox"
+              className="mr-2"
+              checked={deliverySelected}
+              onChange={() => {
+                setDeliverySelected(!deliverySelected);
+                handleDeliveryChange(null);
+              }}
+            />
+            Delivery Required
+          </label>
+
+          {deliverySelected && (
+            <div className="ml-6 mt-2 space-y-2">
+              <label className="flex items-center text-md text-gray-700">
+                <input
+                  type="radio"
+                  name="deliveryOption"
+                  value="local"
+                  checked={deliveryOption === 'local'}
+                  onChange={() => handleDeliveryChange('local')}
+                  className="mr-2"
+                />
+                Local Delivery (within 10 miles): $20
+              </label>
+              <label className="flex items-center text-md text-gray-700">
+                <input
+                  type="radio"
+                  name="deliveryOption"
+                  value="IAH"
+                  checked={deliveryOption === 'IAH'}
+                  onChange={() => handleDeliveryChange('IAH')}
+                  className="mr-2"
+                />
+                Delivery to IAH Airport: $120
+              </label>
+
+              {/* Address input fields for Local Delivery */}
+              {deliveryOption === 'local' && (
+                <div className="mt-4">
+                  <label className="block text-md text-gray-700 mb-2">Delivery Address:</label>
+                  {isAddressSaved ? (
+                    <div className="flex items-center space-x-2">
+                      <span>{formattedAddress}</span>
+                      <button
+                        onClick={() => setIsAddressSaved(false)}
+                        className="text-blue-600 hover:underline"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <input
+                          type="text"
+                          className="border border-gray-300 rounded-md p-2"
+                          placeholder="Street Address"
+                          value={streetAddress}
+                          onChange={(e) => setStreetAddress(e.target.value)}
+                        />
+                        <input
+                          type="text"
+                          className="border border-gray-300 rounded-md p-2"
+                          placeholder="Apartment, suite (optional)"
+                          value={apartment}
+                          onChange={(e) => setApartment(e.target.value)}
+                        />
+                        <input
+                          type="text"
+                          className="border border-gray-300 rounded-md p-2"
+                          placeholder="City"
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                        />
+                        <input
+                          type="text"
+                          className="border border-gray-300 rounded-md p-2"
+                          placeholder="ZIP code"
+                          value={zipCode}
+                          onChange={(e) => setZipCode(e.target.value)}
+                        />
+                      </div>
+                      <button
+                        onClick={handleSaveAddress}
+                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+                        disabled={!streetAddress || !city || !zipCode}
+                      >
+                        Save Address
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Payment Details Section */}
+        <div className="flex justify-between text-md text-gray-700">
+          <p>Daily rate:</p>
+          <p className="font-medium">${vehicle.price.toFixed(2)}</p>
+        </div>
+        <div className="flex justify-between text-md text-gray-700">
+          <p>Booking length:</p>
+          <p className="font-medium">x {days} {days === 1 ? 'day' : 'days'}</p>
+        </div>
+        <div className="flex justify-between text-md text-gray-700">
+          <p>Tax (8.25%):</p>
+          <p className="font-medium">+ ${taxAmount.toFixed(2)}</p>
+        </div>
+
         {/* Extras Section */}
         {selectedExtras.length > 0 && (
           <>
@@ -160,23 +315,6 @@ const Payment: React.FC<PaymentPageProps> = ({
             </ul>
           </>
         )}
-        {/* Divider */}
-        <hr className="my-4 border-gray-300" />
-
-        {/* Booking Details */}
-        <div className="flex justify-between text-md text-gray-700">
-          <p>Daily rate:</p>
-          <p className="font-medium">${vehicle.price.toFixed(2)}</p>
-        </div>
-        <div className="flex justify-between text-md text-gray-700">
-          <p>Total days:</p>
-          <p className="font-medium">x {days} {days === 1 ? 'day' : 'days'}</p>
-        </div>
-        <div className="flex justify-between text-md text-gray-700">
-          <p>Tax (8.25%):</p>
-          <p className="font-medium">+ ${taxAmount.toFixed(2)}</p>
-        </div>
-        
 
         {/* Final Divider */}
         <hr className="my-4 border-gray-300" />
@@ -192,7 +330,13 @@ const Payment: React.FC<PaymentPageProps> = ({
       <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-md">
         <h2 className="text-xl font-semibold text-gray-800 mb-6">Payment Method</h2>
         <div className="flex justify-center">
-          <PaypalButtons key={totalPrice} totalPrice={totalPrice} onPaymentSuccess={handlePaymentSuccess} />
+          {isPaymentEnabled && (
+            <PaypalButtons 
+              key={totalPrice} 
+              totalPrice={totalPrice} 
+              onPaymentSuccess={handlePaymentSuccess}
+            />
+          )}
         </div>
       </div>
     </div>

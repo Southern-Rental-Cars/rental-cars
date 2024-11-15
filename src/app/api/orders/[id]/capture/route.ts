@@ -31,7 +31,6 @@ const captureOrder = async (orderID: string) => {
     const payload = { id: orderID, prefer: 'return=minimal'};
     try {
         const { body, ...httpResponse } = await ordersController.ordersCapture(payload);
-        console.log("BODY: " + body);
 
         return { 
             jsonResponse: JSON.parse(body.toString()), 
@@ -39,7 +38,7 @@ const captureOrder = async (orderID: string) => {
         };
     } catch (error) {
         if (error instanceof ApiError) {
-          console.error("PayPal API Error:", error.message);
+          console.error("PayPal Capture Error:", error.message);
           return { 
             jsonResponse: { error: error.message }, 
             httpStatusCode: error.statusCode || 500 
@@ -58,6 +57,8 @@ export async function POST(req: NextRequest) {
     try {
         if (!orderID) { throw new Error("Order ID is missing"); }
         const { jsonResponse, httpStatusCode } = await captureOrder(orderID as string);
+        console.log("Response JSON:", JSON.stringify(jsonResponse, null, 2));
+
         return NextResponse.json(jsonResponse, { status: httpStatusCode });
     } catch (error) {
         console.error('Failed to capture order:', error);

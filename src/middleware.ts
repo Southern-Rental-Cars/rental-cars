@@ -9,7 +9,7 @@ interface JwtPayload {
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_default_secret';
-const GENERATE_NEW_TOKEN = '/api/auth/regenerate_token';
+const GENERATE_NEW_TOKEN = process.env.NEXT_PUBLIC_API_BASE_URL+ '/api/auth/regenerate-token';
 
 // Define routes accessible to customers
 const customerAllowedRoutes = [
@@ -66,13 +66,13 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    // Verify JWT token and extract payload
+    // Verify JWT token and extract payload data
     const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET)) as { payload: JwtPayload };
     const userRole = payload.role;
     const userId = payload.id;
     const userEmail = payload.email;
     
-    console.log('Token verified. Role:', userRole, 'ID:', userId, 'Email:', userEmail);
+    console.log('Token verified. userRole:', userRole, ', userId:', userId, ', userEmail:', userEmail);
 
     // Set user ID, role, and email in the headers for API routes
     const response = NextResponse.next();
@@ -106,9 +106,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.json({ message: 'Forbidden: Insufficient permissions' }, { status: 403 });
 
   } catch (error: any) {
+
     console.log("TOKEN ERROR:", error);
+
     if (error.code === 'ERR_JWT_EXPIRED') {
+
       console.log("TOKEN EXPIRED");
+
       const refreshResponse = await fetch(GENERATE_NEW_TOKEN, {
         method: 'POST',
         credentials: 'include',
