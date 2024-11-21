@@ -4,7 +4,7 @@ import { jwtVerify } from 'jose';
 
 interface JwtPayload {
   id: string;
-  role: string;
+  admin: boolean;
   email: string;
 }
 
@@ -25,6 +25,7 @@ const customerAllowedRoutes = [
   { method: 'POST', path: /^\/api\/user\/license/ }, 
   { method: 'GET', path: /^\/api\/user(\/[^/]+)?\/?$/ },
   { method: 'DELETE', path: /^\/api\/user/ },
+
   { method: 'GET', path: /^\/dashboard\/?$/ },
 ];
 
@@ -68,26 +69,23 @@ export async function middleware(request: NextRequest) {
   try {
     // Verify JWT token and extract payload data
     const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET)) as { payload: JwtPayload };
-    const userRole = payload.role;
+    const adminUser = payload.admin;
     const userId = payload.id;
     const userEmail = payload.email;
     
-    console.log('Token verified. userRole:', userRole, ', userId:', userId, ', userEmail:', userEmail);
+    console.log('Token verified. adminUser:', adminUser, ', userId:', userId, ', userEmail:', userEmail);
 
     // Set user ID, role, and email in the headers for API routes
     const response = NextResponse.next();
     response.headers.set('x-user-id', userId);
-    response.headers.set('x-user-role', userRole);
+    response.headers.set('x-user-role', adminUser);
     response.headers.set('x-user-email', userEmail);
 
     // If user is an admin, allow access to all routes
-    if (userRole === 'admin') {
+    if (adminUser) {
       console.log('Admin access granted for', pathname);
       return response;
-    }
-    
-    // If the user is a customer, check if the route is allowed
-    if (userRole === 'customer') {
+    } else {
       const isAllowed = customerAllowedRoutes.some(
         (route) => route.method === method && route.path.test(pathname)
       );
@@ -100,18 +98,11 @@ export async function middleware(request: NextRequest) {
         return NextResponse.json({ message: 'Forbidden: Insufficient permissions' }, { status: 403 });
       }
     }
-
-    // If role is neither admin nor customer, deny access
-    console.log('Forbidden: Unknown role', userRole, 'for', pathname);
-    return NextResponse.json({ message: 'Forbidden: Insufficient permissions' }, { status: 403 });
-
   } catch (error: any) {
-
-    console.log("TOKEN ERROR:", error);
+    console.log("Token error:", error);
 
     if (error.code === 'ERR_JWT_EXPIRED') {
-
-      console.log("TOKEN EXPIRED");
+      console.log("Token is expired");
 
       const refreshResponse = await fetch(GENERATE_NEW_TOKEN, {
         method: 'POST',
@@ -122,11 +113,9 @@ export async function middleware(request: NextRequest) {
       });
 
       if (refreshResponse.ok) {
-        const { newToken } = await refreshResponse.json();
-        const response = NextResponse.next();
-        response.cookies.set('token', newToken, { httpOnly: true, sameSite: 'strict', path: '/' });
         console.log("Token refreshed and new token set.");
-        return response;
+        // Simply let the next middleware proceed, as the refreshed token is already set by the `regenerate-token` endpoint
+        return NextResponse.next();
       }
 
       console.log("Token refresh failed for", pathname);

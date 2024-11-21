@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
         // Generate the JWT token
         const token = jwt.sign(
-            { id: user.id, email: user.email, role: user.role_access },
+            { id: user.id, email: user.email, admin: user.admin },
             jwtSecret,
             {
                 expiresIn: jwtExpiry,
@@ -40,6 +40,7 @@ export async function POST(req: Request) {
             user: {
                 id: user.id,
                 email: user.email,
+                admin: user.admin
             }
         });
         
@@ -48,6 +49,7 @@ export async function POST(req: Request) {
             sameSite: 'strict',
             path: '/',
             secure: process.env.NODE_ENV === 'production', // Use HTTPS in production only
+            maxAge: 3 * 24 * 60 * 60 * 1000 // 3 days in milliseconds
         });
 
         return response;

@@ -51,15 +51,12 @@ export interface Booking {
   currency: string;
 }
 
-// Define a role access type with only "customer" and "admin" as possible values
-export type RoleAccess = 'customer' | 'admin';
-
 export interface User {
   id: number;
-  full_name: string;
   email: string;
+  admin?: boolean;
+  full_name?: string;
   date_of_birth?: Date;
-  role_access?: RoleAccess;  // Updated to use RoleAccess type
   phone?: string;
   street_address?: string;
   zip_code?: string;
@@ -88,4 +85,67 @@ export interface GridProps {
 
 export interface ConfirmationProps {
   params: { id: string };
+}
+
+export interface PaypalButtonsProps {
+  totalPrice: number;
+  onPaymentSuccess: (paypalData: {
+    paypal_order_id: string;
+    paypal_transaction_id: string;
+    is_paid: boolean;
+  }) => void;
+}
+
+export interface PaymentRadioOptionProps {
+  label: string;
+  value: string;
+  selectedValue: string;
+  onChange: (value: string) => void;
+}
+
+export interface ConfirmBookingBtnProps {
+  isPaying: boolean;
+  onSubmit: () => Promise<void>;
+}
+
+// config.ts
+export const PAYPAL_CONFIG = {
+  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
+  components: "buttons,card-fields",
+  "disable-funding": "",
+  currency: "USD",
+  "buyer-country": "US",
+  "data-page-type": "product-details",
+  "data-sdk-integration-source": "developer-studio",
+};
+
+export const CARD_FIELD_STYLE = {
+  input: {
+    "font-size": "16px",
+    color: "#333",
+    padding: "8px",
+    "border-radius": "8px",
+  },
+  ".invalid": {
+    color: "red",
+  },
+  ".paypal-number-field": {
+    "font-size": "18px",
+    color: "#111",
+  },
+};
+
+export interface PaypalData {
+  paypal_order_id: string;
+  paypal_transaction_id: string;
+  is_paid: boolean;
+}
+
+export interface PaymentPageProps {
+  vehicle: Vehicle;
+  startDate: string;
+  endDate: string;
+  extras: Extra[];
+  availability: any;
+  onBackToDetails: () => void;
 }

@@ -40,7 +40,6 @@ const SelectDatesBox: React.FC<SelectDatesBoxProps> = ({ onDateChange, defaultSt
     }
 
     onDateChange(startDateTime, endDateTime);
-    console.log(startDateTime)
   };
 
   // Don't render the date inputs until minDateTime is available on the client

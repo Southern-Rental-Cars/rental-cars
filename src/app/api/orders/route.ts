@@ -19,7 +19,7 @@ const client = new Client({
 
 const ordersController = new OrdersController(client);
 
-const createOrder = async (totalCost: string, saveCard: boolean) => {
+const createOrder = async (totalCost: string) => {
   const payload = {
     body: {
       intent: CheckoutPaymentIntent.CAPTURE,
@@ -31,18 +31,6 @@ const createOrder = async (totalCost: string, saveCard: boolean) => {
           },
         },
       ],
-      paymentSource: {
-        card: {
-          attributes: {
-            vault: {
-              storeInVault: StoreInVaultInstruction.ONSUCCESS
-            },
-            verification: {
-              method: CardVerificationMethod.SCAALWAYS
-            }
-          }
-        },
-      },
     },
     prefer: 'return=minimal',
   };
@@ -68,10 +56,9 @@ const createOrder = async (totalCost: string, saveCard: boolean) => {
 
 
 export async function POST(req: NextRequest) {
-    const {totalCost, saveCard} = await req.json();
+    const {totalCost} = await req.json();
     try {
-        const { jsonResponse, httpStatusCode } = await createOrder(totalCost, saveCard);
-        console.log("Response JSON:", JSON.stringify(jsonResponse, null, 2));
+        const { jsonResponse, httpStatusCode } = await createOrder(totalCost);
 
         return NextResponse.json(jsonResponse, { status: httpStatusCode });
     } catch (error) {

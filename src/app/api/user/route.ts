@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma';
-import { Role } from '@prisma/client';
 
 // Get logged in user
 export async function GET(request: Request) {
@@ -40,10 +39,6 @@ export async function PUT(req: Request) {
 
   try {
     const data = await req.json();
-
-    if (data.role_access) {
-      data.role_access = data.role_access === 'admin' ? Role.admin : Role.customer;
-    }
 
     // Update user fields based on the provided data
     await prisma.user.update({

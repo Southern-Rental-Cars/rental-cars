@@ -180,14 +180,14 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
             
             {/* Total Days */}
             <div className="flex justify-between text-gray-700 text-md">
-              <span>Total days:</span>
-              <span className="font-medium">x {days} {days > 1 ? 'days' : 'day'}</span>
+              <span>Rental period:</span>
+              <span className="font-medium">{days} {days > 1 ? 'days' : 'day'}</span>
             </div>
 
             {/* Tax */}
             <div className="flex justify-between text-gray-700 text-md">
-              <span>Tax (8.25%):</span>
-              <span className="font-medium">+ ${tax.toFixed(2)}</span>
+              <span>Sales tax (8.25%):</span>
+              <span className="font-medium"> ${tax.toFixed(2)}</span>
             </div>
 
             {/* Divider */}

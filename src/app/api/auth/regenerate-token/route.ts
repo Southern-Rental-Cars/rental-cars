@@ -47,12 +47,9 @@ async function handleTokenExpiration(expiredToken: string) {
 
     // Generate a new token for the user
     const newToken = jwt.sign(
-        { id: user.id, email: user.email, role: user.role_access },
+        { id: user.id, email: user.email, admin: user.admin }, 
         jwtSecret,
-        {
-            expiresIn: jwtExpiry,
-            algorithm: 'HS256'
-        }
+        { expiresIn: jwtExpiry, algorithm: 'HS256' }
     );
 
     // Set the new token in the cookies
@@ -61,7 +58,7 @@ async function handleTokenExpiration(expiredToken: string) {
         user: {
             id: user.id,
             email: user.email,
-            role: user.role_access
+            admin: user.admin
         }
     });
 
@@ -69,7 +66,7 @@ async function handleTokenExpiration(expiredToken: string) {
         httpOnly: true,
         sameSite: 'strict',
         path: '/',
-        secure: process.env.NODE_ENV === 'production'
+        secure: process.env.NODE_ENV === 'production',
     });
 
     return response;

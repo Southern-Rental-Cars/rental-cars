@@ -3,6 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { Booking, User } from '@/types';
 import Loader from '@/components/Loader';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { FaArrowRight } from 'react-icons/fa';
 
 // Fetch user profile data
 const fetchUserProfile = async (): Promise<User> => {
@@ -29,6 +32,7 @@ const Dashboard = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'bookings' | 'license'>('bookings');
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const updateUserInfo = (updatedData: Partial<User>) => {
     if (user) {
@@ -55,7 +59,13 @@ const Dashboard = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="container mx-auto p-5 max-w-4xl">
+    <div className="container mx-auto p-5 max-w-4xl relative">
+      {isNavigating && (
+        <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50">
+        <Loader /> {/* Overlay spinner for the entire dashboard */}
+        </div>
+      )}
+
       <h1 className="text-2xl font-bold mb-6 mt-3">Dashboard</h1>
       <div className="flex justify-around border-b mb-6">
         <button
@@ -73,20 +83,24 @@ const Dashboard = () => {
       </div>
 
       {activeTab === 'bookings' && (
-      <div>
-        <div className="grid gap-4"> {/* Updated to use gap-4 for spacing between cards */}
+        <div className="grid gap-4">
           {bookings.length > 0 ? (
-            bookings.map((booking) => <BookingCard key={booking.id} booking={booking} />)
+            bookings.map((booking) => (
+              <BookingCard
+                key={booking.id}
+                booking={booking}
+                setIsNavigating={setIsNavigating}
+              />
+            ))
           ) : (
             <p className="text-lg text-gray-600">Nothing found.</p>
           )}
         </div>
-      </div>
-    )}
+      )}
 
-    {activeTab === 'license' && user && (
-      <LicenseSection userInfo={user} updateUserInfo={updateUserInfo} />
-    )}
+      {activeTab === 'license' && user && (
+        <LicenseSection userInfo={user} updateUserInfo={updateUserInfo} />
+      )}
     </div>
   );
 };
@@ -141,7 +155,6 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
       }
   
       const { url } = await uploadResponse.json();
-      console.log(url);
       setFormData((prev) => ({ ...prev, [type]: url }));
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -154,7 +167,6 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
     e.preventDefault();
     setIsSaving(true);
 
-    // Convert dates to ISO-8601 format if they are present
     const updatedFormData = {
       ...formData,
       license_expiration: formData.license_expiration ? new Date(formData.license_expiration).toISOString() : null,
@@ -343,33 +355,33 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
   );  
 };
 
-import Link from 'next/link';
-import { FaArrowRight } from 'react-icons/fa';
+// BookingCard Component
+const BookingCard = ({ booking, setIsNavigating }: { booking: Booking; setIsNavigating: React.Dispatch<React.SetStateAction<boolean>> }) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-const BookingCard = ({ booking }: { booking: Booking }) => {
+  const handleClick = async () => {
+    setIsNavigating(true);
+    setIsLoading(true);
+
+    // Simulate navigation
+    await router.push(`/book/${booking.id}`);
+  };
+
   return (
-    <Link href={`/book/${booking.id}`}>
-      <div className="p-4 bg-white border border-gray-200 rounded-lg cursor-pointer transition hover:shadow-lg hover:border-blue-600 flex items-center justify-between">
-        <div className="flex flex-col space-y-1 text-sm text-gray-700">
-          <div>
-            <span className="font-medium">Start Date:</span> {new Date(booking.start_date).toLocaleDateString()}
-          </div>
-          <div>
-            <span className="font-medium">End Date:</span> {new Date(booking.end_date).toLocaleDateString()}
-          </div>
-          <div>
-            <span className="font-medium">Total:</span> ${booking.total_price} {booking.currency}
-          </div>
-        </div>
-        <button className="ml-4 px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 rounded-full hover:bg-blue-100 flex items-center">
-          View Details <FaArrowRight className="ml-2" />
-        </button>
+    <div
+      onClick={handleClick}
+      className="p-4 bg-white border border-gray-200 rounded-lg cursor-pointer flex items-center justify-between transition hover:shadow-lg relative"
+    >
+      <div>
+        <h1 className='font-bold font-lg'>{booking.vehicle.year} {booking.vehicle.make} {booking.vehicle.model}</h1>
+        <p>Start Date: {new Date(booking.start_date).toLocaleDateString()}</p>
+        <p>End Date: {new Date(booking.end_date).toLocaleDateString()}</p>
+        <p>Total: ${booking.total_price}</p>
       </div>
-    </Link>
+      <FaArrowRight />
+    </div>
   );
 };
-
-
-
 
 export default Dashboard;

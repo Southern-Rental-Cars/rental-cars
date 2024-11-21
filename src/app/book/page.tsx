@@ -17,17 +17,15 @@ export default function Book() {
 
   const [availableVehicles, setAvailableVehicles] = useState<Vehicle[]>([]);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
-  const [images, setImages] = useState<VehicleImages[] | null>(null); // Set default to empty array
+  const [images, setImages] = useState<VehicleImages[] | null>(null);
   const [isProceedingToPayment, setIsProceedingToPayment] = useState(false);
   const [searchCompleted, setSearchCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch vehicles based on the date range
   const fetchVehicles = async (start: string, end: string) => {
     setIsLoading(true);
     try {
       const data = await fetchAvailableVehicles(start, end);
-      console.log(data)
       setAvailableVehicles(data);
       setSearchCompleted(true);
     } catch (error) {
@@ -56,26 +54,23 @@ export default function Book() {
     setIsProceedingToPayment(true);
   };
 
-  // Select a vehicle and fetch its images
   const handleSelectVehicle = async (vehicle: Vehicle) => {
     setIsLoading(true);
-    setSelectedVehicle(vehicle); // Set the selected vehicle
+    setSelectedVehicle(vehicle);
     await fetchVehicleImages(vehicle.id);
     setIsLoading(false);
-
   };
 
   const fetchVehicleImages = async (vehicle_id: number) => {
     try {
-        const images = await fetchImagesByVehicleId(vehicle_id); // Ensure this function returns data
-        setImages(images);
+      const images = await fetchImagesByVehicleId(vehicle_id);
+      setImages(images);
     } catch (error) {
-        console.error('Error fetching vehicle images:', error);
-        setImages([]); // Default to empty array if there's an error
+      console.error('Error fetching vehicle images:', error);
+      setImages([]);
     }
-};
+  };
 
-  // Render Payments page
   if (isProceedingToPayment && selectedVehicle) {
     return (
       <PaymentDataProvider
@@ -87,7 +82,6 @@ export default function Book() {
     );
   }
 
-  // Render details page
   if (selectedVehicle && images) {
     return (
       <div className="flex flex-col items-center justify-center">
@@ -95,23 +89,31 @@ export default function Book() {
           onBack={handleBack}
           onProceedToPayment={handleProceedToPayment}
           vehicle={selectedVehicle}
-          images={images || []} // Ensure images is an array (fallback to empty array)
+          images={images || []}
           startDateTime={dateRange.startDateTime}
           endDateTime={dateRange.endDateTime}
         />
       </div>
     );
   }
-  // Render the vehicle selection grid by default
+
   return (
     <div className="flex flex-col items-center justify-center">
-      <Dates onDateChange={handleDateChange} defaultStartDateTime={dateRange.startDateTime} defaultEndDateTime={dateRange.endDateTime} />
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <Dates
+          onDateChange={handleDateChange}
+          defaultStartDateTime={dateRange.startDateTime}
+          defaultEndDateTime={dateRange.endDateTime}
+        />
+      </div>
       {isLoading ? (
-        <div className="mt-8">
+        <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50">
           <Loader />
         </div>
       ) : searchCompleted && availableVehicles.length === 0 ? (
-        <p className="mt-8 text-red-600 text-lg font-semibold">Sorry, fleet is booked. Soon we will expand our fleet capacity.</p>
+        <p className="mt-8 text-red-600 text-lg font-semibold">
+          Sorry, our fleet is booked for these dates. We are looking to expand our fleet.
+        </p>
       ) : (
         <div className="mt-8 w-full max-w-6xl">
           <Grid vehicles={availableVehicles} onSelectVehicle={handleSelectVehicle} />
