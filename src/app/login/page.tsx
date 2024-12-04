@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import Login from './login';
 import Register from './register';
+import Logo from '@/images/transparent_southern_logo_5.png';
+import Image from 'next/image';
 
 export default function AuthPage() {
   // Set `isRegister` to `false` initially to show the login page by default
@@ -14,15 +16,21 @@ export default function AuthPage() {
   return (
     <div className="flex items-center justify-center px-4 pt-12">
       <div className="bg-white rounded-lg max-w-md w-full p-6 border border-gray-200">
-        {/* Header */}
-        <div className="text-center mb-4">
-          <h3 className="text-sm font-semibold text-gray-500">
-            {isRegister ? 'Create account' : 'Login'}
-          </h3>
-          <hr className="my-2" />
+        {/* Logo */}
+        <div className="flex justify-center mb-4">
+          <Image 
+            src={Logo}
+            alt="Southern Rental Cars Logo"
+            width={49} // Adjust the size as needed
+            height={49} // Adjust the size as needed
+            loading="lazy"
+          />
         </div>
-      {/* Welcome Message */}
-      <h2 className="text-xl font-semibold text-center text-gray-800 mb-3">Welcome to Southern Rental Cars</h2>
+        {/* Welcome Message */}
+        <h2 className="text-xl font-bold text-center text-gray-800 mb-3">
+            {isRegister ? 'Create a new account' : null}
+          </h2>
+
         {/* Conditionally Render Login or Register Component */}
         {isRegister ? <Register /> : <Login />}
         {/* Divider */}
@@ -36,9 +44,9 @@ export default function AuthPage() {
         </div>
         {/* Toggle Link */}
         <p className="mt-2 text-center text-gray-600">
-          {isRegister ? 'Already have a account?' : "Don't have a account?"}{' '}
+          {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button onClick={toggleAuthForm} className="text-blue-600 hover:underline font-medium">
-            {isRegister ? 'Login' : 'Create account'}
+            {isRegister ? 'Log in' : 'Create new account'}
           </button>
         </p>
       </div>

@@ -1,13 +1,12 @@
-// app/components/contexts/UserContext.ts
-
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { User } from '@/types'; // Import the general User type
 
 interface UserContextType {
-  user: { id: number; email: string } | null;
-  setUser: (user: { id: number; email: string } | null) => void;
+  user: Partial<User> | null; // Allow saving only necessary fields
+  setUser: (user: Partial<User> | null) => void;
   logout: () => void;
 }
 
@@ -22,12 +21,20 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUserState] = useState<{ id: number; email: string } | null>(null);
+  const [user, setUserState] = useState<Partial<User> | null>(null);
 
-  const setUser = (user: { id: number; email: string } | null) => {
+  const setUser = (user: Partial<User> | null) => {
     setUserState(user);
     if (user) {
-      Cookies.set('user', JSON.stringify(user), { expires: 7 });
+      // Save only necessary fields in cookies
+      const { id, email, is_billing_complete, is_license_complete, phone } = user;
+      console.log(user);
+
+      Cookies.set(
+        'user',
+        JSON.stringify({ id, email, is_billing_complete, is_license_complete, phone }),
+        { expires: 7 }
+      );
     } else {
       Cookies.remove('user');
     }
@@ -41,14 +48,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (response.ok) {
-        // Clear client-side cookies and state
         Cookies.remove('user');
         setUser(null);
-
-        // Redirect to the login page
-        window.location.href = '/login'; // Immediate redirect
+        window.location.href = '/login';
       } else {
         console.error('Failed to logout');
       }

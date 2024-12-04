@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { Booking, User } from '@/types';
 import Loader from '@/components/Loader';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { FaArrowRight } from 'react-icons/fa';
+import { useUser } from '@/components/contexts/UserContext'; // Import the UserContext
 
 // Fetch user profile data
 const fetchUserProfile = async (): Promise<User> => {
@@ -27,16 +27,22 @@ const fetchBookings = async (): Promise<Booking[]> => {
 
 // Main Dashboard component with tab navigation
 const Dashboard = () => {
+  const { user: contextUser, setUser: setContextUser } = useUser(); // Access UserContext
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'bookings' | 'license'>('bookings');
+  const [activeTab, setActiveTab] = useState<'bookings' | 'license' | 'billing' | 'phone'>('bookings');
   const [isNavigating, setIsNavigating] = useState(false);
 
   const updateUserInfo = (updatedData: Partial<User>) => {
     if (user) {
-      setUser({ ...user, ...updatedData });
+      // Update local user state
+      const updatedUser = { ...user, ...updatedData };
+      setUser(updatedUser);
+  
+      // Update the context with the same data
+      setContextUser({ ...contextUser, ...updatedData });
     }
   };
 
@@ -80,6 +86,18 @@ const Dashboard = () => {
         >
           Driver's License
         </button>
+        <button
+          onClick={() => setActiveTab('billing')}
+          className={`p-4 ${activeTab === 'billing' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
+        >
+          Billing Address
+        </button>
+        <button
+          onClick={() => setActiveTab('phone')}
+          className={`p-4 ${activeTab === 'phone' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
+        >
+          Phone number
+        </button>
       </div>
 
       {activeTab === 'bookings' && (
@@ -101,6 +119,12 @@ const Dashboard = () => {
       {activeTab === 'license' && user && (
         <LicenseSection userInfo={user} updateUserInfo={updateUserInfo} />
       )}
+      {activeTab === 'billing' && user && (
+        <BillingSection userInfo={user} updateUserInfo={updateUserInfo}/>
+      )}
+      {activeTab === 'phone' && user && (
+        <PhoneSection userInfo={user} updateUserInfo={updateUserInfo} />
+      )}
     </div>
   );
 };
@@ -113,9 +137,9 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
     license_city:'',
     license_country: '',
     license_expiration: new Date(),
-    date_of_birth: new Date(),
-    street_address: '',
-    zip_code: '',
+    license_date_of_birth: new Date(),
+    license_street_address: '',
+    license_zip_code: '',
     license_front_img: '',
     license_back_img: '',
   });
@@ -167,10 +191,11 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
     e.preventDefault();
     setIsSaving(true);
 
+    // Ensure license_expiration and license_date_of_birth are converted back to Date
     const updatedFormData = {
       ...formData,
-      license_expiration: formData.license_expiration ? new Date(formData.license_expiration).toISOString() : null,
-      date_of_birth: formData.date_of_birth ? new Date(formData.date_of_birth).toISOString() : null,
+      license_expiration: formData.license_expiration ? new Date(formData.license_expiration) : undefined,
+      license_date_of_birth: formData.license_date_of_birth ? new Date(formData.license_date_of_birth) : undefined,
     };
 
     try {
@@ -186,8 +211,9 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
         throw new Error(errorText || `Failed to update user information. Status: ${response.status}`);
       }
 
-      updateUserInfo(formData);
+      updateUserInfo({ ...updatedFormData, is_license_complete: true });
       setIsEditing(false);
+
       alert('User information updated successfully.');
     } catch (error) {
       console.error('Failed to update user information:', error);
@@ -259,8 +285,8 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             Date of Birth:
             <input
               type="date"
-              name="date_of_birth"
-              value={formData.date_of_birth}
+              name="license_date_of_birth"
+              value={formData.license_date_of_birth}
               onChange={handleInputChange}
               className="border rounded w-full mt-1 p-2"
               required
@@ -270,8 +296,8 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             Street Address:
             <input
               type="text"
-              name="street_address"
-              value={formData.street_address}
+              name="license_street_address"
+              value={formData.license_street_address}
               onChange={handleInputChange}
               className="border rounded w-full mt-1 p-2"
               required
@@ -289,7 +315,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             />
           </label>
           <label className="p-4 w-full">
-            State (2 characters):
+            State (TX):
             <input
               type="text"
               name="license_state"
@@ -304,15 +330,16 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             Zip Code:
             <input
               type="text"
-              name="zip_code"
-              value={formData.zip_code}
+              name="license_zip_code"
+              value={formData.license_zip_code}
+              maxLength={5}
               onChange={handleInputChange}
               className="border rounded w-full mt-1 p-2"
               required
             />
           </label>
           <label className="p-4 w-full">
-            Country (3 characters):
+            Country (USA):
             <input
               type="text"
               name="license_country"
@@ -355,17 +382,259 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
   );  
 };
 
+// Phone Section Component
+const PhoneSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUserInfo: (data: Partial<User>) => void }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<Partial<User>>({
+    phone: userInfo.phone || '',
+  });  const [isSaving, setIsSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+
+  const handleEditToggle = () => {
+    setIsEditing(true);
+    setErrorMessage(null);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+
+    try {
+      const response = await fetch('/api/user', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Failed to update phone number. Status: ${response.status}`);
+      }
+
+      updateUserInfo({ ...formData, phone: formData.phone });
+      setIsEditing(false);
+      alert('Phone number updated successfully.');
+    } catch (error) {
+      console.error('Failed to update phone number:', error);
+      setErrorMessage('Failed to save phone number. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setErrorMessage(null);
+    setFormData({
+      phone: userInfo.phone || '',
+    });
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-lg mb-6 border border-gray-200">
+      {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
+  
+      {!isEditing ? (
+        <div>
+          <div className="mb-4">
+            <p className="font-medium">Phone:</p>
+            <p>{userInfo.phone || 'N/A'}</p>
+          </div>
+          <button onClick={() => setIsEditing(true)} className="text-white font-semibold rounded-lg p-2 bg-blue-600 hover:bg-blue-700">
+            Update
+          </button>
+        </div>
+      ) : (
+        <form id="phone-form" onSubmit={handleSave} className="grid grid-cols-1 gap-4">
+          <label>
+            Phone Number:
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              className="border rounded w-full mt-1 p-2"
+              required
+            />
+          </label>
+          <div className="flex justify-end space-x-4">
+            <button type="submit" className="p-2 text-white font-semibold rounded-lg bg-blue-600 hover:bg-blue-700" disabled={isSaving}>
+              {isSaving ? 'Saving...' : 'Save'}
+            </button>
+            <button onClick={handleCancel} type="button" className="text-gray-600 hover:underline">
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+  
+};
+
+// Billing Section Component
+const BillingSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUserInfo: (data: Partial<User>) => void }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<Partial<User>>({
+    billing_street_address: userInfo.billing_street_address || '',
+    billing_city: userInfo.billing_city || '',
+    billing_state: userInfo.billing_state || '',
+    billing_zip_code: userInfo.billing_zip_code || '',
+  });
+  const [isSaving, setIsSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleEditToggle = () => {
+    setIsEditing(true);
+    setErrorMessage(null);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+
+    try {
+      const response = await fetch('/api/user', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Failed to update billing information. Status: ${response.status}`);
+      }
+
+      updateUserInfo({ ...formData, is_billing_complete: true });
+      setIsEditing(false);
+      
+      alert('Billing information updated successfully.');
+    } catch (error) {
+      console.error('Failed to update billing information:', error);
+      setErrorMessage('Failed to save billing information. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setErrorMessage(null);
+    setFormData({
+      billing_street_address: userInfo.billing_street_address || '',
+      billing_city: userInfo.billing_city || '',
+      billing_state: userInfo.billing_state || '',
+      billing_zip_code: userInfo.billing_zip_code || '',
+    });
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-lg mb-6 border border-gray-200">
+      {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
+
+      {!isEditing ? (
+        <div>
+          <div className="mb-4">
+            <p className="font-medium">Street Address:</p>
+            <p>{userInfo.billing_street_address || 'N/A'}</p>
+          </div>
+          <div className="mb-4">
+            <p className="font-medium">City:</p>
+            <p>{userInfo.billing_city || 'N/A'}</p>
+          </div>
+          <div className="mb-4">
+            <p className="font-medium">State:</p>
+            <p>{userInfo.billing_state || 'N/A'}</p>
+          </div>
+          <div className="mb-4">
+            <p className="font-medium">Zip Code:</p>
+            <p>{userInfo.billing_zip_code || 'N/A'}</p>
+          </div>
+          <button onClick={handleEditToggle} className="text-white font-semibold rounded-lg p-2 bg-blue-600 hover:bg-blue-700">
+            Update
+          </button>
+        </div>
+      ) : (
+        <form id="billing-form" onSubmit={handleSave} className="grid grid-cols-1 gap-4">
+          <label>
+            Street Address:
+            <input
+              type="text"
+              name="billing_street_address"
+              value={formData.billing_street_address}
+              onChange={handleInputChange}
+              className="border rounded w-full mt-1 p-2"
+              required
+            />
+          </label>
+          <label>
+            City:
+            <input
+              type="text"
+              name="billing_city"
+              value={formData.billing_city}
+              onChange={handleInputChange}
+              className="border rounded w-full mt-1 p-2"
+              required
+            />
+          </label>
+          <label>
+            State:
+            <input
+              type="text"
+              name="billing_state"
+              value={formData.billing_state}
+              onChange={handleInputChange}
+              className="border rounded w-full mt-1 p-2"
+              required
+            />
+          </label>
+          <label>
+            Zip Code:
+            <input
+              type="text"
+              name="billing_zip_code"
+              value={formData.billing_zip_code}
+              maxLength={5}
+              onChange={handleInputChange}
+              className="border rounded w-full mt-1 p-2"
+              required
+            />
+          </label>
+          <div className="flex justify-end space-x-4">
+            <button type="submit" className="p-2 text-white font-semibold rounded-lg bg-blue-600 hover:bg-blue-700" disabled={isSaving}>
+              {isSaving ? 'Saving...' : 'Save'}
+            </button>
+            <button onClick={handleCancel} type="button" className="text-gray-600 hover:underline">
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+};
+
 // BookingCard Component
 const BookingCard = ({ booking, setIsNavigating }: { booking: Booking; setIsNavigating: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = async () => {
+  const handleClick = () => {
     setIsNavigating(true);
-    setIsLoading(true);
-
-    // Simulate navigation
-    await router.push(`/book/${booking.id}`);
+    router.push(`/book/${booking.id}`);
   };
 
   return (

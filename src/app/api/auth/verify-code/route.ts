@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
     // If no matching code or code expired, return error
     if (!verification || verification.expires_at < new Date()) {
-      return NextResponse.json({ message: 'Invalid or expired code.' }, { status: 400 });
+      return NextResponse.json({ message: 'Invalid or expired code' }, { status: 400 });
     }
 
     // Create the user in the User table
@@ -30,9 +30,9 @@ export async function POST(req: Request) {
     // Remove the verification code record from VerificationCode
     await prisma.verificationCode.delete({ where: { email } });
 
-    return NextResponse.json({ message: 'Email verified and account created successfully.' });
+    return NextResponse.json({ message: 'Email verified and account successfully created' });
   } catch (error) {
     console.error('Verification failed:', error);
-    return NextResponse.json({ message: 'Verification failed.' }, { status: 500 });
+    return NextResponse.json({ message: 'Verification failed' }, { status: 500 });
   }
 }

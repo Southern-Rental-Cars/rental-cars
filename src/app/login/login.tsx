@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/components/contexts/UserContext';
 import { FiMail, FiLock } from 'react-icons/fi';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,11 +13,18 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+
+    if (!captchaToken) {
+      setError('Please complete the CAPTCHA verification.');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -24,7 +32,7 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, captchaToken }),
       });
 
       if (response.ok) {
@@ -34,6 +42,9 @@ export default function LoginPage() {
           setUser({
             id: user.id,
             email: user.email,
+            is_billing_complete: user.is_billing_complete,
+            is_license_complete: user.is_license_complete,
+            phone: user.phone,
           });
 
           // Clear form and redirect after successful login
@@ -48,15 +59,20 @@ export default function LoginPage() {
         setError(message || 'Login failed. Please try again.');
       }
     } catch (err) {
-      console.log('Login error:', err);
+      console.error('Login error:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
+      setCaptchaToken(null); // Reset CAPTCHA token after submission
     }
   };
 
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
+  };
+
   return (
-    <div className="p-2">
+    <div className="p-4 max-w-md mx-auto">
       {error && (
         <div className="mb-4 text-red-600 text-center border border-red-200 rounded-md p-2 bg-red-50">
           {error}
@@ -74,7 +90,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
-            placeholder="Email"
+            placeholder="janedoe@gmail.com"
           />
         </div>
 
@@ -91,25 +107,29 @@ export default function LoginPage() {
           />
         </div>
 
+        {/* CAPTCHA */}
+        <div className="flex justify-center">
+          <ReCAPTCHA
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} // Your public reCAPTCHA site key
+            onChange={handleCaptchaChange}
+            onExpired={() => setCaptchaToken(null)} // Reset token on expiration
+          />
+        </div>
+
         {/* Main Login Button */}
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 flex justify-center items-center"
+          disabled={isSubmitting || !captchaToken}
+          className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 flex justify-center items-center"
         >
-          {isSubmitting ? 'Logging in...' : 'Login'}
+          {isSubmitting ? 'Logging in...' : 'Log in'}
         </button>
         <p className="text-center text-gray-600">
-          <a
-            href="/forgot-password"
-            className="text-blue-600 hover:underline"
-          >
-            Forgot your password?
+          <a href="/forgot-password" className="text-blue-600 hover:underline">
+            Forgot password?
           </a>
         </p>
-
       </form>
-      
     </div>
   );
 }

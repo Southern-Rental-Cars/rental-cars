@@ -1,7 +1,7 @@
 // app/api/auth/register/route.ts
 import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma';
-import { sendVerificationEmail } from '@/utils/verification/sendVerificationEmail';
+import { sendVerificationEmail } from '@/utils/emailHelpers/emailHelpers';
 
 function generateVerificationCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json(
-        { message: 'User with this email already exists.' },
+        { message: 'User exists.' },
         { status: 400 }
       );
     }
@@ -35,11 +35,11 @@ export async function POST(req: Request) {
     await sendVerificationEmail(email, verificationCode);
 
     return NextResponse.json(
-      { message: 'Verification code sent. Please check your email.' },
+      { message: 'Verification code sent. Please check email.' },
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error registering user:', error);
+    console.error('Error creating user:', error);
     return NextResponse.json(
       { message: 'Internal Server Error' },
       { status: 500 }

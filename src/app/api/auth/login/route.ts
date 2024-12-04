@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import prisma from '@/utils/prisma';
 import bcrypt from 'bcryptjs';
+import { verifyRecaptcha } from '@/utils/google/captcha';
 
 const jwtSecret = process.env.JWT_SECRET;
 if (!jwtSecret) {
@@ -11,54 +12,65 @@ const jwtExpiry = process.env.JWT_EXPIRY || '1d'; // Default to 1 day if not def
 
 export async function POST(req: Request) {
     try {
-        const { email, password } = await req.json();
+        const { email, password, captchaToken } = await req.json();
 
-        // Find the user in the database
+        // Validate CAPTCHA
+        const isCaptchaValid = await verifyRecaptcha(captchaToken);
+        if (!isCaptchaValid) {
+            return NextResponse.json(
+                { message: 'CAPTCHA verification failed. Please try again.' },
+                { status: 403 }
+            );
+        }
+
+        // Find user in db
         const user = await prisma.user.findUnique({ where: { email } });
-        
-        // Check if the user exists and validate the password
+
+        // Verify user exists and validate password
         if (!user || !(await bcrypt.compare(password, user.password_hash))) {
             return NextResponse.json(
-                { message: 'Invalid email or password.' }, 
+                { message: 'Wrong email or password' },
                 { status: 401 }
             );
         }
 
-        // Generate the JWT token
+        // Generate JWT token
         const token = jwt.sign(
             { id: user.id, email: user.email, admin: user.admin },
             jwtSecret,
             {
                 expiresIn: jwtExpiry,
-                algorithm: 'HS256' // Specify algorithm explicitly
+                algorithm: 'HS256', // Specify algorithm explicitly
             }
         );
 
-        // Set the httpOnly cookie with the token
         const response = NextResponse.json({
             message: 'Login successful',
             user: {
                 id: user.id,
                 email: user.email,
-                admin: user.admin
-            }
+                admin: user.admin,
+                is_billing_complete: user.is_billing_complete,
+                is_license_complete: user.is_license_complete,
+                phone: user.phone,
+            },
         });
-        
+
+        // Set cookie with jwt
         response.cookies.set('token', token, {
             httpOnly: true,
             sameSite: 'strict',
             path: '/',
             secure: process.env.NODE_ENV === 'production', // Use HTTPS in production only
-            maxAge: 3 * 24 * 60 * 60 * 1000 // 3 days in milliseconds
+            maxAge: 3 * 24 * 60 * 60, // 3 days in seconds
         });
 
         return response;
-
     } catch (error) {
-        console.error('Error during login:', error);
+        console.error('Error logging in:', error);
         return NextResponse.json(
             {
-                message: 'Server error occurred. Please try again.'
+                message: 'Server error. Please try again.',
             },
             { status: 500 }
         );

@@ -6,7 +6,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="max-w-4xl mx-auto p-12 bg-white rounded-lg my-8">
       <h1 className="text-2xl font-semibold mb-1">Privacy Policy</h1>
-      <p className='text-gray-500 text-sm mb-4'> Last Updated: 10-28-24 </p>
+      <p className='text-gray-500 text-sm mb-4'> Last Updated: 12-02-24 </p>
       <section className="mb-6">
         <h2 className="text-lg font-semibold mb-2">Personal information we collect</h2>
         <p>
@@ -14,8 +14,8 @@ export default function PrivacyPolicy() {
         </p>
         <h3 className="text-md font-semibold mt-4">Account data</h3>
         <p>
-          When you register for an account with us, we require certain personal information to open your account, such as your name, email address, a password, personal information such as license, billing, phone number, and date of birth.
-          Your personal information is encrypted in our database. Information such as: password, date of birth, license and billing.
+          When you register for an account with us, we require certain personal information to open your account, such as your name, email address, a password, personal information such as license information, billing address, phone number, and date of birth.
+          Your personal information is encrypted in our database. Information such as: password, date of birth, and license details.
         </p>
 
         <h3 className="text-md font-semibold mt-4">Profile data</h3>
@@ -28,8 +28,7 @@ export default function PrivacyPolicy() {
         </p>
         <h3 className="text-md font-semibold mt-4">Payment data</h3>
         <p>
-          We collect your digital payment details, bank account or payment card numbers, and transaction information in connection with a potential or actual transaction, which may be processed and stored by one or more third-party payment service providers or digital payments companies.
-          Your payment method information is not directly stored in our database. Instead, it is securely transmitted to PayPal, our payment processor. PayPal provides us with a secure key to access your payment information when needed.
+          We DO NOT collect your digital payment details. Instead, it is securely transmitted via PayPal, our payment processor.
         </p>
 
         <h3 className="text-md font-semibold mt-4">Identity verification data</h3>

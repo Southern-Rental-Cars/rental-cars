@@ -1,4 +1,3 @@
-import { BookingExtra, Vehicle } from '@prisma/client';
 import sgMail from '@sendgrid/mail';
 
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY!);
@@ -89,5 +88,28 @@ export async function sendBookingConfirmationEmail({
 
   await sgMail.send(msg);
 }
+
+export async function sendPasswordResetEmail(email: string, token: string) {
+  const resetLink = `${process.env.NEXT_PUBLIC_API_BASE_URL}/reset-password?token=${token}`;
+
+  const msg = {
+    to: email,
+    from: process.env.SENDER_EMAIL!,
+    subject: 'Password Reset Request',
+    html: `
+      <div style="background-color: #24364D; color: #ffffff; padding: 20px; font-family: Arial, sans-serif; text-align: center;">
+        <div style="background-color: #ffffff; color: #333333; padding: 20px; max-width: 600px; margin: 0 auto; border-radius: 8px;">
+          <h2 style="color: #24364D;">Password Reset Request</h2>
+          <p>If you requested to reset your password, click the link below:</p>
+          <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; color: #ffffff; background-color: #24364D; border-radius: 5px; text-decoration: none; margin-top: 20px;">Reset Password</a>
+          <p style="margin-top: 20px;">If you did not request this, please ignore this email.</p>
+        </div>
+      </div>
+    `,
+  };
+
+  await sgMail.send(msg);
+}
+
 
 

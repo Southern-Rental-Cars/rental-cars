@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
 interface JwtPayload {
@@ -99,7 +99,6 @@ export async function middleware(request: NextRequest) {
       }
     }
   } catch (error: any) {
-    console.log("Token error:", error);
 
     if (error.code === 'ERR_JWT_EXPIRED') {
       console.log("Token is expired");
@@ -113,9 +112,21 @@ export async function middleware(request: NextRequest) {
       });
 
       if (refreshResponse.ok) {
-        console.log("Token refreshed and new token set.");
-        // Simply let the next middleware proceed, as the refreshed token is already set by the `regenerate-token` endpoint
-        return NextResponse.next();
+        const newTokenCookie = refreshResponse.headers.get('set-cookie');
+
+        if (newTokenCookie) {
+          console.log("Token refreshed. Sending updated cookie to client.");
+
+          // Create a new NextResponse to include the updated token cookie
+          const response = NextResponse.next();
+
+          // Set the new token in the response headers
+          response.headers.set('Set-Cookie', newTokenCookie);
+
+          return response;
+      }
+
+        console.log("Failed to extract new token from refresh response.");
       }
 
       console.log("Token refresh failed for", pathname);

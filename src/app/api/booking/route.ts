@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma';
-import { sendBookingConfirmationEmail } from '@/utils/verification/sendVerificationEmail';
+import { sendBookingConfirmationEmail } from '@/utils/emailHelpers/emailHelpers';
 
 /**
  * Handler for POST: Create booking
  */
 export async function POST(req: Request) {
   try {
+    // Get user info from header
     const user_id = req.headers.get('x-user-id');
     const user_email = req.headers.get('x-user-email');
 
@@ -14,6 +15,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Unauthorized: Missing user information' }, { status: 401 });
     }
 
+    // Request payload
     const {
       vehicle_id,
       start_date,
@@ -28,6 +30,7 @@ export async function POST(req: Request) {
       delivery_address,
     } = await req.json();
 
+    // Required fields
     const missingFields = getMissingFields({
       vehicle_id,
       start_date,
@@ -41,12 +44,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: `Missing required fields: ${missingFields.join(', ')}` }, { status: 400 });
     }
 
+    // Validate input date format
     const parsedStartDate = new Date(start_date);
     const parsedEndDate = new Date(end_date);
     if (isNaN(parsedStartDate.getTime()) || isNaN(parsedEndDate.getTime())) {
       return NextResponse.json({ error: 'Invalid date format for start_date or end_date' }, { status: 400 });
     }
 
+    // Validate booking dates and check for date overlap (client prevents date overlap)
     await validateBooking(vehicle_id, parsedStartDate, parsedEndDate);
 
     // Set the correct delivery address based on delivery type
@@ -55,6 +60,7 @@ export async function POST(req: Request) {
         ? 'George Bush Intercontinental Airport, 2800 N Terminal Rd, Houston, TX 77032'
         : delivery_address;
 
+    // Create new booking in db
     const booking = await createBooking({
       vehicle_id: parseInt(vehicle_id),
       user_id,
@@ -70,6 +76,7 @@ export async function POST(req: Request) {
       delivery_address: finalDeliveryAddress,
     });
 
+    // Send confirmation email
     if (user_email) {
       await sendBookingConfirmationEmail({
         email: user_email,
@@ -85,7 +92,10 @@ export async function POST(req: Request) {
       });
     }
 
+    // Success
     return NextResponse.json(booking, { status: 201 });
+
+    // Fail
   } catch (error: any) {
     console.error('Error creating booking:', error);
     return NextResponse.json({ error: 'Failed to create booking. Please try again later.' }, { status: 500 });

@@ -56,17 +56,23 @@ export interface User {
   email: string;
   admin?: boolean;
   full_name?: string;
-  date_of_birth?: Date;
   phone?: string;
-  street_address?: string;
-  zip_code?: string;
+  license_street_address?: string;
+  license_zip_code?: string;
   license_number?: string;
+  license_date_of_birth?: Date;
   license_state?: string;
   license_city?: string;
   license_country?: string;
   license_expiration?: Date;
   license_front_img?: string;
   license_back_img?: string;
+  is_license_complete?: boolean;
+  billing_street_address? : string;
+  billing_city?: string;
+  billing_state?: string;
+  billing_zip_code?: string;
+  is_billing_complete?: boolean;
 }
 
 export interface Extra {
