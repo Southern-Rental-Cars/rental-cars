@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Extras from '../extras/box';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/components/contexts/UserContext';
@@ -29,28 +29,29 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
 
   const calculateRentalPeriod = () => differenceInDays(new Date(endDate), new Date(startDate)) + 1;
 
-  const getTotalPrice = () => {
-    const rentalPeriod = calculateRentalPeriod();
-    setRentalPeriod(rentalPeriod);
+// Inside the component
+const getTotalPrice = useCallback(() => {
+  const rentalPeriod = calculateRentalPeriod();
+  setRentalPeriod(rentalPeriod);
 
-    const vehicleSubtotal = vehicle.price * rentalPeriod;
-    const extrasCost = selectedExtras.reduce((total, extra) => {
-      const cost = extra.price_type === 'DAILY'
-        ? extra.price_amount * (extra.quantity || 1) * rentalPeriod
-        : extra.price_amount * (extra.quantity || 1);
-      return total + cost;
-    }, 0);
+  const vehicleSubtotal = vehicle.price * rentalPeriod;
+  const extrasCost = selectedExtras.reduce((total, extra) => {
+    const cost = extra.price_type === 'DAILY'
+      ? extra.price_amount * (extra.quantity || 1) * rentalPeriod
+      : extra.price_amount * (extra.quantity || 1);
+    return total + cost;
+  }, 0);
 
-    const deliveryCost = deliverySelected
-      ? (deliveryOption === 'local' ? 40 : deliveryOption === 'IAH' ? 120 : 0)
-      : 0;
+  const deliveryCost = deliverySelected
+    ? (deliveryOption === 'local' ? 40 : deliveryOption === 'IAH' ? 120 : 0)
+    : 0;
 
-    const updatedSubtotal = vehicleSubtotal + extrasCost + deliveryCost;
-    const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
+  const updatedSubtotal = vehicleSubtotal + extrasCost + deliveryCost;
+  const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
 
-    setTaxAmount(updatedTax);
-    setTotalPrice(parseFloat((updatedSubtotal + updatedTax).toFixed(2)));
-  };
+  setTaxAmount(updatedTax);
+  setTotalPrice(parseFloat((updatedSubtotal + updatedTax).toFixed(2)));
+}, [ startDate, endDate, selectedExtras, deliveryOption, deliverySelected, calculateRentalPeriod]);
 
   useEffect(() => {
     getTotalPrice();

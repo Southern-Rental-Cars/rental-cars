@@ -26,7 +26,7 @@ const Confirmation = async ({ params }: ConfirmationProps) => {
      <div className="min-h-screen flex items-center justify-center">
        <div className="text-center text-gray-600 space-y-4">
          <h1 className="text-2xl font-semibold">Resource Not Found</h1>
-         <p>We couldn't find the requested booking information.</p>
+         <p>Unable to find requested booking information. Call us.</p>
        </div>
      </div>
    );
