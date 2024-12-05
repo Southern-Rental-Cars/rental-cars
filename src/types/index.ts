@@ -155,3 +155,12 @@ export interface PaymentPageProps {
   availability: any;
   onBackToDetails: () => void;
 }
+
+export interface DetailsProps {
+  vehicle: Vehicle;
+  images: VehicleImages[];
+  onBack: () => void;
+  onProceedToPayment: () => void;
+  startDateTime: string;
+  endDateTime: string;
+}

@@ -2,18 +2,9 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Vehicle, VehicleImages } from '@/types';
+import { DetailsProps } from '@/types';
 import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
-import { format, differenceInDays, sub } from 'date-fns';
-
-interface DetailsProps {
-  vehicle: Vehicle;
-  images: VehicleImages[];
-  onBack: () => void;
-  onProceedToPayment: () => void;
-  startDateTime: string;
-  endDateTime: string;
-}
+import { format, differenceInDays } from 'date-fns';
 
 const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTime, endDateTime, onProceedToPayment }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
