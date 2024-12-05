@@ -1,3 +1,5 @@
+
+
 'use client';
 
 import React, { useState } from 'react';
@@ -82,7 +84,6 @@ export default function RegisterPage() {
   const verifyCode = async () => {
     try {
       const code = verificationCode.join('');
-      console.log(captchaToken)
       const payload = { email: formData.email, password: formData.password, code };
 
       const response = await fetch('/api/auth/verify-code', {
@@ -92,7 +93,7 @@ export default function RegisterPage() {
       });
 
       if (response.ok) {
-        // Automatically log the user in
+        // Automatically log in user
         const loginResponse = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

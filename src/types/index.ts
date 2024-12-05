@@ -1,3 +1,7 @@
+
+
+/** This is a bit messy but this file is all exported interfaces for globally defined types */
+
 export interface FAQ {
   question: string;
   answer: string;
@@ -5,7 +9,6 @@ export interface FAQ {
 
 export interface Vehicle {
   id: number;
-  short_description: string;
   image_url: string;
   thumbnail: string;
   make: string;
@@ -17,6 +20,7 @@ export interface Vehicle {
   num_seats: number;
   num_doors: number;
   gas_type: string;
+  short_description: string;
   features: string;
   extras: Extra[];
   guidelines: string;
@@ -25,8 +29,8 @@ export interface Vehicle {
 
 export interface VehicleImages {
   id: number;
-  image_url: string;
   vehicle_id: number;
+  image_url: string;
 }
 
 export interface BookingExtras {
@@ -47,8 +51,8 @@ export interface Booking {
   end_date: string;
   status: string;
   total_price: number;
-  booking_extras: BookingExtras[];
   currency: string;
+  booking_extras: BookingExtras[];
 }
 
 export interface User {
@@ -78,11 +82,11 @@ export interface User {
 export interface Extra {
   id: number;
   name: string;
-  price_amount: number;
   price_type: 'DAILY' | 'TRIP';
+  price_amount: number;
   description?: string;
-  quantity?: number;
   total_quantity?: number
+  quantity?: number;
 }
 
 export interface GridProps {

@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import Dates from './components/Dates';
 import Grid from './components/Grid';
-import Details from './components/details/page';
+import DetailsPage from './components/details/page';
 import PaymentDataProvider from './components/payment/DataProvider';
 import Loader from '@/components/Loader';
-import { Vehicle, VehicleImages } from '@/types';
+import { Vehicle, VehicleImages, DetailsProps } from '@/types';
 import { fetchAvailableVehicles, fetchImagesByVehicleId } from '@/utils/db/db';
 
 export default function Book() {
@@ -36,11 +36,13 @@ export default function Book() {
     }
   };
 
-  const handleBack = () => {
-    if (isProceedingToPayment) {
-      setIsProceedingToPayment(false);
-    } else {
-      setSelectedVehicle(null);
+  const fetchVehicleImages = async (vehicle_id: number) => {
+    try {
+      const images = await fetchImagesByVehicleId(vehicle_id);
+      setImages(images);
+    } catch (error) {
+      console.error('Error fetching vehicle images:', error);
+      setImages([]);
     }
   };
 
@@ -49,11 +51,7 @@ export default function Book() {
     setSearchCompleted(false);
     fetchVehicles(start, end);
   };
-
-  const handleProceedToPayment = () => {
-    setIsProceedingToPayment(true);
-  };
-
+  
   const handleSelectVehicle = async (vehicle: Vehicle) => {
     setIsLoading(true);
     setSelectedVehicle(vehicle);
@@ -61,13 +59,15 @@ export default function Book() {
     setIsLoading(false);
   };
 
-  const fetchVehicleImages = async (vehicle_id: number) => {
-    try {
-      const images = await fetchImagesByVehicleId(vehicle_id);
-      setImages(images);
-    } catch (error) {
-      console.error('Error fetching vehicle images:', error);
-      setImages([]);
+  const handleProceedToPayment = () => {
+    setIsProceedingToPayment(true);
+  };
+
+  const handleBack = () => {
+    if (isProceedingToPayment) {
+      setIsProceedingToPayment(false);
+    } else {
+      setSelectedVehicle(null);
     }
   };
 
@@ -85,7 +85,7 @@ export default function Book() {
   if (selectedVehicle && images) {
     return (
       <div className="flex flex-col items-center justify-center">
-        <Details
+        <DetailsPage 
           vehicle={selectedVehicle}
           images={images || []}
           startDateTime={dateRange.startDateTime}

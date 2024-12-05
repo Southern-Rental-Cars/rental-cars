@@ -1,3 +1,7 @@
+
+
+
+
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
@@ -14,16 +18,16 @@ const GENERATE_NEW_TOKEN = process.env.NEXT_PUBLIC_API_BASE_URL+ '/api/auth/rege
 // Define routes accessible to customers
 const customerAllowedRoutes = [
   { method: 'POST', path: /^\/api\/booking/ },
+  { method: 'POST', path: /^\/api\/extras\/availability/ },
+  { method: 'POST', path: /^\/api\/orders/ },
+  { method: 'POST', path: /^\/api\/user\/license/ }, 
   { method: 'GET', path: /^\/api\/booking(\/[^/]+)?\/?$/ },
  // { method: 'DELETE', path: /^\/api\/booking(\/[^/]+)?\/?$/ },
-  { method: 'POST', path: /^\/api\/orders/ },
   { method: 'GET', path: /^\/api\/vehicle/ },
   { method: 'GET', path: /^\/api\/vehicle_images/ },
-  { method: 'POST', path: /^\/api\/extras\/availability/ },
   { method: 'GET', path: /^\/api\/extras/ },
-  { method: 'PUT', path: /^\/api\/user/ },
-  { method: 'POST', path: /^\/api\/user\/license/ }, 
   { method: 'GET', path: /^\/api\/user(\/[^/]+)?\/?$/ },
+  { method: 'PUT', path: /^\/api\/user/ },
   //{ method: 'DELETE', path: /^\/api\/user/ },
   
   { method: 'GET', path: /^\/dashboard\/?$/ },
@@ -38,18 +42,18 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
 
-  console.log('Middleware initiated for:', pathname, 'with method:', method);
+ // console.log('Middleware initiated for:', pathname, 'with method:', method);
 
   // Check if the route is publicly accessible without a token
   const isPublicRoute = publicRoutes.some((route) => route.method === method && route.path.test(pathname));
   if (isPublicRoute) {
-    console.log('Public route accessed:', pathname);
+   // console.log('Public route accessed:', pathname);
     return NextResponse.next();
   }
 
   // Exclude authentication and refresh routes from requiring verification
   if (pathname.startsWith('/api/auth')) {
-    console.log('Auth route accessed without verification:', pathname);
+    // console.log('Auth route accessed without verification:', pathname);
     return NextResponse.next();
   }
 
@@ -73,7 +77,7 @@ export async function middleware(request: NextRequest) {
     const userId = payload.id;
     const userEmail = payload.email;
     
-    console.log('Token verified. adminUser:', adminUser, ', userId:', userId, ', userEmail:', userEmail);
+    //console.log('Token verified. adminUser:', adminUser, ', userId:', userId, ', userEmail:', userEmail);
 
     // Set user ID, role, and email in the headers for API routes
     const response = NextResponse.next();
