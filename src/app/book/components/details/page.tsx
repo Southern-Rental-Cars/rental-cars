@@ -2,11 +2,20 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { DetailsProps } from '@/types';
+import { Vehicle, VehicleImages } from '@/types';
 import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
 import { format, differenceInDays } from 'date-fns';
 
-const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTime, endDateTime, onProceedToPayment }) => {
+interface DetailsProps {
+  vehicle: Vehicle;
+  images: VehicleImages[];
+  startDateTime: string;
+  endDateTime: string;
+  onBack: () => void;
+  onProceedToPayment: () => void;
+}
+
+const DetailsPage: React.FC<DetailsProps> = ({ vehicle, images, startDateTime, endDateTime, onBack, onProceedToPayment }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,10 +44,12 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
   return (
     <div className="mt-3 flex flex-col items-center p-6">
       <div className="max-w-4xl w-full space-y-8">
+
         {/* Back Button */}
         <button onClick={onBack} className="flex items-center text-blue-600 font-semibold mb-3">
           <FaArrowLeft className="mr-2" /> Back
         </button>
+
         {/* Vehicle Carousel */}
         <div className="relative w-full h-[300px] rounded-lg overflow-hidden"> {/* Reduced height */}
           <Image
@@ -139,8 +150,8 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
           {/* Vehicle Information Card */}
           <div className="bg-white border border-gray-200 p-6 rounded-lg">
             <h2 className="text-xl font-semibold">{vehicle.year} {vehicle.make} {vehicle.model}</h2>
-            <div className="grid grid-cols-2 text-sm text-gray-700 mt-2">
-              <p><strong>Type:</strong> {vehicle.gas_type || 'N/A'}</p>
+            <div className="grid grid-cols-2 text-md text-gray-700 mt-3">
+              <p><strong>Fuel Type:</strong> {vehicle.gas_type || 'N/A'}</p>
               <p><strong>Seats:</strong> {vehicle.num_seats || 'N/A'}</p>
               <p><strong>Doors:</strong> {vehicle.num_doors || 'N/A'}</p>
               <p><strong>MPG:</strong> {vehicle.mpg || 'N/A'}</p>
@@ -150,6 +161,7 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
 
           {/* Booking Details Card */}
           <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-md">
+
             <h2 className="text-xl font-semibold mb-3">Booking Summary</h2>
             {/* Dates */}
             <div className="flex justify-between text-gray-700 text-md">
@@ -197,13 +209,15 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
               onClick={onProceedToPayment}
               className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center hover:bg-blue-700 transition"
             >
-              Checkout <FaArrowRight className="ml-2" />
+              Go to Checkout <FaArrowRight className="ml-2" />
             </button>
             </div>
+            
           </div>
 
         {/* Additional Information */}
         <div className="space-y-4">
+
           {/* Guidelines */}
           <div className="bg-white border border-gray-200 p-6 rounded-lg">
             <h2 className="text-xl font-semibold">Guidelines</h2>
@@ -237,10 +251,12 @@ const Details: React.FC<DetailsProps> = ({ vehicle, images, onBack, startDateTim
               )) || <p>No FAQs available</p>}
             </ul>
           </div>
+
         </div>
+
       </div>
     </div>
   );
 };
 
-export default Details;
+export default DetailsPage;

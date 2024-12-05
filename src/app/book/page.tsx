@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Dates from './components/Dates';
 import Grid from './components/Grid';
-import Details from './components/details/page';
+import DetailsPage from './components/details/page';
 import PaymentDataProvider from './components/payment/DataProvider';
 import Loader from '@/components/Loader';
 import { Vehicle, VehicleImages } from '@/types';
@@ -85,13 +85,13 @@ export default function Book() {
   if (selectedVehicle && images) {
     return (
       <div className="flex flex-col items-center justify-center">
-        <Details
-          onBack={handleBack}
-          onProceedToPayment={handleProceedToPayment}
+        <DetailsPage
           vehicle={selectedVehicle}
           images={images || []}
           startDateTime={dateRange.startDateTime}
           endDateTime={dateRange.endDateTime}
+          onBack={handleBack}
+          onProceedToPayment={handleProceedToPayment}
         />
       </div>
     );

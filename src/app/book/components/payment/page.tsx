@@ -9,7 +9,8 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { differenceInDays, format } from 'date-fns';
 import SecureCheckout from './PaypalButtons';
 
-const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extras, availability,onBackToDetails }) => {
+const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extras, availability, onBackToDetails }) => {
+
   const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [taxAmount, setTaxAmount] = useState<number>(0);
@@ -29,29 +30,29 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
 
   const calculateRentalPeriod = () => differenceInDays(new Date(endDate), new Date(startDate)) + 1;
 
-// Inside the component
-const getTotalPrice = useCallback(() => {
-  const rentalPeriod = calculateRentalPeriod();
-  setRentalPeriod(rentalPeriod);
+  /*** Calculate subtotal ***/
+  const getTotalPrice = useCallback(() => {
+    const rentalPeriod = calculateRentalPeriod();
+    setRentalPeriod(rentalPeriod);
 
-  const vehicleSubtotal = vehicle.price * rentalPeriod;
-  const extrasCost = selectedExtras.reduce((total, extra) => {
-    const cost = extra.price_type === 'DAILY'
-      ? extra.price_amount * (extra.quantity || 1) * rentalPeriod
-      : extra.price_amount * (extra.quantity || 1);
-    return total + cost;
-  }, 0);
+    const vehicleSubtotal = vehicle.price * rentalPeriod;
+    const extrasCost = selectedExtras.reduce((total, extra) => {
+      const cost = extra.price_type === 'DAILY'
+        ? extra.price_amount * (extra.quantity || 1) * rentalPeriod
+        : extra.price_amount * (extra.quantity || 1);
+      return total + cost;
+    }, 0);
 
-  const deliveryCost = deliverySelected
-    ? (deliveryOption === 'local' ? 40 : deliveryOption === 'IAH' ? 120 : 0)
-    : 0;
+    const deliveryCost = deliverySelected
+      ? (deliveryOption === 'local' ? 40 : deliveryOption === 'IAH' ? 120 : 0)
+      : 0;
 
-  const updatedSubtotal = vehicleSubtotal + extrasCost + deliveryCost;
-  const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
+    const updatedSubtotal = vehicleSubtotal + extrasCost + deliveryCost;
+    const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
 
-  setTaxAmount(updatedTax);
-  setTotalPrice(parseFloat((updatedSubtotal + updatedTax).toFixed(2)));
-}, [ startDate, endDate, selectedExtras, deliveryOption, deliverySelected, calculateRentalPeriod]);
+    setTaxAmount(updatedTax);
+    setTotalPrice(parseFloat((updatedSubtotal + updatedTax).toFixed(2)));
+  }, [ startDate, endDate, selectedExtras, deliveryOption, deliverySelected, calculateRentalPeriod]);
 
   useEffect(() => {
     getTotalPrice();
@@ -133,6 +134,7 @@ const getTotalPrice = useCallback(() => {
 
   return (
     <div className="max-w-3xl w-full mx-auto p-6 rounded-lg space-y-6 mt-3">
+
       <button onClick={onBackToDetails} className="flex items-center text-blue-600 font-semibold mb-3">
         <FaArrowLeft className="mr-2" /> Back
       </button>

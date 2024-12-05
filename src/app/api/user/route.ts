@@ -6,7 +6,6 @@ const encryptionKey = process.env.ENCRYPTION_KEY!; // Must be 32 bytes for AES-2
 const ivLength = 16; // For AES, this is always 16 bytes
 
 function encrypt(text: string): string {
-  console.log(Buffer.from(encryptionKey).length); // Should print 32
   const iv = crypto.randomBytes(ivLength);
   const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey), iv);
   let encrypted = cipher.update(text);
@@ -15,7 +14,6 @@ function encrypt(text: string): string {
 }
 
 function decrypt(text: string): string {
-  console.log(text)
   const [ivHex, encryptedText] = text.split(':');
   const iv = Buffer.from(ivHex, 'hex');
   const encrypted = Buffer.from(encryptedText, 'hex');

@@ -159,8 +159,8 @@ export interface PaymentPageProps {
 export interface DetailsProps {
   vehicle: Vehicle;
   images: VehicleImages[];
-  onBack: () => void;
-  onProceedToPayment: () => void;
   startDateTime: string;
   endDateTime: string;
+  onBack: () => void;
+  onProceedToPayment: () => void;
 }

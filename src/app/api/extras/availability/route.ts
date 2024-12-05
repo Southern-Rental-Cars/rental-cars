@@ -38,7 +38,6 @@ async function checkExtrasAvailability(
   startDate: Date,
   endDate: Date
 ) {
-  console.log(extras);
   const availability: { [extraId: number]: { available_quantity: number | string } } = {};
 
   for (const extra of extras) {
