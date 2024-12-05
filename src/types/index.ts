@@ -153,7 +153,7 @@ export interface PaymentPageProps {
   endDate: string;
   extras: Extra[];
   availability: any;
-  onBackToDetails: () => void;
+  onBack: () => void;
 }
 
 export interface DetailsProps {

@@ -9,15 +9,10 @@ interface PaymentDataProviderProps {
   vehicle: Vehicle;
   startDateTime: string;
   endDateTime: string;
-  onBackToDetails: () => void;
+  onBack: () => void;
 }
 
-const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
-  vehicle,
-  startDateTime,
-  endDateTime,
-  onBackToDetails,
-}) => {
+const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({ vehicle, startDateTime, endDateTime, onBack }) => {
   const [availability, setAvailability] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
@@ -87,7 +82,7 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
         <p>An error occurred. Please try again later.</p>
         <button
           className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700"
-          onClick={onBackToDetails}
+          onClick={onBack}
         >
           Back to Details
         </button>
@@ -102,7 +97,7 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
       endDate={endDateTime}
       extras={vehicle.extras}
       availability={availability}
-      onBackToDetails={onBackToDetails}
+      onBack={onBack}
     />
   );
 };

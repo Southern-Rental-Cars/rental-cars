@@ -53,9 +53,9 @@ const ContactPage = async () => {
 
         <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
           <p>
-            Southern Rental Cars is the top car rental service in The Woodlands and Houston area.
-            We own a fleet of vehicles with sedans, SUVs, vans, and growing.
-            Make a reservation and get top quality service.
+            Southern Rental Cars is the top car rental service in The Woodlands and Houston area. 
+            Our address for pickup: 16753 Donwick Dr Suite A12, The Woodlands, TX 77385. Please don't hesitate to call us.
+            We own a fleet of sedans, SUVs, and vans.
           </p>
           <p>For inquiries or to book your next drive, reach out to:</p>
           <a

@@ -6,6 +6,7 @@ import Loader from '@/components/Loader';
 import { useRouter } from 'next/navigation';
 import { FaArrowRight } from 'react-icons/fa';
 import { useUser } from '@/components/contexts/UserContext'; // Import the UserContext
+import Image from 'next/image';
 
 // Fetch user profile data
 const fetchUserProfile = async (): Promise<User> => {
@@ -239,7 +240,13 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             <div className="mb-4">
               <p className="font-medium">License Front:</p>
               {userInfo.license_front_img ? (
-                <img src={userInfo.license_front_img} alt="License Front" className="w-40 h-40 mt-2 border" />
+                <Image
+                  src={userInfo.license_front_img}
+                  alt="License Front"
+                  width={160}
+                  height={80} 
+                  className="mt-2 border"
+                />              
               ) : (
                 'N/A'
               )}
@@ -247,7 +254,13 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             <div className="mb-4">
               <p className="font-medium">License Back:</p>
               {userInfo.license_back_img ? (
-                <img src={userInfo.license_back_img} alt="License Back" className="w-40 h-40 mt-2 border" />
+                <Image 
+                  src={userInfo.license_back_img} 
+                  alt="License Back" 
+                  width={160} 
+                  height={80} 
+                  className="mt-2 border" 
+                />
               ) : (
                 'N/A'
               )}
@@ -260,7 +273,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
       ) : (
         <form id="license-form" onSubmit={handleSave} className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <label>
-            License Number:
+            Number:
             <input
               type="text"
               name="license_number"
@@ -271,7 +284,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             />
           </label>
           <label>
-            Expiration Date:
+            Expiration:
             <input
               type="date"
               name="license_expiration"
@@ -282,7 +295,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             />
           </label>
           <label>
-            Date of Birth:
+            Date of birth:
             <input
               type="date"
               name="license_date_of_birth"
@@ -351,7 +364,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             />
           </label>
           <label>
-            License Front Image:
+            Front-side photo:
             <input
               type="file"
               onChange={(e) => handleFileUpload(e, 'license_front_img')}
@@ -360,7 +373,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
             />
           </label>
           <label>
-            License Back Image:
+            Back-side photo:
             <input
               type="file"
               onChange={(e) => handleFileUpload(e, 'license_back_img')}
@@ -387,7 +400,8 @@ const PhoneSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUser
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<User>>({
     phone: userInfo.phone || '',
-  });  const [isSaving, setIsSaving] = useState(false);
+  });  
+  const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 

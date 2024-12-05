@@ -9,8 +9,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { differenceInDays, format } from 'date-fns';
 import SecureCheckout from './PaypalButtons';
 
-const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extras, availability, onBackToDetails }) => {
-
+const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extras, availability, onBack }) => {
   const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [taxAmount, setTaxAmount] = useState<number>(0);
@@ -135,7 +134,7 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
   return (
     <div className="max-w-3xl w-full mx-auto p-6 rounded-lg space-y-6 mt-3">
 
-      <button onClick={onBackToDetails} className="flex items-center text-blue-600 font-semibold mb-3">
+      <button onClick={onBack} className="flex items-center text-blue-600 font-semibold mb-3">
         <FaArrowLeft className="mr-2" /> Back
       </button>
 
@@ -170,7 +169,7 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
                 handleDeliveryChange(null); // Reset delivery options when toggling
               }}
             />
-            Delivery required
+            Need local delivery or IAH pickup?
           </label>
 
           {!deliverySelected && (
@@ -190,7 +189,7 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
                   onChange={() => handleDeliveryChange('local')}
                   className="mr-2"
                 />
-                Local Delivery (within 10 miles): $40
+                Local Delivery (The Woodlands): $40
               </label>
               <label className="flex items-center text-md text-gray-700">
                 <input
@@ -201,7 +200,7 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
                   onChange={() => handleDeliveryChange('IAH')}
                   className="mr-2"
                 />
-                Delivery to IAH Airport: $120
+                IAH Airport Pickup: $120
               </label>
 
               {/* Address input fields for Local Delivery */}
@@ -277,6 +276,7 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
         {selectedExtras.length > 0 && (
           <>
             <hr className="my-4 border-gray-300" />
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">Extras</h2>
             <ul className="space-y-1">
               {selectedExtras.map((extra) => {
                 const quantity = extra.quantity ?? 1;
