@@ -6,18 +6,21 @@ const encryptionKey = process.env.ENCRYPTION_KEY!; // Must be 32 bytes for AES-2
 const ivLength = 16; // For AES, this is always 16 bytes
 
 function encrypt(text: string): string {
-  const iv = crypto.randomBytes(ivLength);
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey), iv);
+  // initalize cipher
+  const initVector = crypto.randomBytes(ivLength);
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey), initVector);
+  // encrypting
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return `${iv.toString('hex')}:${encrypted.toString('hex')}`;
+
+  return `${initVector.toString('hex')}:${encrypted.toString('hex')}`;
 }
 
 function decrypt(text: string): string {
   const [ivHex, encryptedText] = text.split(':');
-  const iv = Buffer.from(ivHex, 'hex');
+  const initVector = Buffer.from(ivHex, 'hex');
   const encrypted = Buffer.from(encryptedText, 'hex');
-  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey), iv);
+  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey), initVector);
   let decrypted = decipher.update(encrypted);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
