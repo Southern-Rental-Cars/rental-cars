@@ -50,12 +50,14 @@ export default function LoginPage() {
           // Clear form and redirect after successful login
           setEmail('');
           setPassword('');
+          setCaptchaToken(null); // Reset CAPTCHA token after submission
           router.push('/');
         } else {
           setError('Unexpected response format.');
         }
       } else {
         const { message } = await response.json();
+        setIsSubmitting(false)
         setError(message || 'Login failed. Please try again.');
       }
     } catch (err) {
@@ -63,7 +65,6 @@ export default function LoginPage() {
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
-      setCaptchaToken(null); // Reset CAPTCHA token after submission
     }
   };
 

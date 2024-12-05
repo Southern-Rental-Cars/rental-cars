@@ -14,15 +14,6 @@ export async function POST(req: Request) {
     try {
         const { email, password, captchaToken } = await req.json();
 
-        // Validate CAPTCHA
-        const isCaptchaValid = await verifyRecaptcha(captchaToken);
-        if (!isCaptchaValid) {
-            return NextResponse.json(
-                { message: 'CAPTCHA verification failed. Please try again.' },
-                { status: 403 }
-            );
-        }
-
         // Find user in db
         const user = await prisma.user.findUnique({ where: { email } });
 
@@ -34,6 +25,15 @@ export async function POST(req: Request) {
             );
         }
 
+        // Validate CAPTCHA
+        const isCaptchaValid = await verifyRecaptcha(captchaToken);
+        if (!isCaptchaValid) {
+            return NextResponse.json(
+                { message: 'CAPTCHA verification failed. Please try again.' },
+                { status: 403 }
+            );
+        }
+        
         // Generate JWT token
         const token = jwt.sign(
             { id: user.id, email: user.email, admin: user.admin },

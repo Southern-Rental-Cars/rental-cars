@@ -213,7 +213,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
 
       updateUserInfo({ ...updatedFormData, is_license_complete: true });
       setIsEditing(false);
-
+      setErrorMessage(null); // Clear the error message after success
       alert('User information updated successfully.');
     } catch (error) {
       console.error('Failed to update user information:', error);
@@ -235,8 +235,8 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
   
       {!isEditing ? (
         <div>
-          <div className="flex gap-4 mb-4">
-            <div>
+          <div>
+            <div className="mb-4">
               <p className="font-medium">License Front:</p>
               {userInfo.license_front_img ? (
                 <img src={userInfo.license_front_img} alt="License Front" className="w-40 h-40 mt-2 border" />
@@ -244,7 +244,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
                 'N/A'
               )}
             </div>
-            <div>
+            <div className="mb-4">
               <p className="font-medium">License Back:</p>
               {userInfo.license_back_img ? (
                 <img src={userInfo.license_back_img} alt="License Back" className="w-40 h-40 mt-2 border" />
@@ -258,8 +258,8 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
           </button>
         </div>
       ) : (
-        <form id="license-form" onSubmit={handleSave} className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <label className="p-4 w-full">
+        <form id="license-form" onSubmit={handleSave} className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <label>
             License Number:
             <input
               type="text"
@@ -270,7 +270,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               required
             />
           </label>
-          <label className="p-4 w-full">
+          <label>
             Expiration Date:
             <input
               type="date"
@@ -281,7 +281,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               required
             />
           </label>
-          <label className="p-4 w-full">
+          <label>
             Date of Birth:
             <input
               type="date"
@@ -292,7 +292,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               required
             />
           </label>
-          <label className="p-4 w-full">
+          <label>
             Street Address:
             <input
               type="text"
@@ -303,7 +303,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               required
             />
           </label>
-          <label className="p-4 w-full">
+          <label>
             City:
             <input
               type="text"
@@ -314,7 +314,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               required
             />
           </label>
-          <label className="p-4 w-full">
+          <label>
             State (TX):
             <input
               type="text"
@@ -326,7 +326,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               required
             />
           </label>
-          <label className="p-4 w-full">
+          <label>
             Zip Code:
             <input
               type="text"
@@ -338,7 +338,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               required
             />
           </label>
-          <label className="p-4 w-full">
+          <label>
             Country (USA):
             <input
               type="text"
@@ -350,7 +350,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               required
             />
           </label>
-          <label className="p-4 w-full">
+          <label>
             License Front Image:
             <input
               type="file"
@@ -359,7 +359,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               required
             />
           </label>
-          <label className="p-4 w-full">
+          <label>
             License Back Image:
             <input
               type="file"
@@ -420,6 +420,8 @@ const PhoneSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUser
 
       updateUserInfo({ ...formData, phone: formData.phone });
       setIsEditing(false);
+      setErrorMessage(null); // Clear the error message after success
+
       alert('Phone number updated successfully.');
     } catch (error) {
       console.error('Failed to update phone number:', error);
@@ -520,7 +522,8 @@ const BillingSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
 
       updateUserInfo({ ...formData, is_billing_complete: true });
       setIsEditing(false);
-      
+      setErrorMessage(null); // Clear the error message after success
+
       alert('Billing information updated successfully.');
     } catch (error) {
       console.error('Failed to update billing information:', error);

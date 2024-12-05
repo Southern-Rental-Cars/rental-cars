@@ -8,9 +8,9 @@ import { cookies } from 'next/headers';
 
 // Reusable Card component with enhanced styling
 const Card = ({ title, children }: { title: string; children: React.ReactNode }) => (
- <div className="bg-white shadow-sm rounded-xl p-6 transition duration-200 hover:shadow-md">
+ <div className="bg-white border border-gray-200 rounded-xl p-6 transition duration-200 hover:shadow-md">
    <h2 className="text-xl font-semibold text-gray-800 mb-4">{title}</h2>
-   <div className="border-t border-gray-100 mb-4"></div>
+   <div className="mb-4"></div>
    {children}
  </div>
 );
@@ -43,13 +43,13 @@ const Confirmation = async ({ params }: ConfirmationProps) => {
 
  return (
    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-     <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
+     <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
     {/* Success Header */}
-    <div className="mb-12">
+    <div className="mb-8">
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-2xl md:text-4xl font-bold text-gray-900">Booking Confirmed!</h1>
-        <p className="text-lg md:text-xl text-gray-600 mt-2">Thank you for choosing Southern Rental Cars</p>
+        <p className="text-lg md:text-xl text-gray-600 mt-2">Thank you for booking with us</p>
       </div>
       <Image 
         src={southernLogo} 

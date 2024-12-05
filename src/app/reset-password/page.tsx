@@ -111,7 +111,7 @@ export default function ResetPasswordPage() {
             {isSubmitting ? 'Submitting...' : 'Reset Password'}
           </button>
           <p className="text-center text-gray-600">
-            Remember?{' '}
+            Remember password?{' '}
             <a href="/login" className="text-blue-600 hover:underline">
               Login
             </a>

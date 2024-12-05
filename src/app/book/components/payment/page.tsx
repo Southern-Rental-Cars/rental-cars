@@ -40,7 +40,7 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
     }, 0);
 
     const deliveryCost = deliverySelected
-      ? (deliveryOption === 'local' ? 20 : deliveryOption === 'IAH' ? 120 : 0)
+      ? (deliveryOption === 'local' ? 40 : deliveryOption === 'IAH' ? 120 : 0)
       : 0;
 
     const updatedSubtotal = vehicleSubtotal + extrasCost + deliveryCost;
@@ -99,7 +99,7 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
       is_paid: paypalData.is_paid,
       delivery_required: deliverySelected,
       delivery_type: deliveryOption,
-      delivery_cost: deliveryOption === 'local' ? 20 : deliveryOption === 'IAH' ? 120 : 0,
+      delivery_cost: deliveryOption === 'local' ? 40 : deliveryOption === 'IAH' ? 120 : 0,
       delivery_address: deliveryOption === 'local' && isAddressSaved ? formattedAddress : null,
     };
 
@@ -184,7 +184,7 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
                   onChange={() => handleDeliveryChange('local')}
                   className="mr-2"
                 />
-                Local Delivery (within 10 miles): $20
+                Local Delivery (within 10 miles): $40
               </label>
               <label className="flex items-center text-md text-gray-700">
                 <input

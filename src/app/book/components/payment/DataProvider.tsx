@@ -26,7 +26,7 @@ const PaymentDataProvider: React.FC<PaymentDataProviderProps> = ({
   useEffect(() => {
     const validateAndFetch = async () => {
       if (!user) {
-        alert('User is not authenticated.');
+        alert('Please log in or create account to proceed');
         router.push('/login'); // Redirect to dashboard
         setLoading(false);
         return;

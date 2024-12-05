@@ -15,7 +15,7 @@ const GENERATE_NEW_TOKEN = process.env.NEXT_PUBLIC_API_BASE_URL+ '/api/auth/rege
 const customerAllowedRoutes = [
   { method: 'POST', path: /^\/api\/booking/ },
   { method: 'GET', path: /^\/api\/booking(\/[^/]+)?\/?$/ },
-  { method: 'DELETE', path: /^\/api\/booking(\/[^/]+)?\/?$/ },
+ // { method: 'DELETE', path: /^\/api\/booking(\/[^/]+)?\/?$/ },
   { method: 'POST', path: /^\/api\/orders/ },
   { method: 'GET', path: /^\/api\/vehicle/ },
   { method: 'GET', path: /^\/api\/vehicle_images/ },
@@ -24,8 +24,8 @@ const customerAllowedRoutes = [
   { method: 'PUT', path: /^\/api\/user/ },
   { method: 'POST', path: /^\/api\/user\/license/ }, 
   { method: 'GET', path: /^\/api\/user(\/[^/]+)?\/?$/ },
-  { method: 'DELETE', path: /^\/api\/user/ },
-
+  //{ method: 'DELETE', path: /^\/api\/user/ },
+  
   { method: 'GET', path: /^\/dashboard\/?$/ },
 ];
 

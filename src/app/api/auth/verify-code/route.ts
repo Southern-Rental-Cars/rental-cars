@@ -5,9 +5,9 @@ import prisma from '@/utils/prisma';
 import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
-  const { email, code, password } = await req.json();
-
   try {
+    const { email, password, code } = await req.json();
+  
     const verification = await prisma.verificationCode.findUnique({
       where: { email, code },
     });

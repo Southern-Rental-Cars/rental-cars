@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FiMail, FiLock } from 'react-icons/fi';
 import Toast from '@/components/Toast';
 import { useUser } from '@/components/contexts/UserContext';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function RegisterPage() {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [verificationError, setVerificationError] = useState<string | null>(null);
   const [verificationCode, setVerificationCode] = useState(new Array(6).fill(''));
-
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -48,6 +49,12 @@ export default function RegisterPage() {
     setIsSubmitting(true);
     setError(null);
 
+    if (!captchaToken) {
+      setError('Please complete the CAPTCHA verification.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const { email, password } = formData;
       const payload = { email, password };
@@ -65,7 +72,7 @@ export default function RegisterPage() {
         setError(data.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Register error:', error);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -73,10 +80,11 @@ export default function RegisterPage() {
   };
 
   const verifyCode = async () => {
-    const code = verificationCode.join('');
-    const payload = { email: formData.email, code, password: formData.password };
-
     try {
+      const code = verificationCode.join('');
+      console.log(captchaToken)
+      const payload = { email: formData.email, password: formData.password, code };
+
       const response = await fetch('/api/auth/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,7 +96,7 @@ export default function RegisterPage() {
         const loginResponse = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: formData.email, password: formData.password }),
+          body: JSON.stringify({ email: formData.email, password: formData.password, captchaToken: captchaToken }),
         });
 
         if (loginResponse.ok) {
@@ -114,6 +122,10 @@ export default function RegisterPage() {
       console.error('Verification error:', error);
       setVerificationError('An unexpected error occurred. Please try again.');
     }
+  };
+
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
   };
 
   return (
@@ -158,9 +170,18 @@ export default function RegisterPage() {
           />
         </div>
         
+        {/* CAPTCHA */}
+        <div className="flex justify-center">
+          <ReCAPTCHA
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} // Your public reCAPTCHA site key
+            onChange={handleCaptchaChange}
+            onExpired={() => setCaptchaToken(null)} // Reset token on expiration
+          />
+        </div>
+
         <button
           type="submit"
-          disabled={!isFormValid || isSubmitting}
+          disabled={!isFormValid || !captchaToken|| isSubmitting}
           className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
         >
           {isSubmitting ? 'Registering...' : 'Register'}
@@ -203,6 +224,28 @@ function VerificationModal({
   onVerify,
   errorMessage
 }: VerificationModalProps) {
+  const inputRefs = Array.from({ length: verificationCode.length }, () =>
+    React.createRef<HTMLInputElement>()
+  );
+
+  const handleInputChange = (index: number, value: string) => {
+    if (!/^\d$/.test(value) && value !== '') return; // Allow only digits
+
+    const newCode = [...verificationCode];
+    newCode[index] = value;
+    setVerificationCode(index, value);
+
+    if (value !== '' && index < inputRefs.length - 1) {
+      inputRefs[index + 1].current?.focus(); // Move to the next input
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !verificationCode[index] && index > 0) {
+      inputRefs[index - 1].current?.focus(); // Move to the previous input on Backspace
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
       <div className="bg-white rounded-lg p-6 max-w-md w-full text-center shadow-lg">
@@ -213,10 +256,12 @@ function VerificationModal({
           {verificationCode.map((digit, idx) => (
             <input
               key={idx}
+              ref={inputRefs[idx]}
               type="text"
               maxLength={1}
               value={digit}
-              onChange={(e) => setVerificationCode(idx, e.target.value)}
+              onChange={(e) => handleInputChange(idx, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(idx, e)}
               className="w-12 h-12 border border-gray-300 rounded text-center text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
               style={{ boxShadow: errorMessage ? '0 0 0 2px red' : '' }}
             />

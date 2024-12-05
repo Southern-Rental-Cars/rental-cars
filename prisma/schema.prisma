@@ -104,36 +104,36 @@ model User {
   password_hash        String    @db.VarChar(100)
   admin                Boolean   @default(false)
   email                String    @unique @db.VarChar(100)
-  full_name            String?   @db.VarChar(100)
-  phone                String?   @db.VarChar(20)
+  full_name            String?   @db.VarChar(999)
+  phone                String?   @db.VarChar(999)
 
   // License Information
-  license_number       String?    @db.VarChar(25)
-  license_date_of_birth   DateTime?
-  license_street_address  String?   @db.Text
-  license_city         String?    @db.VarChar(25)
-  license_state        String?    @db.VarChar(25)
-  license_zip_code     String?   @db.VarChar(10)
-  license_country      String?    @db.VarChar(25)
-  license_expiration   DateTime?
-  license_front_img    String?    @db.Text
-  license_back_img     String?    @db.Text
-  is_license_complete    Boolean? @default(false)
+  license_number          String?      @db.VarChar(999)
+  license_date_of_birth   String?      @db.VarChar(999)
+  license_street_address  String?      @db.VarChar(999)
+  license_city            String?      @db.VarChar(999)
+  license_state           String?      @db.VarChar(999)
+  license_zip_code        String?      @db.VarChar(999)
+  license_country         String?      @db.VarChar(999)
+  license_expiration      String?      @db.VarChar(999)
+  license_front_img       String?      @db.Text
+  license_back_img        String?      @db.Text
+  is_license_complete     Boolean?     @default(false)
 
   // PayPal-related fields for payment
-  paypal_payer_id             String?   @db.VarChar(100) // Unique PayPal payer ID for identifying the PayPal account
-  paypal_billing_agreement_id String?   @db.VarChar(100) // PayPal billing agreement ID for saved payment methods
-  paypal_payment_token        String?   @db.VarChar(100) // Token used for recurring payments or stored payment methods
+  paypal_payer_id              String?   @db.VarChar(100) // Unique PayPal payer ID for identifying the PayPal account
+  paypal_billing_agreement_id  String?   @db.VarChar(100) // PayPal billing agreement ID for saved payment methods
+  paypal_payment_token         String?   @db.VarChar(100) // Token used for recurring payments or stored payment methods
 
   // Billing Information
-  billing_street_address String? @db.Text
-  billing_city           String? @db.VarChar(50)
-  billing_state          String? @db.VarChar(50)
-  billing_zip_code       String? @db.VarChar(10)
+  billing_street_address String?    @db.VarChar(999)
+  billing_city           String?    @db.VarChar(999)
+  billing_state          String?    @db.VarChar(999)
+  billing_zip_code       String?    @db.VarChar(999)
   is_billing_complete    Boolean?   @default(false)
 
-  created_at             DateTime? @default(now()) @db.Timestamp(6)
-  updated_at             DateTime? @updatedAt @db.Timestamp(6)
+  created_at             DateTime?  @default(now()) @db.Timestamp(6)
+  updated_at             DateTime?  @updatedAt @db.Timestamp(6)
   deleted_at             DateTime? 
 
   @@map("users")

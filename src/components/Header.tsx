@@ -96,7 +96,7 @@ export function Header() {
    {isMenuOpen && (
      <div
        ref={menuRef}
-       className="absolute top-full right-4 w-48 bg-white rounded-lg shadow-lg overflow-hidden"
+       className="absolute top-full right-4 w-48 bg-white rounded-lg overflow-hidden"
      >
        <ul className="divide-y divide-gray-100">
          {menuOptions.map((option, index) => (

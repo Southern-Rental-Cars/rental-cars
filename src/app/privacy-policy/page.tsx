@@ -6,7 +6,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="max-w-4xl mx-auto p-12 bg-white rounded-lg my-8">
       <h1 className="text-2xl font-semibold mb-1">Privacy Policy</h1>
-      <p className='text-gray-500 text-sm mb-4'> Last Updated: 12-02-24 </p>
+      <p className='text-gray-500 text-sm mb-4'> Last Updated: 12-05-24 </p>
       <section className="mb-6">
         <h2 className="text-lg font-semibold mb-2">Personal information we collect</h2>
         <p>
@@ -15,16 +15,17 @@ export default function PrivacyPolicy() {
         <h3 className="text-md font-semibold mt-4">Account data</h3>
         <p>
           When you register for an account with us, we require certain personal information to open your account, such as your name, email address, a password, personal information such as license information, billing address, phone number, and date of birth.
-          Your personal information is encrypted in our database. Information such as: password, date of birth, and license details.
+          Your private personal information is either hashed or encrypted in our database. Passwords are hashed following standard practice. The following fields are encrypted: date of birth, billing address, driver's license information, and phone number. 
+          Only the user can see their data.
         </p>
 
         <h3 className="text-md font-semibold mt-4">Profile data</h3>
         <p>
-          We may also ask you to provide additional profile information to use certain features of the services which may include street addresses, phone numbers, driver’s license number, date of issuance and issuing country and/or state, profile photos, and date of birth. Certain parts of your profile (like your profile photos, employer, city, school, and biography) are part of your public profile page and will be publicly visible to others.
+          We may also ask you to provide additional profile information to use certain features of the services which may include street addresses, phone numbers, driver’s license number, date of issuance and issuing country and/or state, profile photos, and date of birth.
         </p>
         <h3 className="text-md font-semibold mt-4">Cookies</h3>
         <p>
-          The only time cookies are stored on your device is when you log in to our site. These cookies store an authentication token to allow persistence of your logged-in state and authentication to access company data. Once you log out, these cookies are deleted.
+          Cookies are stored on your device when you log in to our site. These cookies store an authentication token to authentication to access company data. Once you log out, these cookies are deleted.
         </p>
         <h3 className="text-md font-semibold mt-4">Payment data</h3>
         <p>
@@ -33,7 +34,7 @@ export default function PrivacyPolicy() {
 
         <h3 className="text-md font-semibold mt-4">Identity verification data</h3>
         <p>
-          In some instances, we may collect identity verification information such as a photograph or scanned copy of a driver’s license, passport, national ID card, or payment card, last four digits of your Social Security number, social insurance number, social media account information, driver’s/motor vehicle record, insurance information, or other forms of identification information. Where we request that you withhold certain information (such as obscuring or redacting aspects of identification information), please do so.
+          In rare instances, we may collect identity verification information such as a photograph or scanned copy of a driver’s license, passport, national ID card, or payment card, last four digits of your Social Security number, social insurance number, social media account information, driver’s/motor vehicle record, insurance information, or other forms of identification information. Where we request that you withhold certain information (such as obscuring or redacting aspects of identification information), please do so.
         </p>
       </section>
 
