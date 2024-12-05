@@ -55,7 +55,7 @@ const getTotalPrice = useCallback(() => {
 
   useEffect(() => {
     getTotalPrice();
-  }, [startDate, endDate, selectedExtras, deliveryOption, deliverySelected, isAddressSaved]);
+  }, [startDate, endDate, vehicle.price, selectedExtras, deliveryOption, deliverySelected, isAddressSaved]);
 
   const handleAddToCart = (extra: Extra, quantity: number) => {
     setSelectedExtras((prevExtras) => {
