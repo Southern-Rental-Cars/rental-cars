@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Extras from '../extras/box';
 import { useRouter } from 'next/navigation';
@@ -25,16 +27,16 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
   const userId = user?.id;
   const router = useRouter();
 
-  const calculateDays = () => differenceInDays(new Date(endDate), new Date(startDate)) + 1;
+  const calculateRentalPeriod = () => differenceInDays(new Date(endDate), new Date(startDate)) + 1;
 
-  const calculateTotals = () => {
-    const calculatedDays = calculateDays();
-    setRentalPeriod(calculatedDays);
+  const getTotalPrice = () => {
+    const rentalPeriod = calculateRentalPeriod();
+    setRentalPeriod(rentalPeriod);
 
-    const vehicleSubtotal = vehicle.price * calculatedDays;
+    const vehicleSubtotal = vehicle.price * rentalPeriod;
     const extrasCost = selectedExtras.reduce((total, extra) => {
       const cost = extra.price_type === 'DAILY'
-        ? extra.price_amount * (extra.quantity || 1) * calculatedDays
+        ? extra.price_amount * (extra.quantity || 1) * rentalPeriod
         : extra.price_amount * (extra.quantity || 1);
       return total + cost;
     }, 0);
@@ -45,12 +47,13 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
 
     const updatedSubtotal = vehicleSubtotal + extrasCost + deliveryCost;
     const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
+
     setTaxAmount(updatedTax);
     setTotalPrice(parseFloat((updatedSubtotal + updatedTax).toFixed(2)));
   };
 
   useEffect(() => {
-    calculateTotals();
+    getTotalPrice();
   }, [startDate, endDate, selectedExtras, deliveryOption, deliverySelected, isAddressSaved]);
 
   const handleAddToCart = (extra: Extra, quantity: number) => {
