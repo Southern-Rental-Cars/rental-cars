@@ -82,7 +82,7 @@ export async function middleware(request: NextRequest) {
     // Set user ID, role, and email in the headers for API routes
     const response = NextResponse.next();
     response.headers.set('x-user-id', userId);
-    response.headers.set('x-user-role', adminUser);
+    response.headers.set('x-user-role', String(adminUser));
     response.headers.set('x-user-email', userEmail);
 
     // If user is an admin, allow access to all routes

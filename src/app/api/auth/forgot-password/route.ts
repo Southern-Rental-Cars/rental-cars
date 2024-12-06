@@ -15,7 +15,7 @@ const jwtExpiry = process.env.JWT_EXPIRY || '1d'; // Default to 1 day if not def
 export async function POST(req: Request) {
     try {
         const { email, recaptchaToken } = await req.json();
-        // Validate the email
+        // Validate email
         if (!email || typeof email !== 'string') {
             return NextResponse.json(
                 { message: 'Invalid request. Email is required.' },
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
             );
         }
 
-        // Validate the reCAPTCHA token
+        // Validate reCAPTCHA token
         if (!recaptchaToken || typeof recaptchaToken !== 'string') {
             return NextResponse.json(
                 { message: 'Invalid request. reCAPTCHA token is required.' },
@@ -44,7 +44,6 @@ export async function POST(req: Request) {
         const user = await prisma.user.findUnique({ where: { email } });
 
         if (!user) {
-            // Always respond with the same message to prevent user enumeration
             return NextResponse.json(
                 { message: 'If the email exists, a reset link has been sent' }
             );
@@ -53,7 +52,7 @@ export async function POST(req: Request) {
         // Create a JWT token for password reset
         const token = jwt.sign(
             { email, purpose: 'forgot-password' }, // Payload
-            jwtSecret, // Secret key
+            jwtSecret as string, // Secret key
             { expiresIn: jwtExpiry } // Options object
         );
 

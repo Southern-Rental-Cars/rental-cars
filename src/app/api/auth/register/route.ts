@@ -1,16 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma';
 import { sendVerificationEmail } from '@/utils/emailHelpers/emailHelpers';
-import { verifyRecaptcha } from '@/utils/google/captcha';
-
-function generateVerificationCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString(); // Generates a 6-digit random number
-}
 
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
-    console.log("REGISTERING")
+
     // Validate input
     if (!email || !password) {
       return NextResponse.json(
@@ -19,7 +14,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if the email already exists
+    // Check whether email exists
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json(
@@ -28,7 +23,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Generate a verification code and expiration time
+    // Create verification code
     const verificationCode = generateVerificationCode();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // Code expires in 15 minutes
 
@@ -49,10 +44,13 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('Error during registration:', error);
 
-    // Avoid leaking internal implementation details
     return NextResponse.json(
       { message: 'Something went wrong. Please try again later.' },
       { status: 500 }
     );
   }
+}
+
+function generateVerificationCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString(); // Generates a 6-digit random number
 }

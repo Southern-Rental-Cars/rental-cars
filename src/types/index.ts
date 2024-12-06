@@ -47,6 +47,7 @@ export interface BookingExtras {
 export interface Booking {
   id: number;
   vehicle_id: number;
+  vehicle: Vehicle;
   start_date: string;
   end_date: string;
   status: string;
@@ -64,11 +65,11 @@ export interface User {
   license_street_address?: string;
   license_zip_code?: string;
   license_number?: string;
-  license_date_of_birth?: Date;
+  license_date_of_birth?: string;
   license_state?: string;
   license_city?: string;
   license_country?: string;
-  license_expiration?: Date;
+  license_expiration?: string;
   license_front_img?: string;
   license_back_img?: string;
   is_license_complete?: boolean;
@@ -82,6 +83,7 @@ export interface User {
 export interface Extra {
   id: number;
   name: string;
+  extra_name: string;
   price_type: 'DAILY' | 'TRIP';
   price_amount: number;
   description?: string;

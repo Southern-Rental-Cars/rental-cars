@@ -48,18 +48,18 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const loadDashboardData = async () => {
+    const loadUserData = async () => {
       try {
         const [profile, bookings] = await Promise.all([fetchUserProfile(), fetchBookings()]);
         setUser(profile);
         setBookings(bookings);
       } catch (error) {
-        setError("Error loading dashboard data. Please try again later.");
+        setError("Error loading dashboard. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
-    loadDashboardData();
+    loadUserData();
   }, []);
 
   if (loading) return <Loader />;
@@ -137,8 +137,8 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
     license_state: '',
     license_city:'',
     license_country: '',
-    license_expiration: new Date(),
-    license_date_of_birth: new Date(),
+    license_expiration: '',
+    license_date_of_birth: '',
     license_street_address: '',
     license_zip_code: '',
     license_front_img: '',
@@ -195,8 +195,8 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
     // Ensure license_expiration and license_date_of_birth are converted back to Date
     const updatedFormData = {
       ...formData,
-      license_expiration: formData.license_expiration ? new Date(formData.license_expiration) : undefined,
-      license_date_of_birth: formData.license_date_of_birth ? new Date(formData.license_date_of_birth) : undefined,
+      license_expiration: formData.license_expiration ? formData.license_expiration : undefined,
+      license_date_of_birth: formData.license_date_of_birth ? formData.license_date_of_birth : undefined,
     };
 
     try {

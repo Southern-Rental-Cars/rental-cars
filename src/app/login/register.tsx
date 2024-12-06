@@ -5,7 +5,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiMail, FiLock } from 'react-icons/fi';
-import Toast from '@/components/Toast';
 import { useUser } from '@/components/contexts/UserContext';
 import ReCAPTCHA from 'react-google-recaptcha';
 
@@ -14,7 +13,6 @@ export default function RegisterPage() {
   const { setUser } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [verificationError, setVerificationError] = useState<string | null>(null);
   const [verificationCode, setVerificationCode] = useState(new Array(6).fill(''));
@@ -108,7 +106,6 @@ export default function RegisterPage() {
               email: user.email,
             });
             setShowVerificationModal(false);
-            setToastMessage('Verification successful! You are now logged in.');
             router.push('/'); // Redirect to home page after login
           }
         } else {
@@ -188,14 +185,6 @@ export default function RegisterPage() {
           {isSubmitting ? 'Registering...' : 'Register'}
         </button>
       </form>
-
-      {toastMessage && (
-        <Toast
-          message={toastMessage}
-          onClose={() => setToastMessage(null)}
-          style={{ backgroundColor: '#007bff', color: '#ffffff' }}
-        />
-      )}
 
       {showVerificationModal && (
         <VerificationModal

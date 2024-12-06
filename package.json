@@ -65,8 +65,11 @@
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
     "@types/bcryptjs": "^2.4.6",
+    "@types/js-cookie": "^3.0.6",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/pg": "^8.11.6",
     "@types/react-google-recaptcha": "^2.1.9",
+    "@types/uuid": "^10.0.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.4",
     "prettier": "^3.3.2",

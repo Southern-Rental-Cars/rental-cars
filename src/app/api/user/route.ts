@@ -40,6 +40,7 @@ export async function GET(request: Request) {
         id: true,
         email: true,
         phone: true,
+
         license_number: true,
         license_street_address: true,
         license_city: true,
@@ -50,6 +51,7 @@ export async function GET(request: Request) {
         license_expiration: true,
         license_front_img: true,
         license_back_img: true,
+
         billing_city: true,
         billing_zip_code: true,
         billing_state: true,

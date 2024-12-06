@@ -45,7 +45,7 @@ async function refreshToken(expiredToken: string) {
     // Generate a new token for the user
     const token = jwt.sign(
         { id: user.id, email: user.email, admin: user.admin }, 
-        jwtSecret,
+        jwtSecret as string,
         { expiresIn: jwtExpiry, algorithm: 'HS256' }
     );
     

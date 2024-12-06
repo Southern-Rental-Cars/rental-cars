@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         // Generate JWT token
         const token = jwt.sign(
             { id: user.id, email: user.email, admin: user.admin },
-            jwtSecret,
+            jwtSecret as string,
             {
                 expiresIn: jwtExpiry,
                 algorithm: 'HS256', // Specify algorithm explicitly

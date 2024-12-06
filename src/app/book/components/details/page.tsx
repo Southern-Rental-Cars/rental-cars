@@ -29,7 +29,7 @@ const DetailsPage: React.FC<DetailsProps> = ({ vehicle, images, startDateTime, e
   const openModal = (index: number) => {
     setActiveImageIndex(index);
     setIsModalOpen(true);
-  };
+  }; 
   const closeModal = () => setIsModalOpen(false);
 
   return (
