@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { FaArrowRight } from 'react-icons/fa';
 import { useUser } from '@/components/contexts/UserContext'; // Import the UserContext
 import Image from 'next/image';
+import { FaExclamationCircle, FaCheckCircle } from 'react-icons/fa'; // Import an icon library or use an SVG
 
 // Fetch user profile data
 const fetchUserProfile = async (): Promise<User> => {
@@ -28,7 +29,7 @@ const fetchBookings = async (): Promise<Booking[]> => {
 
 // Main Dashboard component with tab navigation
 const Dashboard = () => {
-  const { user: contextUser, setUser: setContextUser } = useUser(); // Access UserContext
+  const { user: contextUser, setUser: setContextUser } = useUser();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -36,14 +37,11 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<'bookings' | 'license' | 'billing' | 'phone'>('bookings');
   const [isNavigating, setIsNavigating] = useState(false);
 
-  const updateUserInfo = (updatedData: Partial<User>) => {
+  const updateUserInfo = (data: Partial<User>) => {
     if (user) {
-      // Update local user state
-      const updatedUser = { ...user, ...updatedData };
-      setUser(updatedUser);
-  
-      // Update the context with the same data
-      setContextUser({ ...contextUser, ...updatedData });
+      const updateUser = { ...user, ...data };
+      setUser(updateUser);
+      setContextUser({ ...contextUser, ...data });
     }
   };
 
@@ -64,40 +62,56 @@ const Dashboard = () => {
 
   if (loading) return <Loader />;
   if (error) return <p>{error}</p>;
-
+  console.log(contextUser);
   return (
     <div className="container mx-auto p-5 max-w-4xl relative">
       {isNavigating && (
         <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50">
-        <Loader /> {/* Overlay spinner for the entire dashboard */}
+          <Loader />
         </div>
       )}
 
       <h1 className="text-2xl font-bold mb-6 mt-3">Dashboard</h1>
       <div className="flex justify-around border-b mb-6">
-        <button
-          onClick={() => setActiveTab('bookings')}
+        <button onClick={() => setActiveTab('bookings')}
           className={`p-4 ${activeTab === 'bookings' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
-        >
-          Booking History
+        > Booking History
         </button>
         <button
           onClick={() => setActiveTab('license')}
-          className={`p-4 ${activeTab === 'license' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
+          className={`p-4 flex items-center ${activeTab === 'license' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
         >
-          Driver's License
+          Driver's License 
+          {contextUser && !contextUser.is_license_complete && (
+            <FaExclamationCircle className="w-5 h-5 ml-2 text-red-500" />
+          )}
+          {contextUser && contextUser.is_license_complete && (
+            <FaCheckCircle className="w-5 h-5 ml-2 text-green-500" />
+          )}
         </button>
         <button
           onClick={() => setActiveTab('billing')}
-          className={`p-4 ${activeTab === 'billing' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
+          className={`p-4 flex items-center ${activeTab === 'billing' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
         >
           Billing Address
+          {contextUser && !contextUser.is_billing_complete && (
+            <FaExclamationCircle className="w-5 h-5 ml-2 text-red-500" />
+          )}
+          {contextUser && contextUser.is_billing_complete && (
+            <FaCheckCircle className="w-5 h-5 ml-2 text-green-500" />
+          )}
         </button>
         <button
           onClick={() => setActiveTab('phone')}
-          className={`p-4 ${activeTab === 'phone' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
+          className={`p-4 flex items-center ${activeTab === 'phone' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
         >
-          Phone number
+          Phone Number
+          {contextUser && !contextUser.phone && (
+            <FaExclamationCircle className="w-5 h-5 ml-2 text-red-500" />
+          )}
+          {contextUser && contextUser.phone && (
+            <FaCheckCircle className="w-5 h-5 ml-2 text-green-500" />
+          )}
         </button>
       </div>
 
@@ -121,7 +135,7 @@ const Dashboard = () => {
         <LicenseSection userInfo={user} updateUserInfo={updateUserInfo} />
       )}
       {activeTab === 'billing' && user && (
-        <BillingSection userInfo={user} updateUserInfo={updateUserInfo}/>
+        <BillingSection userInfo={user} updateUserInfo={updateUserInfo} />
       )}
       {activeTab === 'phone' && user && (
         <PhoneSection userInfo={user} updateUserInfo={updateUserInfo} />
@@ -238,11 +252,11 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
         <div>
           <div>
             <div className="mb-4">
-              <p className="font-medium">License Front:</p>
+              <p className="font-medium">Front photo:</p>
               {userInfo.license_front_img ? (
                 <Image
                   src={userInfo.license_front_img}
-                  alt="License Front"
+                  alt="License front side photo"
                   width={160}
                   height={80} 
                   className="mt-2 border"
@@ -252,11 +266,11 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
               )}
             </div>
             <div className="mb-4">
-              <p className="font-medium">License Back:</p>
+              <p className="font-medium">Back photo:</p>
               {userInfo.license_back_img ? (
                 <Image 
                   src={userInfo.license_back_img} 
-                  alt="License Back" 
+                  alt="License back side photo" 
                   width={160} 
                   height={80} 
                   className="mt-2 border" 

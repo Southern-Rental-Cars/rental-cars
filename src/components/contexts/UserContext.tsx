@@ -12,6 +12,7 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
+
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
@@ -20,25 +21,21 @@ export const useUser = () => {
   return context;
 };
 
+
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUserState] = useState<Partial<User> | null>(null);
 
+  // store user fields in http cookie for smart retrieval
   const setUser = (user: Partial<User> | null) => {
     setUserState(user);
     if (user) {
-      // Save only necessary fields in cookies
       const { id, email, is_billing_complete, is_license_complete, phone } = user;
-      console.log(user);
-
-      Cookies.set(
-        'user',
-        JSON.stringify({ id, email, is_billing_complete, is_license_complete, phone }),
-        { expires: 7 }
-      );
+      Cookies.set('user', JSON.stringify({ id, email, is_billing_complete, is_license_complete, phone }), { expires: 7 });
     } else {
       Cookies.remove('user');
     }
   };
+
 
   const logout = async () => {
     try {
@@ -61,6 +58,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+
   useEffect(() => {
     const cookieUser = Cookies.get('user');
     if (cookieUser) {
@@ -73,4 +71,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </UserContext.Provider>
   );
+
+
+
 };
