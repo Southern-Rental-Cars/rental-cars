@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Extras from '../extras/ExtrasView';
+import ExtrasView from '../extras/ExtrasView';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/components/contexts/UserContext';
 import { Extra, PaypalOrder, Vehicle } from '@/types';
@@ -157,7 +157,7 @@ const PaymentsView: React.FC<PaymentsViewProps> = ({ vehicle, startDate, endDate
 
       {/* Unified Card */}
       <div className="bg-white border border-gray-200 p-6 rounded-lg">
-        <Extras extras={extras} availability={availability} onAddToCart={handleAddToCart} />
+        <ExtrasView extras={extras} availability={availability} onAddToCart={handleAddToCart} />
       </div>
 
       {/* Booking Summary Card */}

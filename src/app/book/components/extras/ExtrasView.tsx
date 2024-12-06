@@ -103,6 +103,8 @@ const Daily: React.FC<{
   </div>
 ));
 
+Daily.displayName = 'Daily';
+
 const Trip: React.FC<{
   extra: Extra;
   isSelected: boolean;
@@ -126,5 +128,7 @@ const Trip: React.FC<{
     <p className="text-md font-semibold text-gray-700 mt-2">${extra.price_amount} / {extra.price_type}</p>
   </div>
 ));
+
+Trip.displayName = 'Trip';
 
 export default React.memo(ExtrasView);
