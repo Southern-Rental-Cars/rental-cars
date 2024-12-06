@@ -7,7 +7,7 @@ import DetailsPage from './components/details/DetailsView';
 import PaymentDataProvider from './components/payment/DataProvider';
 import Loader from '@/components/Loader';
 import { Vehicle, VehicleImages } from '@/types';
-import { fetchAvailableVehicles, fetchImagesByVehicleId } from '@/utils/db/db';
+import { fetchAvailableVehicles, fetchImages } from '@/utils/db/db';
 
 export default function Book() {
   const [dateRange, setDateRange] = useState({
@@ -38,7 +38,7 @@ export default function Book() {
 
   const fetchVehicleImages = async (vehicle_id: number) => {
     try {
-      const images = await fetchImagesByVehicleId(vehicle_id);
+      const images = await fetchImages(vehicle_id);
       setImages(images);
     } catch (error) {
       console.error('Error fetching vehicle images:', error);

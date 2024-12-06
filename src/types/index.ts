@@ -104,15 +104,6 @@ export interface DetailsPageProps {
   onBack: () => void;
 }
 
-export interface PaymentsPageProps {
-  vehicle: Vehicle;
-  startDate: string;
-  endDate: string;
-  extras: Extra[];
-  availability: any;
-  onBack: () => void;
-}
-
 export interface ConfirmationProps {
   params: { id: string };
 }

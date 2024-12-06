@@ -21,11 +21,13 @@ const PaymentsView: React.FC<PaymentsViewProps> = ({ vehicle, startDate, endDate
   const router = useRouter();
 
   const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [taxAmount, setTaxAmount] = useState<number>(0);
   const [rentalPeriod, setRentalPeriod] = useState<number>(0);
+  const [taxAmount, setTaxAmount] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
   const [deliverySelected, setDeliverySelected] = useState(false);
   const [deliveryOption, setDeliveryOption] = useState<'local' | 'IAH' | null>(null);
+
   const [streetAddress, setStreetAddress] = useState('');
   const [apartment, setApartment] = useState('');
   const [city, setCity] = useState('');
@@ -33,7 +35,7 @@ const PaymentsView: React.FC<PaymentsViewProps> = ({ vehicle, startDate, endDate
   const [isAddressSaved, setIsAddressSaved] = useState(false);
   const [formattedAddress, setFormattedAddress] = useState('');
 
-  // set userId for paypal payment transfer
+  // For paypal payment processor
   const { user } = useUser();
   const userId = user?.id;
 
