@@ -21,10 +21,8 @@ async function fetchWithToken(url: string, token?: string) {
 }
 
 // Specific API methods
-
 export async function fetchAvailableVehicles(startDate: string, endDate: string) {
-  const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
-  return await fetchWithToken(`${baseURL}/api/vehicle?start=${startDate}&end=${endDate}`);
+  return await fetchWithToken(`/api/vehicle?start=${startDate}&end=${endDate}`);
 }
 
 
