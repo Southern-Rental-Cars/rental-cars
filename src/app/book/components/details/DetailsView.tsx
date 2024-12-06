@@ -2,11 +2,20 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { DetailsProps } from '@/types';
+import { Vehicle, VehicleImages } from '@/types';
 import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa';
 import { format, differenceInDays } from 'date-fns';
 
-const DetailsPage: React.FC<DetailsProps> = ({ vehicle, images, startDateTime, endDateTime, onBack, onProceedToPayment }) => {
+interface DetailsViewProps {
+  vehicle: Vehicle;
+  images: VehicleImages[];
+  startDateTime: string;
+  endDateTime: string;
+  onProceedToPayment: () => void;
+  onBack: () => void;
+}
+
+const DetailsView: React.FC<DetailsViewProps> = ({ vehicle, images, startDateTime, endDateTime, onBack, onProceedToPayment }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -250,4 +259,4 @@ const DetailsPage: React.FC<DetailsProps> = ({ vehicle, images, startDateTime, e
   );
 };
 
-export default DetailsPage;
+export default DetailsView;

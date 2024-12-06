@@ -1,15 +1,25 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Extras from '../extras/box';
+import Extras from '../extras/ExtrasView';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/components/contexts/UserContext';
-import { Extra, PaypalData, PaymentPageProps } from '@/types';
+import { Extra, PaypalOrder, Vehicle } from '@/types';
 import { FaArrowLeft } from 'react-icons/fa';
 import { differenceInDays, format } from 'date-fns';
 import SecureCheckout from './PaypalButtons';
 
-const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extras, availability, onBack }) => {
+interface PaymentsViewProps {
+  vehicle: Vehicle;
+  startDate: string;
+  endDate: string;
+  extras: Extra[];
+  availability: any;
+  onBack: () => void;
+}
+const PaymentsView: React.FC<PaymentsViewProps> = ({ vehicle, startDate, endDate, extras, availability, onBack }) => {
+  const router = useRouter();
+
   const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [taxAmount, setTaxAmount] = useState<number>(0);
@@ -23,74 +33,11 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
   const [isAddressSaved, setIsAddressSaved] = useState(false);
   const [formattedAddress, setFormattedAddress] = useState('');
 
+  // set userId for paypal payment transfer
   const { user } = useUser();
   const userId = user?.id;
-  const router = useRouter();
 
-  const calculateRentalPeriod = () => differenceInDays(new Date(endDate), new Date(startDate)) + 1;
-
-  /*** Calculate subtotal ***/
-  const getTotalPrice = useCallback(() => {
-    const rentalPeriod = calculateRentalPeriod();
-    setRentalPeriod(rentalPeriod);
-
-    const vehicleSubtotal = vehicle.price * rentalPeriod;
-    const extrasCost = selectedExtras.reduce((total, extra) => {
-      const cost = extra.price_type === 'DAILY'
-        ? extra.price_amount * (extra.quantity || 1) * rentalPeriod
-        : extra.price_amount * (extra.quantity || 1);
-      return total + cost;
-    }, 0);
-
-    const deliveryCost = deliverySelected
-      ? (deliveryOption === 'local' ? 40 : deliveryOption === 'IAH' ? 120 : 0)
-      : 0;
-
-    const updatedSubtotal = vehicleSubtotal + extrasCost + deliveryCost;
-    const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
-
-    setTaxAmount(updatedTax);
-    setTotalPrice(parseFloat((updatedSubtotal + updatedTax).toFixed(2)));
-  }, [ startDate, endDate, selectedExtras, deliveryOption, deliverySelected, calculateRentalPeriod]);
-
-  useEffect(() => {
-    getTotalPrice();
-  }, [startDate, endDate, vehicle.price, selectedExtras, deliveryOption, deliverySelected, isAddressSaved]);
-
-  const handleAddToCart = (extra: Extra, quantity: number) => {
-    setSelectedExtras((prevExtras) => {
-      const updatedExtras = prevExtras.filter((item) => item.id !== extra.id);
-      if (quantity > 0) {
-        updatedExtras.push({ ...extra, quantity });
-      }
-      return updatedExtras;
-    });
-  };
-
-  const handleDeliveryChange = (option: 'local' | 'IAH' | null) => {
-    setDeliveryOption(option);
-    setStreetAddress('');
-    setApartment('');
-    setCity('');
-    setZipCode('');
-    setIsAddressSaved(false);
-    setFormattedAddress('');
-  };
-
-  const handleSaveAddress = () => {
-    if (streetAddress && city && zipCode) {
-      const address = `${streetAddress}${apartment ? ', ' + apartment : ''}, ${city}, TX ${zipCode}`;
-      setFormattedAddress(address);
-      setIsAddressSaved(true);
-    }
-  };
-
-  const isPaymentEnabled = !(
-    deliveryOption === 'local' &&
-    (!isAddressSaved)
-  );
-
-  const handlePaymentSuccess = async (paypalData: PaypalData) => {
+  const handlePaymentSuccess = async (paypalData: PaypalOrder) => {
     const payload = {
       vehicle_id: vehicle.id,
       user_id: userId,
@@ -128,8 +75,76 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
     }
   };
 
+
+
+  const getTotalPrice = useCallback(() => {
+    const calculateRentalPeriod = () => differenceInDays(new Date(endDate), new Date(startDate)) + 1;
+    const rentalPeriod = calculateRentalPeriod();
+    setRentalPeriod(rentalPeriod);
+
+    const vehicleSubtotal = vehicle.price * rentalPeriod;
+    const extrasCost = selectedExtras.reduce((total, extra) => {
+      const cost = extra.price_type === 'DAILY'
+        ? extra.price_amount * (extra.quantity || 1) * rentalPeriod
+        : extra.price_amount * (extra.quantity || 1);
+      return total + cost;
+    }, 0);
+
+    const deliveryCost = deliverySelected
+      ? (deliveryOption === 'local' ? 40 : deliveryOption === 'IAH' ? 120 : 0)
+      : 0;
+
+    const updatedSubtotal = vehicleSubtotal + extrasCost + deliveryCost;
+    const updatedTax = parseFloat((updatedSubtotal * 0.0825).toFixed(2));
+
+    setTaxAmount(updatedTax);
+    setTotalPrice(parseFloat((updatedSubtotal + updatedTax).toFixed(2)));
+  }, [startDate, endDate, vehicle.price, selectedExtras, deliveryOption, deliverySelected]);
+
+  useEffect(() => {
+    getTotalPrice();
+  }, [getTotalPrice]);
+
+
+  const handleAddToCart = (extra: Extra, quantity: number) => {
+    setSelectedExtras((prevExtras) => {
+      const updatedExtras = prevExtras.filter((item) => item.id !== extra.id);
+      if (quantity > 0) {
+        updatedExtras.push({ ...extra, quantity });
+      }
+      return updatedExtras;
+    });
+  };
+
+
+  const handleDeliveryChange = (option: 'local' | 'IAH' | null) => {
+    setDeliveryOption(option);
+    setStreetAddress('');
+    setApartment('');
+    setCity('');
+    setZipCode('');
+    setIsAddressSaved(false);
+    setFormattedAddress('');
+  };
+
+
+  const handleSaveAddress = () => {
+    if (streetAddress && city && zipCode) {
+      const address = `${streetAddress}${apartment ? ', ' + apartment : ''}, ${city}, TX ${zipCode}`;
+      setFormattedAddress(address);
+      setIsAddressSaved(true);
+    }
+  };
+
+
+  const isPaymentEnabled = !(
+    deliveryOption === 'local' &&
+    (!isAddressSaved)
+  );
+
   const formattedStartDate = format(new Date(startDate), 'MMM dd, yyyy');
   const formattedEndDate = format(new Date(endDate), 'MMM dd, yyyy');
+
 
   return (
     <div className="max-w-3xl w-full mx-auto p-6 rounded-lg space-y-6 mt-3">
@@ -156,6 +171,9 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
           <p>To:</p>
           <p className="font-medium">{formattedEndDate}</p>
         </div>
+
+        {/* Divider */}
+        <hr className="my-4 border-gray-300" />
 
         {/* Delivery Option */}
         <div className="mt-3">
@@ -265,11 +283,11 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
                       </form>
                     </div>
                   )}
-          </div>
-        )}
-      </div>
+                </div>
+              )}
+            </div>
           )}
-        </div>
+     </div>
 
 
         {/* Extras Section */}
@@ -338,4 +356,4 @@ const Payment: React.FC<PaymentPageProps> = ({ vehicle, startDate, endDate, extr
   );
 };
 
-export default Payment;
+export default PaymentsView;

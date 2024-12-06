@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
 
- // console.log('Middleware initiated for:', pathname, 'with method:', method);
+  console.log('Middleware initiated for:', pathname, 'with method:', method);
 
   // Check if the route is publicly accessible without a token
   const isPublicRoute = publicRoutes.some((route) => route.method === method && route.path.test(pathname));
@@ -53,7 +53,7 @@ export async function middleware(request: NextRequest) {
 
   // Exclude authentication and refresh routes from requiring verification
   if (pathname.startsWith('/api/auth')) {
-    // console.log('Auth route accessed without verification:', pathname);
+     console.log('Auth route accessed without verification:', pathname);
     return NextResponse.next();
   }
 
@@ -77,7 +77,7 @@ export async function middleware(request: NextRequest) {
     const userId = payload.id;
     const userEmail = payload.email;
     
-    //console.log('Token verified. adminUser:', adminUser, ', userId:', userId, ', userEmail:', userEmail);
+    console.log('Token verified. adminUser:', adminUser, ', userId:', userId, ', userEmail:', userEmail);
 
     // Set user ID, role, and email in the headers for API routes
     const response = NextResponse.next();

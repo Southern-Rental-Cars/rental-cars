@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Payments from './page';
+import Payments from './PaymentsView';
 import { Vehicle } from '@/types/index';
 import Loader from '@/components/Loader';
 import { useUser } from '@/components/contexts/UserContext';

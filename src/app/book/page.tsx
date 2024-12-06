@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import Dates from './components/Dates';
 import Grid from './components/Grid';
-import DetailsPage from './components/details/page';
+import DetailsPage from './components/details/DetailsView';
 import PaymentDataProvider from './components/payment/DataProvider';
 import Loader from '@/components/Loader';
-import { Vehicle, VehicleImages, DetailsProps } from '@/types';
+import { Vehicle, VehicleImages } from '@/types';
 import { fetchAvailableVehicles, fetchImagesByVehicleId } from '@/utils/db/db';
 
 export default function Book() {

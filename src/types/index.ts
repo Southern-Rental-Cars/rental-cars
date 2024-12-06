@@ -95,6 +95,24 @@ export interface GridProps {
   vehicles: Vehicle[];  // List of cars to display in the grid
 }
 
+export interface DetailsPageProps {
+  vehicle: Vehicle;
+  images: VehicleImages[];
+  startDateTime: string;
+  endDateTime: string;
+  onProceedToPayment: () => void;
+  onBack: () => void;
+}
+
+export interface PaymentsPageProps {
+  vehicle: Vehicle;
+  startDate: string;
+  endDate: string;
+  extras: Extra[];
+  availability: any;
+  onBack: () => void;
+}
+
 export interface ConfirmationProps {
   params: { id: string };
 }
@@ -106,18 +124,6 @@ export interface PaypalButtonsProps {
     paypal_transaction_id: string;
     is_paid: boolean;
   }) => void;
-}
-
-export interface PaymentRadioOptionProps {
-  label: string;
-  value: string;
-  selectedValue: string;
-  onChange: (value: string) => void;
-}
-
-export interface ConfirmBookingBtnProps {
-  isPaying: boolean;
-  onSubmit: () => Promise<void>;
 }
 
 // config.ts
@@ -147,26 +153,8 @@ export const CARD_FIELD_STYLE = {
   },
 };
 
-export interface PaypalData {
+export interface PaypalOrder {
   paypal_order_id: string;
   paypal_transaction_id: string;
   is_paid: boolean;
-}
-
-export interface PaymentPageProps {
-  vehicle: Vehicle;
-  startDate: string;
-  endDate: string;
-  extras: Extra[];
-  availability: any;
-  onBack: () => void;
-}
-
-export interface DetailsProps {
-  vehicle: Vehicle;
-  images: VehicleImages[];
-  startDateTime: string;
-  endDateTime: string;
-  onBack: () => void;
-  onProceedToPayment: () => void;
 }
