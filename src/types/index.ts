@@ -117,33 +117,6 @@ export interface PaypalButtonsProps {
   }) => void;
 }
 
-// config.ts
-export const PAYPAL_CONFIG = {
-  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
-  components: "buttons,card-fields",
-  "disable-funding": "",
-  currency: "USD",
-  "buyer-country": "US",
-  "data-page-type": "product-details",
-  "data-sdk-integration-source": "developer-studio",
-};
-
-export const CARD_FIELD_STYLE = {
-  input: {
-    "font-size": "16px",
-    color: "#333",
-    padding: "8px",
-    "border-radius": "8px",
-  },
-  ".invalid": {
-    color: "red",
-  },
-  ".paypal-number-field": {
-    "font-size": "18px",
-    color: "#111",
-  },
-};
-
 export interface PaypalOrder {
   paypal_order_id: string;
   paypal_transaction_id: string;
