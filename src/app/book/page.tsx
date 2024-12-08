@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Dates from './components/Dates';
 import Grid from './components/Grid';
 import DetailsPage from './components/details/DetailsView';
@@ -9,67 +9,85 @@ import Loader from '@/components/Loader';
 import { Vehicle, VehicleImages } from '@/types';
 import { fetchAvailableVehicles, fetchImages } from '@/utils/db/db';
 
-export default function Book() {
+const Book: React.FC = () => {
   const [dateRange, setDateRange] = useState({
     startDateTime: new Date().toISOString(),
     endDateTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
   });
-
   const [availableVehicles, setAvailableVehicles] = useState<Vehicle[]>([]);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [images, setImages] = useState<VehicleImages[] | null>(null);
+  const [cachedAvailability, setCachedAvailability] = useState<any | null>(null); // Cache for availability data
   const [isProceedingToPayment, setIsProceedingToPayment] = useState(false);
-  const [searchCompleted, setSearchCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDetailsLoading, setIsDetailsLoading] = useState(false); // NEW STATE
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [searchCompleted, setSearchCompleted] = useState(false); // Track search completion
 
-  const fetchVehicles = async (start: string, end: string) => {
+  useEffect(() => {
+    // Automatically fetch available vehicles for the initial date range
+    fetchVehicles(dateRange.startDateTime, dateRange.endDateTime);
+  }, [dateRange.startDateTime, dateRange.endDateTime]);
+
+  const fetchVehicles = useCallback(async (start: string, end: string) => {
     setIsLoading(true);
+    setErrorMessage(null);
+    setSearchCompleted(false); // Reset searchCompleted before fetching
     try {
-      const data = await fetchAvailableVehicles(start, end);
-      setAvailableVehicles(data);
-      setSearchCompleted(true);
+      const vehicles = await fetchAvailableVehicles(start, end);
+      setAvailableVehicles(vehicles);
+      setSearchCompleted(true); // Mark search as completed
     } catch (error) {
-      console.error('Error fetching available vehicles:', error);
-      setSearchCompleted(true);
+      console.error('Error fetching vehicles:', error);
+      setErrorMessage('Failed to load vehicles. Please try again.');
+      setSearchCompleted(true); // Mark as completed even on error
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const fetchVehicleImages = async (vehicle_id: number) => {
+  const fetchVehicleImages = useCallback(async (vehicleId: number) => {
+    setIsDetailsLoading(true); // Mark details loading
+    setErrorMessage(null);
     try {
-      const images = await fetchImages(vehicle_id);
-      setImages(images);
+      const vehicleImages = await fetchImages(vehicleId);
+      setImages(vehicleImages);
     } catch (error) {
       console.error('Error fetching vehicle images:', error);
-      setImages([]);
+      setErrorMessage('Failed to load vehicle images. Please try again.');
+    } finally {
+      setIsDetailsLoading(false); // Reset details loading
     }
-  };
+  }, []);
 
-  const handleDateChange = (start: string, end: string) => {
-    setDateRange({ startDateTime: start, endDateTime: end });
-    setSearchCompleted(false);
-    fetchVehicles(start, end);
-  };
-  
-  const handleSelectVehicle = async (vehicle: Vehicle) => {
-    setIsLoading(true);
-    setSelectedVehicle(vehicle);
-    await fetchVehicleImages(vehicle.id);
-    setIsLoading(false);
-  };
+  const handleDateChange = useCallback(
+    (start: string, end: string) => {
+      setDateRange({ startDateTime: start, endDateTime: end });
+      fetchVehicles(start, end);
+    },
+    [fetchVehicles]
+  );
 
-  const handleProceedToPayment = () => {
+  const handleSelectVehicle = useCallback(
+    async (vehicle: Vehicle) => {
+      setIsDetailsLoading(true); // Start loading before updating vehicle
+      await fetchVehicleImages(vehicle.id);
+      setSelectedVehicle(vehicle); // Update vehicle only after images are fetched
+    },
+    [fetchVehicleImages]
+  );
+
+  const handleProceedToPayment = useCallback(() => {
     setIsProceedingToPayment(true);
-  };
+  }, []);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     if (isProceedingToPayment) {
       setIsProceedingToPayment(false);
     } else {
       setSelectedVehicle(null);
     }
-  };
+  }, [isProceedingToPayment]);
 
   if (isProceedingToPayment && selectedVehicle) {
     return (
@@ -77,15 +95,21 @@ export default function Book() {
         vehicle={selectedVehicle}
         startDateTime={dateRange.startDateTime}
         endDateTime={dateRange.endDateTime}
+        cachedAvailability={cachedAvailability}
+        setCachedAvailability={setCachedAvailability}
         onBack={handleBack}
       />
     );
   }
 
-  if (selectedVehicle && images) {
-    return (
+  if (selectedVehicle) {
+    return isDetailsLoading ? ( // Show loader while details are loading
+      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50">
+        <Loader />
+      </div>
+    ) : (
       <div className="flex flex-col items-center justify-center">
-        <DetailsPage 
+        <DetailsPage
           vehicle={selectedVehicle}
           images={images || []}
           startDateTime={dateRange.startDateTime}
@@ -110,9 +134,11 @@ export default function Book() {
         <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50">
           <Loader />
         </div>
+      ) : errorMessage ? (
+        <p className="mt-8 text-red-600 text-lg font-semibold">{errorMessage}</p>
       ) : searchCompleted && availableVehicles.length === 0 ? (
-        <p className="mt-8 text-red-600 text-lg font-semibold">
-          Sorry, our fleet is booked for these dates. We are looking to expand our fleet.
+        <p className="mt-8 text-gray-600 text-lg font-medium">
+          Sorry, no vehicles are available for these dates. Please adjust your selection.
         </p>
       ) : (
         <div className="mt-8 w-full max-w-6xl">
@@ -121,4 +147,6 @@ export default function Book() {
       )}
     </div>
   );
-}
+};
+
+export default Book;

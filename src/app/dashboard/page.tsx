@@ -62,7 +62,7 @@ const Dashboard = () => {
 
   if (loading) return <Loader />;
   if (error) return <p>{error}</p>;
-  console.log(contextUser);
+
   return (
     <div className="container mx-auto p-5 max-w-4xl relative">
       {isNavigating && (
@@ -72,47 +72,67 @@ const Dashboard = () => {
       )}
 
       <h1 className="text-2xl font-bold mb-6 mt-3">Dashboard</h1>
-      <div className="flex justify-around border-b mb-6">
-        <button onClick={() => setActiveTab('bookings')}
-          className={`p-4 ${activeTab === 'bookings' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
-        > Booking History
-        </button>
-        <button
-          onClick={() => setActiveTab('license')}
-          className={`p-4 flex items-center ${activeTab === 'license' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
-        >
-          Driver's License 
-          {contextUser && !contextUser.is_license_complete && (
-            <FaExclamationCircle className="w-5 h-5 ml-2 text-red-500" />
-          )}
-          {contextUser && contextUser.is_license_complete && (
-            <FaCheckCircle className="w-5 h-5 ml-2 text-green-500" />
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab('billing')}
-          className={`p-4 flex items-center ${activeTab === 'billing' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
-        >
-          Billing Address
-          {contextUser && !contextUser.is_billing_complete && (
-            <FaExclamationCircle className="w-5 h-5 ml-2 text-red-500" />
-          )}
-          {contextUser && contextUser.is_billing_complete && (
-            <FaCheckCircle className="w-5 h-5 ml-2 text-green-500" />
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab('phone')}
-          className={`p-4 flex items-center ${activeTab === 'phone' ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-600'}`}
-        >
-          Phone Number
-          {contextUser && !contextUser.phone && (
-            <FaExclamationCircle className="w-5 h-5 ml-2 text-red-500" />
-          )}
-          {contextUser && contextUser.phone && (
-            <FaCheckCircle className="w-5 h-5 ml-2 text-green-500" />
-          )}
-        </button>
+
+      <div className="flex flex-wrap md:flex-nowrap justify-between md:justify-around border-b mb-6 gap-2 md:gap-4 overflow-auto">
+      <button
+  onClick={() => setActiveTab('bookings')}
+  className={`w-full md:w-auto p-3 md:px-2 md:py-4 text-center ${
+    activeTab === 'bookings'
+      ? 'bg-blue-600 text-white font-bold rounded-t-md md:rounded-md'
+      : 'bg-white hover:bg-gray-200 rounded-t-md md:rounded-md'
+  }`}
+>
+  Booking History
+</button>
+<button
+  onClick={() => setActiveTab('license')}
+  className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center ${
+    activeTab === 'license'
+      ? 'bg-blue-600 text-white font-bold rounded-t-md md:rounded-md'
+      : 'bg-white hover:bg-gray-200 rounded-t-md md:rounded-md'
+  }`}
+>
+  Driver's License
+  {contextUser && !contextUser.is_license_complete && (
+    <FaExclamationCircle className="ml-2 text-red-500" />
+  )}
+  {contextUser && contextUser.is_license_complete && (
+    <FaCheckCircle className="ml-2 text-green-500" />
+  )}
+</button>
+<button
+  onClick={() => setActiveTab('billing')}
+  className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center ${
+    activeTab === 'billing'
+      ? 'bg-blue-600 text-white font-bold rounded-t-md md:rounded-md'
+      : 'bg-white hover:bg-gray-200 rounded-t-md md:rounded-md'
+  }`}
+>
+  Billing Address
+  {contextUser && !contextUser.is_billing_complete && (
+    <FaExclamationCircle className="ml-2 text-red-500" />
+  )}
+  {contextUser && contextUser.is_billing_complete && (
+    <FaCheckCircle className="ml-2 text-green-500" />
+  )}
+</button>
+<button
+  onClick={() => setActiveTab('phone')}
+  className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center ${
+    activeTab === 'phone'
+      ? 'bg-blue-600 text-white font-bold rounded-t-md md:rounded-md'
+      : 'bg-white hover:bg-gray-200 rounded-t-md md:rounded-md'
+  }`}
+>
+  Phone Number
+  {contextUser && !contextUser.phone && (
+    <FaExclamationCircle className="ml-2 text-red-500" />
+  )}
+  {contextUser && contextUser.phone && (
+    <FaCheckCircle className="ml-2 text-green-500" />
+  )}
+</button>
+
       </div>
 
       {activeTab === 'bookings' && (
@@ -474,7 +494,7 @@ const PhoneSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUser
       {!isEditing ? (
         <div>
           <div className="mb-4">
-            <p className="font-medium">Phone:</p>
+            <p className="font-medium">Phone Number:</p>
             <p>{userInfo.phone || 'N/A'}</p>
           </div>
           <button onClick={() => setIsEditing(true)} className="text-white font-semibold rounded-lg p-2 bg-blue-600 hover:bg-blue-700">

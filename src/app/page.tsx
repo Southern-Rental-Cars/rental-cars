@@ -28,7 +28,7 @@ const HomePage = () => {
         <div className="absolute inset-0 z-20 flex justify-center items-center px-8">
           <div className="text-left">
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-widest text-white mb-4">
-              Rent with Confidence 
+              Rent with confidence 
             </h1>
             <p className="text-lg tracking-right md:text-xl text-gray-300 mb-4">
               Explore The Woodlands and Houston area with our all-purpose fleet
@@ -45,13 +45,13 @@ const HomePage = () => {
         <div className='flex flex-col lg:flex-row p-2 lg:p-8'>
           <div className="text-center lg:w-2/3">
             <h2 className="text-5xl md:text-5xl font-bold tracking-wide dark:text-[#d9ab69] mb-8">
-              At Southern Rental Cars
+              At Southern Rental Cars we value:
             </h2>
             <div className="text-zinc-600 dark:text-zinc-400 space-y-8">
               {[
                 { title: "Convenience", desc: "We offer flexibile services with delivery and pickup options." },
-                { title: "Quality", desc: "We choose quality vehicles to ensure your drive is safe and equipped." },
-                { title: "Hospitality", desc: "Every trip is handled with the A rate service." }
+                { title: "Quality", desc: "We only select quality vehicles to ensure your drive is safe and equipped." },
+                { title: "Service", desc: "Every trip is handled with the high end service." }
               ].map((item, index) => (
                 <div className="text-left" key={index}>
                   <h3 className="text-3xl font-bold md:textxl text-black tracking-wide mb-2">{item.title}</h3>
