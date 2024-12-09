@@ -51,7 +51,7 @@ const DetailsView: React.FC<DetailsViewProps> = ({ vehicle, images, startDateTim
         </button>
 
         {/* Vehicle Carousel */}
-        <div className="relative w-full h-[300px] rounded-lg overflow-hidden"> {/* Reduced height */}
+        <div className="relative w-full h-[200px] rounded-lg overflow-hidden"> {/* Reduced height */}
           <Image
             src={images[activeImageIndex].image_url}
             alt={`Image of ${vehicle.make} ${vehicle.model}`}
@@ -92,8 +92,8 @@ const DetailsView: React.FC<DetailsViewProps> = ({ vehicle, images, startDateTim
                 key={idx}
                 src={img.image_url}
                 alt={`Thumbnail ${idx + 1}`}
-                width={60}  // Adjusted width
-                height={60} // Adjusted height for a more compact display
+                width={60}
+                height={45} // Adjusted height for a more compact display
                 className={`cursor-pointer rounded-lg ${activeImageIndex === idx ? 'ring-2 ring-blue-500' : ''}`}
                 onClick={() => openModal(idx)}
               />

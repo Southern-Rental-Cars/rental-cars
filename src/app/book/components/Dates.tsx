@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 
-interface SelectDatesBoxProps {
+interface DatesViewProps {
   onDateChange: (start: string, end: string) => void;
   defaultStartDateTime: string;
   defaultEndDateTime: string;
 }
 
-const SelectDatesBox: React.FC<SelectDatesBoxProps> = ({
+const DatesView: React.FC<DatesViewProps> = ({
   onDateChange,
   defaultStartDateTime,
   defaultEndDateTime,
@@ -49,7 +49,7 @@ const SelectDatesBox: React.FC<SelectDatesBoxProps> = ({
   };
 
   if (!minDateTime) {
-    return <div>Loading...</div>; // Fallback for minDateTime initialization
+    return null; // Fallback for minDateTime initialization
   }
 
   return (
@@ -100,4 +100,4 @@ const SelectDatesBox: React.FC<SelectDatesBoxProps> = ({
   );
 };
 
-export default SelectDatesBox;
+export default DatesView;

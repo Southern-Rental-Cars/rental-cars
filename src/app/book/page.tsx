@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
-import Dates from './components/Dates';
+import DatesView from './components/Dates';
 import Grid from './components/Grid';
 import DetailsPage from './components/details/DetailsView';
 import PaymentDataProvider from './components/payment/DataProvider';
@@ -124,7 +124,7 @@ const Book: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="w-full px-4 sm:px-6 lg:px-8">
-        <Dates
+        <DatesView
           onDateChange={handleDateChange}
           defaultStartDateTime={dateRange.startDateTime}
           defaultEndDateTime={dateRange.endDateTime}
@@ -141,7 +141,7 @@ const Book: React.FC = () => {
           Sorry, no vehicles are available for these dates. Please adjust your selection.
         </p>
       ) : (
-        <div className="mt-8 w-full max-w-6xl">
+        <div className="mt-8 mb-8 w-full max-w-6xl">
           <Grid vehicles={availableVehicles} onSelectVehicle={handleSelectVehicle} />
         </div>
       )}
