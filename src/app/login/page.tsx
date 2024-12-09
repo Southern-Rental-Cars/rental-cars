@@ -14,21 +14,21 @@ export default function AuthPage() {
   const toggleAuthForm = () => setIsRegister(!isRegister);
 
   return (
-    <div className="flex items-center justify-center px-4 pt-12">
-      <div className="bg-white rounded-lg max-w-md w-full p-6 border border-gray-200">
+    <div className="flex items-center justify-center px-4 pt-12 pb-12">
+      <div className=" max-w-md w-full p-6 bg-white rounded-lg shadow-md">
         {/* Logo */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-6">
           <Image 
             src={Logo}
             alt="Southern Rental Cars Logo"
-            width={49} // Adjust the size as needed
-            height={49} // Adjust the size as needed
+            width={65} // Adjust the size as needed
+            height={65} // Adjust the size as needed
             loading="lazy"
           />
         </div>
         {/* Welcome Message */}
-        <h2 className="text-xl font-bold text-center text-gray-800 mb-3">
-            {isRegister ? 'Create a new account' : null}
+        <h2 className="text-xl font-semibold text-center text-gray-800 mb-3">
+            {isRegister ? 'Create an Account' : null}
           </h2>
 
         {/* Conditionally Render Login or Register Component */}
@@ -46,7 +46,7 @@ export default function AuthPage() {
         <p className="mt-2 text-center text-gray-600">
           {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button onClick={toggleAuthForm} className="text-blue-600 hover:underline font-medium">
-            {isRegister ? 'Log in' : 'Create new account'}
+            {isRegister ? 'Log in' : 'Create an account'}
           </button>
         </p>
       </div>

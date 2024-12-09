@@ -91,7 +91,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
-            placeholder="janedoe@gmail.com"
+            placeholder="Email"
           />
         </div>
 
@@ -109,7 +109,7 @@ export default function LoginPage() {
         </div>
 
         {/* CAPTCHA */}
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-4">
           <ReCAPTCHA
             sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} // Your public reCAPTCHA site key
             onChange={handleCaptchaChange}
@@ -125,8 +125,8 @@ export default function LoginPage() {
         >
           {isSubmitting ? 'Logging in...' : 'Log in'}
         </button>
-        <p className="text-center text-gray-600">
-          <a href="/forgot-password" className="text-blue-600 hover:underline">
+        <p className="text-center font-semibold text-gray-500">
+          <a href="/forgot-password" className="hover:underline">
             Forgot password?
           </a>
         </p>
