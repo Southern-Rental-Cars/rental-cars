@@ -48,10 +48,10 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="flex items-center justify-center px-4 pt-12">
-      <div className="bg-white rounded-lg max-w-md w-full p-6 border border-gray-200">
+      <div className="bg-white rounded-lg shadow-md max-w-md w-full p-6">
       
         {/* Welcome Message */}
-        <h2 className="text-xl font-semibold text-center text-gray-800 mb-3">Forgot password?</h2>
+        <h2 className="text-xl font-semibold text-center text-gray-800 mb-3">Forgot your password?</h2>
         {message && (
           <div className="mb-4 text-green-600 text-center border border-green-200 rounded-md p-2 bg-green-50">
             {message}
@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
             <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
-              placeholder="janedoe@gmail.com"
+              placeholder="Email"
             />
           </div>
 
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
 
           <p className="text-center text-gray-600">
             Remember?{' '}
-            <a href="/login" className="text-blue-600 hover:underline"> Login </a>
+            <a href="/login" className="text-blue-600 hover:underline"> Log in </a>
           </p>
         </form>
       </div>
