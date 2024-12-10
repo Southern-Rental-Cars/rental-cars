@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Booking, User } from '@/types';
 import Loader from '@/components/Loader';
 import { useRouter } from 'next/navigation';
-import { FaArrowRight } from 'react-icons/fa';
 import { useUser } from '@/components/contexts/UserContext'; // Import the UserContext
 import Image from 'next/image';
 import { FaExclamationCircle, FaCheckCircle } from 'react-icons/fa'; // Import an icon library or use an SVG
@@ -71,67 +70,68 @@ const Dashboard = () => {
         </div>
       )}
 
-      <h1 className="text-2xl font-bold mb-6 mt-3">Dashboard</h1>
-
-      <div className="flex flex-wrap md:flex-nowrap justify-between md:justify-around border-b mb-6 gap-2 md:gap-4 overflow-auto">
-      <button
-  onClick={() => setActiveTab('bookings')}
-  className={`w-full md:w-auto p-3 md:px-2 md:py-4 text-center ${
-    activeTab === 'bookings'
-      ? 'bg-blue-600 text-white font-bold rounded-t-md md:rounded-md'
-      : 'bg-white hover:bg-gray-200 rounded-t-md md:rounded-md'
-  }`}
->
-  Booking History
-</button>
-<button
-  onClick={() => setActiveTab('license')}
-  className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center ${
-    activeTab === 'license'
-      ? 'bg-blue-600 text-white font-bold rounded-t-md md:rounded-md'
-      : 'bg-white hover:bg-gray-200 rounded-t-md md:rounded-md'
-  }`}
->
-  Driver's License
-  {contextUser && !contextUser.is_license_complete && (
-    <FaExclamationCircle className="ml-2 text-red-500" />
-  )}
-  {contextUser && contextUser.is_license_complete && (
-    <FaCheckCircle className="ml-2 text-green-500" />
-  )}
-</button>
-<button
-  onClick={() => setActiveTab('billing')}
-  className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center ${
-    activeTab === 'billing'
-      ? 'bg-blue-600 text-white font-bold rounded-t-md md:rounded-md'
-      : 'bg-white hover:bg-gray-200 rounded-t-md md:rounded-md'
-  }`}
->
-  Billing Address
-  {contextUser && !contextUser.is_billing_complete && (
-    <FaExclamationCircle className="ml-2 text-red-500" />
-  )}
-  {contextUser && contextUser.is_billing_complete && (
-    <FaCheckCircle className="ml-2 text-green-500" />
-  )}
-</button>
-<button
-  onClick={() => setActiveTab('phone')}
-  className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center ${
-    activeTab === 'phone'
-      ? 'bg-blue-600 text-white font-bold rounded-t-md md:rounded-md'
-      : 'bg-white hover:bg-gray-200 rounded-t-md md:rounded-md'
-  }`}
->
-  Phone Number
-  {contextUser && !contextUser.phone && (
-    <FaExclamationCircle className="ml-2 text-red-500" />
-  )}
-  {contextUser && contextUser.phone && (
-    <FaCheckCircle className="ml-2 text-green-500" />
-  )}
-</button>
+      <div className="flex flex-wrap md:flex-nowrap justify-between md:justify-around mb-6 gap-2 md:gap-4 overflow-auto">
+        <button
+          onClick={() => setActiveTab('bookings')}
+          className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center rounded-lg ${
+            activeTab === 'bookings'
+              ? 'bg-gray-200 text-black font-bold'
+              : 'bg-white hover:bg-gray-100'
+          }`}
+        >
+          Booking History
+        </button>
+        
+        <button
+          onClick={() => setActiveTab('license')}
+          className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center rounded-lg ${
+            activeTab === 'license'
+              ? 'bg-gray-100 text-black font-bold'
+              : 'bg-white hover:bg-gray-200'
+          }`}
+        >
+          Driver's License
+          {contextUser && !contextUser.is_license_complete && (
+            <FaExclamationCircle className="ml-2 text-red-500" />
+          )}
+          {contextUser && contextUser.is_license_complete && (
+            <FaCheckCircle className="ml-2 text-green-500" />
+          )}
+        </button>
+        
+        <button
+          onClick={() => setActiveTab('billing')}
+          className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center rounded-lg ${
+            activeTab === 'billing'
+            ? 'bg-gray-200 text-black font-bold'
+            : 'bg-white hover:bg-gray-100'
+          }`}
+        >
+          Billing Address
+          {contextUser && !contextUser.is_billing_complete && (
+            <FaExclamationCircle className="ml-2 text-red-500" />
+          )}
+          {contextUser && contextUser.is_billing_complete && (
+            <FaCheckCircle className="ml-2 text-green-500" />
+          )}
+        </button>
+        
+        <button
+          onClick={() => setActiveTab('phone')}
+          className={`w-full md:w-auto p-3 md:px-6 md:py-4 text-center flex items-center justify-center rounded-lg ${
+            activeTab === 'phone'
+            ? 'bg-gray-200 text-black font-bold'
+            : 'bg-white hover:bg-gray-`100'
+          }`}
+        >
+          Phone Number
+          {contextUser && !contextUser.phone && (
+            <FaExclamationCircle className="ml-2 text-red-500" />
+          )}
+          {contextUser && contextUser.phone && (
+            <FaCheckCircle className="ml-2 text-green-500" />
+          )}
+        </button>
 
       </div>
 
@@ -160,6 +160,7 @@ const Dashboard = () => {
       {activeTab === 'phone' && user && (
         <PhoneSection userInfo={user} updateUserInfo={updateUserInfo} />
       )}
+
     </div>
   );
 };
@@ -265,7 +266,7 @@ const LicenseSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg mb-6 border border-gray-200">
+    <div className="bg-white p-6 rounded-lg mb-6">
       {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
   
       {!isEditing ? (
@@ -488,7 +489,7 @@ const PhoneSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUser
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg mb-6 border border-gray-200">
+    <div className="bg-white p-6 rounded-lg mb-6">
       {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
   
       {!isEditing ? (
@@ -593,7 +594,7 @@ const BillingSection = ({ userInfo, updateUserInfo }: { userInfo: User; updateUs
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg mb-6 border border-gray-200">
+    <div className="bg-white p-6 rounded-lg mb-6">
       {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
 
       {!isEditing ? (
@@ -691,7 +692,7 @@ const BookingCard = ({ booking, setIsNavigating }: { booking: Booking; setIsNavi
   return (
     <div
       onClick={handleClick}
-      className="p-4 bg-white border border-gray-200 rounded-lg cursor-pointer flex items-center justify-between transition hover:shadow-lg relative"
+      className="p-4 bg-white rounded-lg cursor-pointer flex items-center justify-between transition hover:shadow-lg relative"
     >
       <div>
         <h1 className='font-bold font-lg'>{booking.vehicle.year} {booking.vehicle.make} {booking.vehicle.model}</h1>
@@ -699,7 +700,6 @@ const BookingCard = ({ booking, setIsNavigating }: { booking: Booking; setIsNavi
         <p>End Date: {new Date(booking.end_date).toLocaleDateString()}</p>
         <p>Total: ${booking.total_price}</p>
       </div>
-      <FaArrowRight />
     </div>
   );
 };
