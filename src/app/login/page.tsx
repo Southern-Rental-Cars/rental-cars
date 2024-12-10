@@ -15,7 +15,7 @@ export default function AuthPage() {
 
   return (
     <div className="flex items-center justify-center px-4 pt-12 pb-12">
-      <div className=" max-w-md w-full p-6 bg-white rounded-lg shadow-md">
+      <div className=" max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <Image 
@@ -27,9 +27,9 @@ export default function AuthPage() {
           />
         </div>
         {/* Welcome Message */}
-        <h2 className="text-xl font-semibold text-center text-gray-800 mb-3">
-            {isRegister ? 'Create an Account' : null}
-          </h2>
+        <h1 className="text-2xl text-center font-bold text-gray-800 mb-3">
+            {isRegister ? 'Create an Account' : "Welcome Back"}
+          </h1>
 
         {/* Conditionally Render Login or Register Component */}
         {isRegister ? <Register /> : <Login />}

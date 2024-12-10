@@ -82,40 +82,32 @@ export default function LoginPage() {
 
       {/* Login Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="relative">
-          <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="email"
-            id="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
-            placeholder="Email"
-          />
-        </div>
+          <div className="relative">
+            <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="email"
+              id="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
+              placeholder="Email"
+            />
+          </div>
 
-        <div className="relative">
-          <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="password"
-            id="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
-            placeholder="Password"
-          />
-        </div>
+          <div className="relative">
+            <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="password"
+              id="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700"
+              placeholder="Password"
+            />
+          </div>
 
-        {/* CAPTCHA */}
-        <div className="flex justify-center mt-4">
-          <ReCAPTCHA
-            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} // Your public reCAPTCHA site key
-            onChange={handleCaptchaChange}
-            onExpired={() => setCaptchaToken(null)} // Reset token on expiration
-          />
-        </div>
 
         {/* Main Login Button */}
         <button
