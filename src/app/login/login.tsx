@@ -108,7 +108,15 @@ export default function LoginPage() {
             />
           </div>
 
-
+        {/* CAPTCHA */}
+        <div className="flex justify-center mt-4">
+          <ReCAPTCHA
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} // Your public reCAPTCHA site key
+            onChange={handleCaptchaChange}
+            onExpired={() => setCaptchaToken(null)} // Reset token on expiration
+          />
+        </div>
+        
         {/* Main Login Button */}
         <button
           type="submit"
