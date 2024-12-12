@@ -13,7 +13,9 @@ interface JwtPayload {
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_default_secret';
-const GENERATE_NEW_TOKEN = process.env.NEXT_PUBLIC_API_BASE_URL+ '/api/auth/regenerate-token';
+
+// Regenerate token endpoint
+const GENERATE_NEW_TOKEN = '/api/auth/regenerate-token';
 
 // Define routes accessible to customers
 const customerAllowedRoutes = [
@@ -107,7 +109,7 @@ export async function middleware(request: NextRequest) {
     if (error.code === 'ERR_JWT_EXPIRED') {
       console.log("Token is expired");
 
-      const refreshResponse = await fetch(GENERATE_NEW_TOKEN, {
+      const refreshResponse = await fetch('/api/auth/regenerate-token', {
         method: 'POST',
         credentials: 'include',
         headers: {
