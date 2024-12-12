@@ -13,8 +13,6 @@ interface JwtPayload {
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_default_secret';
-
-// Regenerate token endpoint
 const GENERATE_NEW_TOKEN = '/api/auth/regenerate-token';
 
 // Define routes accessible to customers
@@ -49,13 +47,13 @@ export async function middleware(request: NextRequest) {
   // Check if the route is publicly accessible without a token
   const isPublicRoute = publicRoutes.some((route) => route.method === method && route.path.test(pathname));
   if (isPublicRoute) {
-   // console.log('Public route accessed:', pathname);
+    console.log('Public route accessed:', pathname);
     return NextResponse.next();
   }
 
   // Exclude authentication and refresh routes from requiring verification
   if (pathname.startsWith('/api/auth')) {
-     console.log('Auth route accessed without verification:', pathname);
+    console.log('Auth route accessed without verification:', pathname);
     return NextResponse.next();
   }
 
@@ -109,7 +107,7 @@ export async function middleware(request: NextRequest) {
     if (error.code === 'ERR_JWT_EXPIRED') {
       console.log("Token is expired");
 
-      const refreshResponse = await fetch('/api/auth/regenerate-token', {
+      const refreshResponse = await fetch(GENERATE_NEW_TOKEN, {
         method: 'POST',
         credentials: 'include',
         headers: {
