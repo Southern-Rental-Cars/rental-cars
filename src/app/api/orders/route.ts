@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Client, Environment, LogLevel, OrdersController, ApiError, CheckoutPaymentIntent, StoreInVaultInstruction, CardVerificationMethod } from '@paypal/paypal-server-sdk';
+import { Client, Environment, LogLevel, OrdersController, ApiError, CheckoutPaymentIntent } from '@paypal/paypal-server-sdk';
 
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || '';
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || '';
+
+console.info("PayPal Client ID:", process.env.PAYPAL_CLIENT_ID);
+console.info("PayPal Client Secret:", process.env.PAYPAL_CLIENT_SECRET ? "Set" : "Not Set");
 
 const client = new Client({
     clientCredentialsAuthCredentials: {
@@ -19,6 +22,7 @@ const client = new Client({
 
 const ordersController = new OrdersController(client);
 
+/* Create payment order through PayPal SDK */
 const createOrder = async (totalCost: string) => {
   const payload = {
     body: {
@@ -59,7 +63,6 @@ export async function POST(req: NextRequest) {
     const {totalCost} = await req.json();
     try {
         const { jsonResponse, httpStatusCode } = await createOrder(totalCost);
-
         return NextResponse.json(jsonResponse, { status: httpStatusCode });
     } catch (error) {
         console.error('Failed to create order:', error);
