@@ -5,7 +5,7 @@ const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || '';
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || '';
 
 console.info("PayPal Client ID:", process.env.PAYPAL_CLIENT_ID);
-console.info("PayPal Client Secret:", process.env.PAYPAL_CLIENT_SECRET ? "Set" : "Not Set");
+console.info("PayPal Client Secret:", process.env.PAYPAL_CLIENT_SECRET);
 
 const client = new Client({
     clientCredentialsAuthCredentials: {
