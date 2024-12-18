@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 import { Container } from '@/components/Container'
 import { Bars3Icon } from '@heroicons/react/24/outline'
-import logo from '@/images/transparent_southern_logo_3.png'
+import logo from '@/images/transparent_southern_logo_7.png'
 
 function NavItem({
   href,
@@ -23,13 +23,13 @@ function NavItem({
   const isActive = usePathname() === href
 
   return (
-    <li onClick={onClick} className="relative group">
+    <li onClick={onClick} className="group relative">
       <Link
-        href={disabled ? "#" : href}
+        href={disabled ? '#' : href}
         className={clsx(
           'relative block px-3 py-2 transition',
           isActive ? 'text-blue-600' : 'hover:text-blue-600',
-          disabled && 'text-gray-400 cursor-not-allowed'
+          disabled && 'cursor-not-allowed text-gray-400',
         )}
         onClick={(e) => disabled && e.preventDefault()}
       >
@@ -40,7 +40,7 @@ function NavItem({
       </Link>
       {/* Tooltip for 'Coming Soon' */}
       {disabled && (
-        <span className="absolute left-0 -bottom-6 w-full text-center text-xs font-semibold text-white bg-gray-700 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="absolute -bottom-6 left-0 w-full rounded bg-gray-700 py-1 text-center text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
           Coming Soon
         </span>
       )}
@@ -52,7 +52,9 @@ function DesktopNavigation() {
   return (
     <nav className="hidden md:flex">
       <ul className="text-md flex space-x-6 font-semibold text-white">
-        <NavItem href="/vehicles" disabled>Book Vehicle</NavItem>
+        <NavItem href="/vehicles" disabled>
+          Vehicles
+        </NavItem>
         <NavItem href="/business-solutions">Business Solutions</NavItem>
         <NavItem href="/contact">Contact</NavItem>
       </ul>
@@ -95,9 +97,15 @@ function MobileNavigation({
       }`}
     >
       <ul className="py-1 text-white">
-        <NavItem href="/vehicles" onClick={onClose} disabled>Book Vehicle</NavItem>
-        <NavItem href="/business-solutions" onClick={onClose}>Business Solutions</NavItem>
-        <NavItem href="/contact" onClick={onClose}>Contact</NavItem>
+        <NavItem href="/vehicles" onClick={onClose} disabled>
+          Book Vehicle
+        </NavItem>
+        <NavItem href="/business-solutions" onClick={onClose}>
+          Business Solutions
+        </NavItem>
+        <NavItem href="/contact" onClick={onClose}>
+          Contact
+        </NavItem>
       </ul>
     </div>
   )
