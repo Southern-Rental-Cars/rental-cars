@@ -53,8 +53,7 @@ const ContactPage = async () => {
       <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
         <p>
           Southern Rental Cars is the top car rental service in The Woodlands.
-          We maintain a fleet of vehicles including SUV&apos;'s, sedans and
-          vans.
+          We maintain a fleet of vehicles including SUV&apos;s, sedans and vans.
         </p>
         <p>
           All of our bookings are Online. If you have any questions or need
