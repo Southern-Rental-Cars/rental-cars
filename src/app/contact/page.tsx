@@ -2,7 +2,7 @@ import { type Metadata } from 'next'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { PhoneIcon } from '@heroicons/react/24/solid'
-import { Container } from '@/components/Container';
+import { Container } from '@/components/Container'
 
 export const metadata: Metadata = {
   title: 'Contact | Southern Rental Cars',
@@ -47,48 +47,34 @@ const ContactPage = async () => {
   return (
     <Container className="mt-10">
       {/* Column 1: Contact Details */}
-        <h1 className="text-center text-5xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
-          Contact
-        </h1>
+      <h1 className="text-center text-5xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+        Contact
+      </h1>
 
-        <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
-          <p>
-            Southern Rental Cars is the top car rental service in The Woodlands.
-            We own a fleet of vehicles with sedans, SUVs, vans, and growing.
-            Make a reservation and get top quality service.
-          </p>
-          <p>For inquiries or to book your next drive, reach out to:</p>
-          <a
-            href="mailto:sales@southernrentalcars.com"
-            className="text-[#00205A] dark:text-blue-700"
-          >
-            sales@southernrentalcars.com{' '}
-          </a>
-          or by phone at{' '}
-          <a
-            href="tel:+1-281-555-5555"
-            className="text-[#00205A] dark:text-blue-700"
-          >
-            +1 (832) 684-7072
-          </a>
-        </div>
+      <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
+        <p>
+          Southern Rental Cars is the top car rental service in The Woodlands.
+          We own a fleet of vehicles with sedans, SUVs, vans, and growing. Make
+          a reservation and get top quality service.
+        </p>
+        <p>For inquiries or to book your next drive, reach out to:</p>
+        <a
+          href="mailto:bookings@southernrentalcars.com"
+          className="text-[#00205A] dark:text-blue-700"
+        >
+          bookings@southernrentalcars.com{' '}
+        </a>
+      </div>
 
-        <ul role="list" className="mt-2">
-          <SocialLink
-            href="mailto:sales@southernrentalcars.com"
-            icon={MailIcon}
-            className="border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
-          >
-            sales@southernrentalcars.com
-          </SocialLink>
-          <SocialLink
-            href="tel:+1-832-684-7072"
-            icon={PhoneIcon}
-            className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
-          >
-            +1 (832) 684-7072
-          </SocialLink>
-        </ul>
+      <ul role="list" className="mt-2">
+        <SocialLink
+          href="mailto:bookings@southernrentalcars.com"
+          icon={MailIcon}
+          className="border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
+        >
+          bookings@southernrentalcars.com
+        </SocialLink>
+      </ul>
     </Container>
   )
 }
