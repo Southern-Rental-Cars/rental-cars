@@ -1,129 +1,86 @@
 import { Users, Car, Gauge } from 'lucide-react'
-import Atlas from '@/images/vehicles/atlas.jpg'
-import Cross from '@/images/vehicles/cross.jpg'
 import Image from 'next/image'
-// import { Atlas } from '@/images/vehicles/atlas.jpg'
-// import { Atlas } from '@/images/vehicles/atlas.jpg'
-// import { Atlas } from '@/images/vehicles/atlas.jpg'
-// import { Atlas } from '@/images/vehicles/atlas.jpg'
-// import { Atlas } from '@/images/vehicles/atlas.jpg'
-// import { Atlas } from '@/images/vehicles/atlas.jpg'
-// import { Atlas } from '@/images/vehicles/atlas.jpg'
+import Atlas from '@/images/vehicles/atlas2024.jpg'
+import Cross from '@/images/vehicles/cross.jpg'
+import Bronco from '@/images/vehicles/bronco.jpg'
+import C_Class from '@/images/vehicles/c_class2019.jpg'
+import metris2018 from '@/images/vehicles/metris2018.png'
+import metris2023 from '@/images/vehicles/benz.jpg'
 
 // Car data array
 const vehicles = [
   {
     id: 1,
-    name: 'Volkswagen Atlas',
+    name: 'Ford Bronco Sport 2023',
+    image: Bronco,
+    url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/ford/bronco-sport/2199606',
+    pricePerDay: 75,
+    features: {
+      passengers: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Regular)',
+    },
+  },
+  {
+    id: 2,
+    name: 'Mercedes-Benz C-Class 2019',
+    image: C_Class,
+    url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/mercedes-benz/c-class/2836080',
+    pricePerDay: 75,
+    features: {
+      passengers: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Premium)',
+    },
+  },
+  {
+    id: 3,
+    name: 'Mercedes-Benz Metris 2018',
+    image: metris2018,
+    url: 'https://turo.com/us/en/minivan-rental/united-states/the-woodlands-tx/mercedes-benz/metris/2864883',
+    pricePerDay: 100,
+    features: {
+      passengers: 8,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Premium)',
+    },
+  },
+  {
+    id: 4,
+    name: 'Mercedes-Benz Metris 2023',
+    image: metris2023,
+    url: 'https://turo.com/us/en/minivan-rental/united-states/the-woodlands-tx/mercedes-benz/metris/2575678',
+    pricePerDay: 100,
+    features: {
+      passengers: 8,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Premium)',
+    },
+  },
+  {
+    id: 6,
+    name: 'Volkswagen Atlas 2024',
     image: Atlas,
     url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/volkswagen/atlas/2196188',
     pricePerDay: 80,
     features: {
       passengers: 7,
       transmission: 'Automatic',
-      fuelType: 'Gasoline',
+      fuelType: 'Gas (Regular)',
     },
   },
   {
-    id: 2,
-    name: 'Volkswagen Atlas Cross-sport',
+    id: 7,
+    name: 'Volkswagen Atlas Cross-sport 2024',
     image: Cross,
     url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/volkswagen/atlas-cross-sport/2215467',
     pricePerDay: 75,
     features: {
       passengers: 5,
       transmission: 'Automatic',
-      fuelType: 'Gasoline',
+      fuelType: 'Gas (Regular)',
     },
   },
-  // {
-  //   id: 3,
-  //   name: 'Luxury Sedan',
-  //   imageUrl: '/api/placeholder/300/200',
-  //   pricePerDay: 79,
-  //   features: {
-  //     passengers: 4,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Premium',
-  //   },
-  // },
-  // {
-  //   id: 4,
-  //   name: 'Economy Hatchback',
-  //   imageUrl: '/api/placeholder/300/200',
-  //   pricePerDay: 35,
-  //   features: {
-  //     passengers: 4,
-  //     transmission: 'Manual',
-  //     fuelType: 'Regular',
-  //   },
-  // },
-  // {
-  //   id: 5,
-  //   name: 'Large SUV',
-  //   imageUrl: '/api/placeholder/300/200',
-  //   pricePerDay: 69,
-  //   features: {
-  //     passengers: 7,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Diesel',
-  //   },
-  // },
-  // {
-  //   id: 6,
-  //   name: 'Sports Coupe',
-  //   imageUrl: '/api/placeholder/300/200',
-  //   pricePerDay: 89,
-  //   features: {
-  //     passengers: 2,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Premium',
-  //   },
-  // },
-  // {
-  //   id: 7,
-  //   name: 'Electric Compact',
-  //   imageUrl: '/api/placeholder/300/200',
-  //   pricePerDay: 49,
-  //   features: {
-  //     passengers: 4,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Electric',
-  //   },
-  // },
-  // {
-  //   id: 8,
-  //   name: 'Minivan',
-  //   imageUrl: '/api/placeholder/300/200',
-  //   pricePerDay: 65,
-  //   features: {
-  //     passengers: 7,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Gasoline',
-  //   },
-  // },
-  // {
-  //   id: 9,
-  //   name: 'Crossover',
-  //   imageUrl: '/api/placeholder/300/200',
-  //   pricePerDay: 55,
-  //   features: {
-  //     passengers: 5,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Hybrid',
-  //   },
-  // },
-  // {
-  //   id: 10,
-  //   name: 'Convertible',
-  //   imageUrl: '/api/placeholder/300/200',
-  //   pricePerDay: 95,
-  //   features: {
-  //     passengers: 2,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Premium',
-  //   },
-  // },
 ]
 
 export default function Page() {
