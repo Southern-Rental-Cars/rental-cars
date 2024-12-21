@@ -1,6 +1,7 @@
 import { Users, Car, Gauge } from 'lucide-react'
 import Atlas from '@/images/vehicles/atlas.jpg'
 import Cross from '@/images/vehicles/cross.jpg'
+import Image from 'next/image'
 // import { Atlas } from '@/images/vehicles/atlas.jpg'
 // import { Atlas } from '@/images/vehicles/atlas.jpg'
 // import { Atlas } from '@/images/vehicles/atlas.jpg'
@@ -139,8 +140,8 @@ export default function Page() {
             className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md transition-shadow duration-300 hover:shadow-xl"
           >
             <a href={vehicle.url} className="block">
-              <img
-                src={vehicle.imageUrl}
+              <Image
+                src={vehicle.image}
                 alt={vehicle.name}
                 className="h-48 w-full object-cover"
               />
