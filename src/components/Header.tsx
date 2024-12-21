@@ -116,7 +116,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-[#19223E] shadow-md">
-      <div className="flex h-16 items-center justify-between px-16">
+      <div className="mx-auto flex h-16 items-center justify-between px-16">
         {/* Logo */}
         <Link href="/" passHref>
           <div className="relative h-12 w-32 cursor-pointer">
