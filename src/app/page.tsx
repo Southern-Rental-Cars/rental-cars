@@ -1,9 +1,8 @@
 import Image from 'next/image'
-// import { ChevronRightIcon } from '@heroicons/react/20/solid'
+import Link from 'next/link'
+import { ChevronRightIcon } from 'lucide-react'
 import { Container } from '@/components/Container'
-// import Link from 'next/link'
 import Benz from '@/images/vehicles/c_class2019.jpg'
-import ContactPage from './contact/page'
 import Logo from '@/images/transparent_southern_logo_5.png'
 import BusinessSolutionsPage from './business-solutions/page'
 import Testimonials from '@/components/Testimonials'
@@ -33,9 +32,13 @@ const HomePage = () => {
             <p className="tracking-right mb-4 text-lg text-gray-300 md:text-xl">
               Explore The Woodlands and Houston with our handpicked cars
             </p>
-            {/* <Link href="/vehicles" className="bg-[#2f4269] text-white py-3 px-6 rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out inline-flex items-center" passHref>
-                Search reservations  <ChevronRightIcon className="h-5 w-5 ml-2" />
-            </Link> */}
+            <Link
+              href="/vehicles"
+              className="inline-flex items-center rounded-full bg-blue-500 px-6 py-3 text-white shadow-md transition duration-300 ease-in-out hover:bg-blue-600"
+              passHref
+            >
+              Browse Vehicles <ChevronRightIcon className="ml-2 h-5 w-5" />
+            </Link>
           </div>
         </div>
       </div>
@@ -70,7 +73,7 @@ const HomePage = () => {
               ))}
             </div>
           </div>
-          <div className="mt-8 flex justify-center lg:ml-24 lg:mt-0 lg:mt-16">
+          <div className="mt-8 flex justify-center lg:ml-24 lg:w-1/3">
             <div className="relative h-52 w-36 lg:h-72 lg:w-56">
               <Image
                 src={Logo}
