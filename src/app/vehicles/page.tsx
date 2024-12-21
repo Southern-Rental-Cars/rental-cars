@@ -6,6 +6,10 @@ import Bronco from '@/images/vehicles/bronco.jpg'
 import C_Class from '@/images/vehicles/c_class2019.jpg'
 import metris2018 from '@/images/vehicles/metris2018.png'
 import metris2023 from '@/images/vehicles/benz.jpg'
+import camry from '@/images/vehicles/camry.jpg'
+import taos from '@/images/vehicles/taos.jpg'
+import tiguan2022 from '@/images/vehicles/tiguan2022.jpg'
+import tiguan2023 from '@/images/vehicles/tiguan2023.jpg'
 
 // Car data array
 const vehicles = [
@@ -58,6 +62,19 @@ const vehicles = [
     },
   },
   {
+    id: 5,
+    name: 'Toyota Camry 2024',
+    image: camry,
+    url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/toyota/camry/2514583',
+    pricePerDay: 70,
+    features: {
+      passengers: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Regular)',
+      mpg: 34,
+    },
+  },
+  {
     id: 6,
     name: 'Volkswagen Atlas 2024',
     image: Atlas,
@@ -81,14 +98,51 @@ const vehicles = [
       fuelType: 'Gas (Regular)',
     },
   },
+  {
+    id: 8,
+    name: 'Volkswagen Taos 2023',
+    image: taos,
+    url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/volkswagen/taos/2043218',
+    pricePerDay: 75,
+    features: {
+      passengers: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Regular)',
+      mpg: 32,
+    },
+  },
+  {
+    id: 9,
+    name: 'Volkswagen Tiguan 2022',
+    image: tiguan2022,
+    url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/volkswagen/tiguan/2049576',
+    pricePerDay: 75,
+    features: {
+      passengers: 7,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Regular)',
+      mpg: 26,
+    },
+  },
+  {
+    id: 10,
+    name: 'Volkswagen Tiguan 2023',
+    image: tiguan2023,
+    url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/volkswagen/tiguan/2088838',
+    pricePerDay: 75,
+    features: {
+      passengers: 7,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Regular)',
+      mpg: 26,
+    },
+  },
 ]
 
 export default function Page() {
   return (
     <div className="container mx-auto mt-9 px-4">
-      <h1 className="mb-10 text-center text-3xl font-bold">
-        Browse Our Vehicles
-      </h1>
+      <h1 className="mb-10 text-center text-3xl font-bold">Browse Vehicles</h1>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {vehicles.map((vehicle) => (
