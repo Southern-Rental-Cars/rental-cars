@@ -1,6 +1,6 @@
 import { Users, Car, Gauge } from 'lucide-react'
-import { Atlas } from '@/images/vehicles/atlas.jpg'
-import { Cross } from '@/images/vehicles/cross.jpg'
+import Atlas from '@/images/vehicles/atlas.jpg'
+import Cross from '@/images/vehicles/cross.jpg'
 // import { Atlas } from '@/images/vehicles/atlas.jpg'
 // import { Atlas } from '@/images/vehicles/atlas.jpg'
 // import { Atlas } from '@/images/vehicles/atlas.jpg'
