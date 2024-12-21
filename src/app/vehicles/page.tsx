@@ -130,7 +130,7 @@ export default function Page() {
   return (
     <div className="container mx-auto mt-9 px-4">
       <h1 className="mb-10 text-center text-3xl font-bold">
-        Our Car Rental Fleet
+        Browse Our Vehicles
       </h1>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -139,7 +139,12 @@ export default function Page() {
             key={vehicle.id}
             className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md transition-shadow duration-300 hover:shadow-xl"
           >
-            <a href={vehicle.url} className="block">
+            <a
+              href={vehicle.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
               <Image
                 src={vehicle.image}
                 alt={vehicle.name}
@@ -150,6 +155,8 @@ export default function Page() {
             <div className="p-5">
               <a
                 href={vehicle.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="block transition-colors hover:text-blue-600"
               >
                 <h2 className="mb-2 text-xl font-semibold">{vehicle.name}</h2>
@@ -161,9 +168,11 @@ export default function Page() {
                 </span>
                 <a
                   href={vehicle.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-block rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
                 >
-                  Reserve
+                  Reserve Online
                 </a>
               </div>
 
