@@ -25,7 +25,7 @@ function NavItem({
   return (
     <li onClick={onClick} className="group relative">
       <Link
-        href={disabled ? '#' : href}
+        href={href}
         className={clsx(
           'relative block px-3 py-2 transition',
           isActive ? 'text-blue-600' : 'hover:text-blue-600',
@@ -38,12 +38,6 @@ function NavItem({
           <span className="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-blue-500/0 via-blue-500/40 to-blue-500/0" />
         )}
       </Link>
-      {/* Tooltip for 'Coming Soon' */}
-      {disabled && (
-        <span className="absolute -bottom-6 left-0 w-full rounded bg-gray-700 py-1 text-center text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
-          Coming Soon
-        </span>
-      )}
     </li>
   )
 }
@@ -52,10 +46,8 @@ function DesktopNavigation() {
   return (
     <nav className="hidden md:flex">
       <ul className="text-md flex space-x-6 font-semibold text-white">
-        <NavItem href="/vehicles" disabled>
-          Vehicles
-        </NavItem>
-        <NavItem href="/business-solutions">Business Solutions</NavItem>
+        <NavItem href="/vehicles">Vehicles</NavItem>
+        {/* <NavItem href="/business-solutions">Business Solutions</NavItem> */}
         <NavItem href="/contact">Contact</NavItem>
       </ul>
     </nav>
@@ -97,12 +89,12 @@ function MobileNavigation({
       }`}
     >
       <ul className="py-1 text-white">
-        <NavItem href="/vehicles" onClick={onClose} disabled>
-          Book Vehicle
+        <NavItem href="/vehicles" onClick={onClose}>
+          Vehicles
         </NavItem>
-        <NavItem href="/business-solutions" onClick={onClose}>
+        {/* <NavItem href="/business-solutions" onClick={onClose}>
           Business Solutions
-        </NavItem>
+        </NavItem> */}
         <NavItem href="/contact" onClick={onClose}>
           Contact
         </NavItem>
