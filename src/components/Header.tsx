@@ -84,7 +84,7 @@ function MobileNavigation({
   return (
     <div
       ref={menuRef}
-      className={`absolute right-0 top-4 mt-2 w-48 transform rounded-md bg-[#19223E] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none ${
+      className={`absolute right-4 top-16 mt-2 w-48 transform rounded-md bg-[#19223E] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none ${
         isOpen ? 'block' : 'hidden'
       }`}
     >
@@ -116,9 +116,16 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-[#19223E] shadow-md">
-      <div className="mx-auto flex h-16 items-center justify-between px-16">
-        {/* Logo */}
-        <Link href="/" passHref>
+      <div className="relative mx-auto flex h-16 items-center justify-between px-4 md:px-16">
+        {/* Empty div to maintain spacing on mobile */}
+        <div className="w-8 md:hidden" />
+
+        {/* Logo - centered on mobile, left on desktop */}
+        <Link
+          href="/"
+          passHref
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform md:static md:left-auto md:translate-x-0 md:translate-y-0"
+        >
           <div className="relative h-12 w-32 cursor-pointer">
             <Image
               src={logo}
@@ -136,7 +143,7 @@ export function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={toggleMobileMenu}
-          className="absolute right-4 top-12 ml-auto text-white md:hidden"
+          className="flex items-center text-white md:hidden"
         >
           <Bars3Icon className="h-8 w-8" />
         </button>
