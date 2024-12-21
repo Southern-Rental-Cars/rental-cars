@@ -28,7 +28,7 @@ function NavItem({
         href={href}
         className={clsx(
           'relative block px-3 py-2 transition',
-          isActive ? 'text-blue-600' : 'hover:text-blue-600',
+          isActive ? 'text-blue-600' : 'text-white hover:text-blue-600',
           disabled && 'cursor-not-allowed text-gray-400',
         )}
         onClick={(e) => disabled && e.preventDefault()}
@@ -45,7 +45,7 @@ function NavItem({
 function DesktopNavigation() {
   return (
     <nav className="hidden md:flex">
-      <ul className="text-md flex space-x-6 font-semibold text-white">
+      <ul className="text-md flex space-x-4">
         <NavItem href="/vehicles">Vehicles</NavItem>
         {/* <NavItem href="/business-solutions">Business Solutions</NavItem> */}
         <NavItem href="/contact">Contact</NavItem>
@@ -116,24 +116,22 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-[#19223E] shadow-md">
-      <Container className="flex items-center justify-between">
-        {/* Title, Logo, and Navigation in One Line */}
-        <div className="flex items-center space-x-4 py-4 md:py-8">
-          {/* Clickable Logo Image */}
-          <Link href="/" passHref>
-            <div className="relative h-24 w-44 cursor-pointer md:w-80">
-              <Image
-                src={logo}
-                alt="Southern Rental Cars Logo"
-                layout="fill"
-                objectFit="contain"
-                priority
-              />
-            </div>
-          </Link>
-          {/* Desktop Navigation */}
-          <DesktopNavigation />
-        </div>
+      <div className="flex h-16 items-center justify-between px-12">
+        {/* Logo */}
+        <Link href="/" passHref>
+          <div className="relative h-12 w-32 cursor-pointer">
+            <Image
+              src={logo}
+              alt="Southern Rental Cars Logo"
+              layout="fill"
+              objectFit="contain"
+              priority
+            />
+          </div>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <DesktopNavigation />
 
         {/* Mobile Menu Button */}
         <button
@@ -145,7 +143,7 @@ export function Header() {
 
         {/* Mobile Navigation */}
         <MobileNavigation isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
-      </Container>
+      </div>
     </header>
   )
 }
