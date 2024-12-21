@@ -48,14 +48,6 @@ const BusinessSolutionsPage = () => {
         </div>
       </div>
       <hr className="mb-8 w-full border-t border-gray-300" />
-      {/* Call to Action */}
-      <div className="text-center">
-        <Link href="/contact">
-          <button className="inline-flex items-center bg-[#2f4269] px-4 py-3 text-white shadow-md transition duration-300 ease-in-out hover:bg-blue-600">
-            Free Quote
-          </button>
-        </Link>
-      </div>
     </Container>
   )
 }

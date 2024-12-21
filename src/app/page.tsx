@@ -44,9 +44,6 @@ const HomePage = () => {
       <Container className="py-20">
         <div className="flex flex-col p-2 lg:flex-row lg:p-8">
           <div className="text-center lg:w-2/3">
-            <h2 className="mb-8 text-5xl font-bold tracking-wide md:text-5xl dark:text-[#d9ab69]">
-              At Southern Rental Cars
-            </h2>
             <div className="space-y-8 text-zinc-600 dark:text-zinc-400">
               {[
                 {
@@ -91,11 +88,6 @@ const HomePage = () => {
       {/* Business Solutions */}
       <Container className="bg-[#14223f] p-1 pb-12 text-white">
         <BusinessSolutionsPage />
-      </Container>
-
-      {/* Contact */}
-      <Container className="pb-12">
-        <ContactPage />
       </Container>
 
       {/* Testimonials */}
