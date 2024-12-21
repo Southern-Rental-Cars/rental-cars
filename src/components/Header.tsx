@@ -84,7 +84,7 @@ function MobileNavigation({
   return (
     <div
       ref={menuRef}
-      className={`absolute right-0 top-16 mt-2 w-48 transform rounded-md bg-[#19223E] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none ${
+      className={`absolute right-0 top-4 mt-2 w-48 transform rounded-md bg-[#19223E] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none ${
         isOpen ? 'block' : 'hidden'
       }`}
     >
@@ -116,7 +116,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-[#19223E] shadow-md">
-      <div className="flex h-16 items-center justify-between px-12">
+      <div className="flex h-16 items-center justify-between px-16">
         {/* Logo */}
         <Link href="/" passHref>
           <div className="relative h-12 w-32 cursor-pointer">
