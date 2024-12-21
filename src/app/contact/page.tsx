@@ -1,7 +1,6 @@
 import { type Metadata } from 'next'
 import Link from 'next/link'
 import clsx from 'clsx'
-import { PhoneIcon } from '@heroicons/react/24/solid'
 import { Container } from '@/components/Container'
 
 export const metadata: Metadata = {
@@ -54,10 +53,12 @@ const ContactPage = async () => {
       <div className="mt-6 space-y-3 text-base text-zinc-600 dark:text-zinc-400">
         <p>
           Southern Rental Cars is the top car rental service in The Woodlands.
-          We own a fleet of vehicles with sedans, SUVs, vans, and growing. Make
-          a reservation and get top quality service.
+          We maintain a fleet of vehicles including SUV's, sedans and vans.
         </p>
-        <p>For inquiries or to book your next drive, reach out to:</p>
+        <p>
+          All of our bookings are Online. If you have any questions or need
+          assistance, please contact us at:
+        </p>
         <a
           href="mailto:bookings@southernrentalcars.com"
           className="text-[#00205A] dark:text-blue-700"
