@@ -61,19 +61,19 @@ const vehicles = [
       fuelType: 'Gas (Premium)',
     },
   },
-  {
-    id: 5,
-    name: 'Toyota Camry 2024',
-    image: camry,
-    url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/toyota/camry/2514583',
-    pricePerDay: 70,
-    features: {
-      passengers: 5,
-      transmission: 'Automatic',
-      fuelType: 'Gas (Regular)',
-      mpg: 34,
-    },
-  },
+  // {
+  //   id: 5,
+  //   name: 'Toyota Camry 2024',
+  //   image: camry,
+  //   url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/toyota/camry/2514583',
+  //   pricePerDay: 70,
+  //   features: {
+  //     passengers: 5,
+  //     transmission: 'Automatic',
+  //     fuelType: 'Gas (Regular)',
+  //     mpg: 34,
+  //   },
+  // },
   {
     id: 6,
     name: 'Volkswagen Atlas 2024',
