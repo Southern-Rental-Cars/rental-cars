@@ -37,18 +37,18 @@ const vehicles = [
   //     fuelType: 'Gas (Premium)',
   //   },
   // },
-  // {
-  //   id: 3,
-  //   name: 'Mercedes-Benz Metris 2018',
-  //   image: metris2018,
-  //   url: 'https://turo.com/us/en/minivan-rental/united-states/the-woodlands-tx/mercedes-benz/metris/2864883',
-  //   pricePerDay: 100,
-  //   features: {
-  //     passengers: 8,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Gas (Premium)',
-  //   },
-  // },
+  {
+    id: 3,
+    name: 'Mercedes-Benz Metris 2018',
+    image: metris2018,
+    url: 'https://turo.com/us/en/minivan-rental/united-states/the-woodlands-tx/mercedes-benz/metris/2864883',
+    pricePerDay: 100,
+    features: {
+      passengers: 8,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Premium)',
+    },
+  },
   {
     id: 4,
     name: 'Mercedes-Benz Metris 2023',
