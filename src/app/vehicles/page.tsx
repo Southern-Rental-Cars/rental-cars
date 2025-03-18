@@ -30,7 +30,7 @@ const vehicles = [
     name: 'Mercedes-Benz C-Class 2019',
     image: C_Class,
     url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/mercedes-benz/c-class/2836080',
-    pricePerDay: 75,
+    pricePerDay: 80,
     features: {
       passengers: 5,
       transmission: 'Automatic',
