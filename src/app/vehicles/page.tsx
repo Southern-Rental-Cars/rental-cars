@@ -174,9 +174,9 @@ export default function Page() {
               </a>
 
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-2xl font-bold text-blue-600">
+                {/* <span className="text-2xl font-bold text-blue-600">
                   ${vehicle.pricePerDay}/day
-                </span>
+                </span> */}
                 <a
                   href={vehicle.url}
                   target="_blank"
