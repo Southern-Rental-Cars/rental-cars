@@ -25,18 +25,18 @@ const vehicles = [
       fuelType: 'Gas (Regular)',
     },
   },
-  {
-    id: 2,
-    name: 'Mercedes-Benz C-Class 2019',
-    image: C_Class,
-    url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/mercedes-benz/c-class/2836080',
-    pricePerDay: 80,
-    features: {
-      passengers: 5,
-      transmission: 'Automatic',
-      fuelType: 'Gas (Premium)',
-    },
-  },
+  // {
+  //   id: 2,
+  //   name: 'Mercedes-Benz C-Class 2019',
+  //   image: C_Class,
+  //   url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/mercedes-benz/c-class/2836080',
+  //   pricePerDay: 80,
+  //   features: {
+  //     passengers: 5,
+  //     transmission: 'Automatic',
+  //     fuelType: 'Gas (Premium)',
+  //   },
+  // },
   // {
   //   id: 3,
   //   name: 'Mercedes-Benz Metris 2018',
