@@ -13,18 +13,18 @@ import tiguan2023 from '@/images/vehicles/tiguan2023.jpg'
 
 // Car data array
 const vehicles = [
-  {
-    id: 1,
-    name: 'Ford Bronco Sport 2023',
-    image: Bronco,
-    url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/ford/bronco-sport/2199606',
-    pricePerDay: 75,
-    features: {
-      passengers: 5,
-      transmission: 'Automatic',
-      fuelType: 'Gas (Regular)',
-    },
-  },
+  // {
+  //   id: 1,
+  //   name: 'Ford Bronco Sport 2023',
+  //   image: Bronco,
+  //   url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/ford/bronco-sport/2199606',
+  //   pricePerDay: 75,
+  //   features: {
+  //     passengers: 5,
+  //     transmission: 'Automatic',
+  //     fuelType: 'Gas (Regular)',
+  //   },
+  // },
   // {
   //   id: 2,
   //   name: 'Mercedes-Benz C-Class 2019',
@@ -98,19 +98,19 @@ const vehicles = [
       fuelType: 'Gas (Regular)',
     },
   },
-  {
-    id: 8,
-    name: 'Volkswagen Taos 2023',
-    image: taos,
-    url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/volkswagen/taos/2043218',
-    pricePerDay: 75,
-    features: {
-      passengers: 5,
-      transmission: 'Automatic',
-      fuelType: 'Gas (Regular)',
-      mpg: 32,
-    },
-  },
+  // {
+  //   id: 8,
+  //   name: 'Volkswagen Taos 2023',
+  //   image: taos,
+  //   url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/volkswagen/taos/2043218',
+  //   pricePerDay: 75,
+  //   features: {
+  //     passengers: 5,
+  //     transmission: 'Automatic',
+  //     fuelType: 'Gas (Regular)',
+  //     mpg: 32,
+  //   },
+  // },
   {
     id: 9,
     name: 'Volkswagen Tiguan 2022',
