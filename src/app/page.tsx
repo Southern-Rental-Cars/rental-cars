@@ -19,7 +19,6 @@ const HomePage = () => {
           priority
         />
 
-        {/* Dual Gradient Overlay for maximum text contrast */}
         <div className="absolute inset-0 bg-gradient-to-t from-navy-800 via-navy-800/50 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-navy-800/90 via-navy-800/40 to-transparent"></div>
 
@@ -95,7 +94,6 @@ const HomePage = () => {
       </Container>
 
       {/* Business Solutions */}
-      {/* The classes below force all children (h1, h2, p, a) to use light colors */}
       <Container className="bg-navy-800 py-16 text-white [&_h1]:text-white [&_h2]:text-white [&_p]:text-gray-300 [&_a]:text-white">
         <BusinessSolutionsPage />
       </Container>
