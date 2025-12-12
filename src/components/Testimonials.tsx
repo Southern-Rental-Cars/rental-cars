@@ -38,8 +38,9 @@ export default function Testimonials() {
                   <FontAwesomeIcon key={i} icon={faStar} className="h-4 w-4" />
                 ))}
               </div>
+              {/* Fixed: Use HTML entities for quotes */}
               <blockquote className="text-zinc-700 leading-relaxed">
-                "{item.review}"
+                &ldquo;{item.review}&rdquo;
               </blockquote>
             </div>
             <div className="mt-8 border-t border-zinc-100 pt-6">
