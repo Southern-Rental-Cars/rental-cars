@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronRightIcon } from 'lucide-react'
 import { Container } from '@/components/Container'
 import Benz from '@/images/vehicles/c_class2019.jpg'
 import Logo from '@/images/transparent_southern_logo_5.png'
@@ -10,44 +9,52 @@ import Testimonials from '@/components/Testimonials'
 const HomePage = () => {
   return (
     <>
-      {/* Hero */}
-      <div className="relative h-[67vh] w-full">
+      {/* Hero Section */}
+      <div className="relative h-[85vh] w-full">
         <Image
           src={Benz}
           alt="Car on a scenic road"
-          layout="fill"
-          loading="eager" // Eager loading for hero images
-          objectFit="cover"
-          priority // Prioritize for faster loading
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Responsive image sizes
+          fill
+          className="object-cover"
+          priority
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-[#14223f] to-transparent brightness-50"></div>
+        {/* Dual Gradient Overlay for maximum text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-800 via-navy-800/50 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-800/90 via-navy-800/40 to-transparent"></div>
 
-        <div className="absolute inset-0 z-20 flex items-center justify-center px-8">
-          <div className="text-left">
-            <h1 className="mb-4 text-5xl font-extrabold tracking-widest text-white md:text-6xl">
-              Rent with Confidence
+        <div className="absolute inset-0 z-20 flex items-center px-8 sm:px-16 lg:px-24">
+          <div className="max-w-2xl text-left">
+            <h1 className="mb-6 font-serif text-5xl font-bold leading-tight text-white md:text-7xl drop-shadow-lg">
+              Rent with <br />
+              <span className="text-gold-500">Confidence</span>
             </h1>
-            <p className="tracking-right mb-4 text-lg text-gray-300 md:text-xl">
-              Explore The Woodlands and Houston with our handpicked cars
+            <p className="mb-8 text-lg text-gray-200 md:text-xl font-light max-w-lg drop-shadow-md">
+              Explore The Woodlands and Houston with our fleet of premium, handpicked vehicles designed for your comfort.
             </p>
-            <Link
-              href="/vehicles"
-              className="inline-flex items-center rounded-full bg-blue-500 px-6 py-3 text-white shadow-md transition duration-300 ease-in-out hover:bg-blue-600"
-              passHref
-            >
-              Browse Vehicles <ChevronRightIcon className="ml-2 h-5 w-5" />
-            </Link>
+            <div className="flex gap-4">
+              <Link
+                href="/vehicles"
+                className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-navy-800 shadow-lg transition hover:bg-gold-500 hover:text-white"
+              >
+                Browse Fleet
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-full border border-white/40 bg-white/10 backdrop-blur-sm px-8 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+              >
+                Contact Us
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
       {/* About Us */}
-      <Container className="py-20">
-        <div className="flex flex-col p-2 lg:flex-row lg:p-8">
-          <div className="text-center lg:w-2/3">
-            <div className="space-y-8 text-zinc-600 dark:text-zinc-400">
+      <Container className="py-24 bg-white">
+        <div className="flex flex-col p-2 lg:flex-row lg:p-8 items-center">
+          <div className="text-center lg:w-2/3 lg:text-left">
+            <div className="space-y-12 text-zinc-600">
               {[
                 {
                   title: 'Expect quality',
@@ -55,31 +62,30 @@ const HomePage = () => {
                 },
                 {
                   title: 'Tailored convenience',
-                  desc: 'We ensure flexibile services with delivery and pickup options.',
+                  desc: 'We ensure flexible services with delivery and pickup options.',
                 },
                 {
                   title: 'Hospitality you expect',
                   desc: 'With us, every trip handled with the best service in mind.',
                 },
               ].map((item, index) => (
-                <div className="text-left" key={index}>
-                  <h3 className="md:textxl mb-2 text-3xl font-bold tracking-wide text-black">
+                <div key={index}>
+                  <h3 className="mb-3 text-3xl font-serif font-bold tracking-wide text-navy-800">
                     {item.title}
                   </h3>
-                  <p className="text-md tracking-wide text-zinc-600 md:text-xl">
+                  <p className="text-lg leading-relaxed text-zinc-600 max-w-xl mx-auto lg:mx-0">
                     {item.desc}
                   </p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="mt-8 flex justify-center lg:ml-24 lg:w-1/3">
-            <div className="relative h-52 w-36 lg:h-72 lg:w-56">
+          <div className="mt-12 lg:mt-0 flex justify-center lg:ml-24 lg:w-1/3">
+            <div className="relative h-64 w-48 lg:h-80 lg:w-64">
               <Image
                 src={Logo}
                 alt="Southern Rental Cars Logo"
-                layout="fill"
-                priority
+                fill
                 objectFit="contain"
                 className="object-contain"
               />
@@ -89,12 +95,13 @@ const HomePage = () => {
       </Container>
 
       {/* Business Solutions */}
-      <Container className="bg-[#14223f] p-1 pb-12 text-white">
+      {/* The classes below force all children (h1, h2, p, a) to use light colors */}
+      <Container className="bg-navy-800 py-16 text-white [&_h1]:text-white [&_h2]:text-white [&_p]:text-gray-300 [&_a]:text-white">
         <BusinessSolutionsPage />
       </Container>
 
       {/* Testimonials */}
-      <Container className="bg-gray-200 py-12">
+      <Container className="bg-zinc-100 py-20">
         <Testimonials />
       </Container>
     </>

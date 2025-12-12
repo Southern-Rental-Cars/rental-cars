@@ -13,42 +13,42 @@ import tiguan2023 from '@/images/vehicles/tiguan2023.jpg'
 
 // Car data array
 const vehicles = [
-  // {
-  //   id: 1,
-  //   name: 'Ford Bronco Sport 2023',
-  //   image: Bronco,
-  //   url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/ford/bronco-sport/2199606',
-  //   pricePerDay: 75,
-  //   features: {
-  //     passengers: 5,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Gas (Regular)',
-  //   },
-  // },
-  // {
-  //   id: 2,
-  //   name: 'Mercedes-Benz C-Class 2019',
-  //   image: C_Class,
-  //   url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/mercedes-benz/c-class/2836080',
-  //   pricePerDay: 80,
-  //   features: {
-  //     passengers: 5,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Gas (Premium)',
-  //   },
-  // },
-  // {
-  //   id: 3,
-  //   name: 'Mercedes-Benz Metris 2018',
-  //   image: metris2018,
-  //   url: 'https://turo.com/us/en/minivan-rental/united-states/the-woodlands-tx/mercedes-benz/metris/2864883',
-  //   pricePerDay: 100,
-  //   features: {
-  //     passengers: 8,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Gas (Premium)',
-  //   },
-  // },
+  {
+    id: 1,
+    name: 'Ford Bronco Sport 2023',
+    image: Bronco,
+    url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/ford/bronco-sport/2199606',
+    pricePerDay: 75,
+    features: {
+      passengers: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Regular)',
+    },
+  },
+  {
+    id: 2,
+    name: 'Mercedes-Benz C-Class 2019',
+    image: C_Class,
+    url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/mercedes-benz/c-class/2836080',
+    pricePerDay: 80,
+    features: {
+      passengers: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Premium)',
+    },
+  },
+  {
+    id: 3,
+    name: 'Mercedes-Benz Metris 2018',
+    image: metris2018,
+    url: 'https://turo.com/us/en/minivan-rental/united-states/the-woodlands-tx/mercedes-benz/metris/2864883',
+    pricePerDay: 100,
+    features: {
+      passengers: 8,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Premium)',
+    },
+  },
   {
     id: 4,
     name: 'Mercedes-Benz Metris 2023',
@@ -61,19 +61,19 @@ const vehicles = [
       fuelType: 'Gas (Premium)',
     },
   },
-  // {
-  //   id: 5,
-  //   name: 'Toyota Camry 2024',
-  //   image: camry,
-  //   url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/toyota/camry/2514583',
-  //   pricePerDay: 70,
-  //   features: {
-  //     passengers: 5,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Gas (Regular)',
-  //     mpg: 34,
-  //   },
-  // },
+  {
+    id: 5,
+    name: 'Toyota Camry 2024',
+    image: camry,
+    url: 'https://turo.com/us/en/car-rental/united-states/the-woodlands-tx/toyota/camry/2514583',
+    pricePerDay: 70,
+    features: {
+      passengers: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Regular)',
+      mpg: 34,
+    },
+  },
   {
     id: 6,
     name: 'Volkswagen Atlas 2024',
@@ -98,19 +98,19 @@ const vehicles = [
       fuelType: 'Gas (Regular)',
     },
   },
-  // {
-  //   id: 8,
-  //   name: 'Volkswagen Taos 2023',
-  //   image: taos,
-  //   url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/volkswagen/taos/2043218',
-  //   pricePerDay: 75,
-  //   features: {
-  //     passengers: 5,
-  //     transmission: 'Automatic',
-  //     fuelType: 'Gas (Regular)',
-  //     mpg: 32,
-  //   },
-  // },
+  {
+    id: 8,
+    name: 'Volkswagen Taos 2023',
+    image: taos,
+    url: 'https://turo.com/us/en/suv-rental/united-states/the-woodlands-tx/volkswagen/taos/2043218',
+    pricePerDay: 75,
+    features: {
+      passengers: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gas (Regular)',
+      mpg: 32,
+    },
+  },
   {
     id: 9,
     name: 'Volkswagen Tiguan 2022',

@@ -8,6 +8,22 @@ export default {
   darkMode: 'selector',
   plugins: [typographyPlugin],
   theme: {
+    extend: {
+      colors: {
+        navy: {
+          800: '#19223E', // Primary Dark Background
+          900: '#141c33', // Darker variation
+        },
+        gold: {
+          500: '#d9ab69', // Primary Accent
+          600: '#b88a4d', // Darker Accent
+        },
+      },
+      fontFamily: {
+        serif: ['var(--font-playfair)', 'serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
+      },
+    },
     fontSize: {
       xs: ['0.8125rem', { lineHeight: '1.5rem' }],
       sm: ['0.875rem', { lineHeight: '1.5rem' }],
